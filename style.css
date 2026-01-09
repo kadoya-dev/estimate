@@ -166,6 +166,38 @@ body {
   letter-spacing: 0.05em;
 }
 
+.cta-row {
+  margin-top: 26px;
+  display: flex;
+  justify-content: center;
+}
+
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 32px;
+  border-radius: 999px;
+  background: #1a62ff;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  box-shadow: 0 12px 24px rgba(26, 98, 255, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(26, 98, 255, 0.3);
+}
+
+.cta-button:focus-visible {
+  outline: 3px solid #88b3ff;
+  outline-offset: 3px;
+}
+
 @media (max-width: 820px) {
   .simulation-card {
     grid-template-columns: 1fr;
