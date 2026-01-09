@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>送料シミュレーション</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="simulation-screen">
+      <header class="screen-header">
+        <h1 class="screen-title">送料シミュレーション</h1>
+        <p class="screen-subtitle">サイズと重量から概算送料を計算します</p>
+      </header>
+
+      <section class="simulation-card">
+        <div class="input-grid">
+          <label class="field-label" for="country">送り先国</label>
+          <div class="select-wrap">
+            <select id="country" class="field-select">
+              <option value="USA" selected>USA</option>
+              <option value="CAN">CAN</option>
+              <option value="AUS">AUS</option>
+              <option value="GBR">GBR</option>
+              <option value="DEU">DEU</option>
+            </select>
+          </div>
+
+          <span class="field-label">サイズ</span>
+          <div class="dimension-group">
+            <div class="dimension-row">
+              <div class="select-wrap">
+                <select id="length" class="field-select">
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                  <option value="60" selected>60</option>
+                  <option value="70">70</option>
+                  <option value="80">80</option>
+                </select>
+              </div>
+              <span class="unit">cm</span>
+            </div>
+            <span class="dimension-multiply">×</span>
+            <div class="dimension-row">
+              <div class="select-wrap">
+                <select id="width" class="field-select">
+                  <option value="20">20</option>
+                  <option value="30" selected>30</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+              <span class="unit">cm</span>
+            </div>
+            <span class="dimension-multiply">×</span>
+            <div class="dimension-row">
+              <div class="select-wrap">
+                <select id="height" class="field-select">
+                  <option value="20">20</option>
+                  <option value="30" selected>30</option>
+                  <option value="40">40</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+              <span class="unit">cm</span>
+            </div>
+          </div>
+
+          <label class="field-label" for="weight">重さ</label>
+          <div class="weight-row">
+            <div class="select-wrap">
+              <select id="weight" class="field-select">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3" selected>3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <span class="unit">kg</span>
+          </div>
+        </div>
+
+        <div class="result-box">
+          <div class="result-row">
+            <span>容積重量</span>
+            <span><span id="volumetricWeight">10.8</span> kg</span>
+          </div>
+          <div class="result-row">
+            <span>請求重量</span>
+            <span><span id="billableWeight">11</span> kg</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="total-row">
+        <span class="total-label">シミュレーション送料</span>
+        <span class="total-price"><span id="totalPrice">22,000</span> 円</span>
+      </section>
+
+      <section class="cta-row">
+        <a
+          class="cta-button"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
+          target="_blank"
+          rel="noreferrer"
+        >
+          申し込みはこちら
+        </a>
+      </section>
+    </main>
+
+    <script>
+      const lengthInput = document.getElementById("length");
+      const widthInput = document.getElementById("width");
+      const heightInput = document.getElementById("height");
+      const weightInput = document.getElementById("weight");
+      const volumetricOutput = document.getElementById("volumetricWeight");
+      const billableOutput = document.getElementById("billableWeight");
+      const totalOutput = document.getElementById("totalPrice");
+
+      const PRICE_PER_KG = 2000;
+      const VOLUME_DIVISOR = 5000;
+
+      const formatNumber = (value) => value.toLocaleString("ja-JP");
+
+      const calculate = () => {
+        const length = Number(lengthInput.value);
+        const width = Number(widthInput.value);
+        const height = Number(heightInput.value);
+        const weight = Number(weightInput.value);
+
+        const volumetric = (length * width * height) / VOLUME_DIVISOR;
+        const billable = Math.max(weight, Math.ceil(volumetric));
+        const total = billable * PRICE_PER_KG;
+
+        volumetricOutput.textContent = volumetric.toFixed(1);
+        billableOutput.textContent = billable.toString();
+        totalOutput.textContent = formatNumber(total);
+      };
+
+      [lengthInput, widthInput, heightInput, weightInput].forEach((input) => {
+        input.addEventListener("change", calculate);
+      });
+
+      calculate();
+    </script>
+  </body>
+</html>
