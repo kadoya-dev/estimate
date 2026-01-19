@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>送り先国設定</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="card">
+        <h1>送り先国の設定</h1>
+        <p class="lead">設定ファイルから読み込んだ国名一覧です。</p>
+        <label class="field">
+          <span>送り先国</span>
+          <select id="destinationCountry" class="select"></select>
+        </label>
+        <p id="status" class="status" aria-live="polite"></p>
+      </section>
+    </main>
+    <script src="main.js"></script>
+  </body>
+</html>
