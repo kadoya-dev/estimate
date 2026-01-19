@@ -17,13 +17,7 @@
         <div class="input-grid">
           <label class="field-label" for="country">送り先国</label>
           <div class="select-wrap">
-            <select id="country" class="field-select">
-              <option value="USA" selected>USA</option>
-              <option value="CAN">CAN</option>
-              <option value="AUS">AUS</option>
-              <option value="GBR">GBR</option>
-              <option value="DEU">DEU</option>
-            </select>
+            <select id="country" class="field-select"></select>
           </div>
 
           <span class="field-label">サイズ</span>
@@ -110,7 +104,9 @@
       </section>
     </main>
 
+    <script src="countries.js"></script>
     <script>
+      const countryInput = document.getElementById("country");
       const lengthInput = document.getElementById("length");
       const widthInput = document.getElementById("width");
       const heightInput = document.getElementById("height");
@@ -123,6 +119,14 @@
       const VOLUME_DIVISOR = 5000;
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
+
+      COUNTRY_NAMES.forEach((countryName, index) => {
+        const option = document.createElement("option");
+        option.value = countryName;
+        option.textContent = countryName;
+        option.selected = index === 0;
+        countryInput.appendChild(option);
+      });
 
       const calculate = () => {
         const length = Number(lengthInput.value);
