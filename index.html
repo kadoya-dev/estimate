@@ -165,33 +165,41 @@
         </div>
       </section>
 
-      <section class="total-row">
-        <span class="total-label">シミュレーション送料</span>
-        <span class="total-price"
-          ><span id="totalPrice">22,000</span>
-          <span id="totalUnit">円</span></span
-        >
-      </section>
-
-      <section class="cta-row">
-        <button class="secondary-button" type="button" id="estimateButton">
-          見積書出力(法人向け)
+      <section class="result-trigger">
+        <button class="cta-button" type="button" id="simulateButton">
+          料金をシミュレーションする
         </button>
-        <a
-          class="cta-button"
-          href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
-          target="_blank"
-          rel="noreferrer"
-        >
-          申し込みはこちら
-        </a>
       </section>
 
-      <section class="disclaimer">
-        <p>※ 本シミュレーターの結果は参考値です。</p>
-        <p>
-          実際の送料は条件により変動する場合があります。正確なお見積もり額をお求めの方は、お問い合わせください。
-        </p>
+      <section class="result-screen" id="resultScreen" hidden>
+        <section class="total-row">
+          <span class="total-label">シミュレーション送料</span>
+          <span class="total-price"
+            ><span id="totalPrice">22,000</span>
+            <span id="totalUnit">円</span></span
+          >
+        </section>
+
+        <section class="cta-row">
+          <button class="secondary-button" type="button" id="estimateButton">
+            見積書出力(法人向け)
+          </button>
+          <a
+            class="cta-button"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
+            target="_blank"
+            rel="noreferrer"
+          >
+            申し込みはこちら
+          </a>
+        </section>
+
+        <section class="disclaimer">
+          <p>※ 本シミュレーターの結果は参考値です。</p>
+          <p>
+            実際の送料は条件により変動する場合があります。正確なお見積もり額をお求めの方は、お問い合わせください。
+          </p>
+        </section>
       </section>
 
       <div class="modal-backdrop" id="estimateModal" hidden>
@@ -231,6 +239,8 @@
       const totalUnit = document.getElementById("totalUnit");
       const optionToggle = document.getElementById("optionToggle");
       const optionPanel = document.getElementById("optionPanel");
+      const simulateButton = document.getElementById("simulateButton");
+      const resultScreen = document.getElementById("resultScreen");
       const planInput = document.getElementById("plan");
       const inspectionInput = document.getElementById("inspectionCount");
       const packingInput = document.getElementById("packingCount");
@@ -363,7 +373,7 @@
           totalOutput.textContent = CARGO_INSURANCE_MESSAGE;
           totalOutput.classList.add("total-price-message");
           totalUnit.textContent = "";
-          return;
+          return false;
         }
         const cargoInsuranceFee = cargoInsuranceInput.checked
           ? Math.ceil(insuredValue * CARGO_INSURANCE_RATE)
@@ -384,18 +394,7 @@
         totalOutput.textContent = formatNumber(total);
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
-
-        sendToGas({
-          destinationCountry: countryInput.value,
-          billableWeightKg: billable,
-          plan: planInput.value,
-          inspectionCount,
-          packingCount,
-          exportCarton: exportCartonInput.checked,
-          invoiceIssue: invoiceInput.checked,
-          returnInsurance: returnInsuranceInput.checked,
-          cargoInsurance: cargoInsuranceInput.checked,
-        });
+        return true;
       };
 
       [
@@ -418,6 +417,26 @@
       updateOptionToggleText();
       updateCargoInsuranceState();
       calculate();
+
+      simulateButton.addEventListener("click", () => {
+        const isValid = calculate();
+        if (!isValid) {
+          return;
+        }
+        sendToGas({
+          destinationCountry: countryInput.value,
+          billableWeightKg: Number(billableOutput.textContent || 0),
+          plan: planInput.value,
+          inspectionCount: Number(inspectionInput.value || 0),
+          packingCount: Number(packingInput.value || 0),
+          exportCarton: exportCartonInput.checked,
+          invoiceIssue: invoiceInput.checked,
+          returnInsurance: returnInsuranceInput.checked,
+          cargoInsurance: cargoInsuranceInput.checked,
+        });
+        resultScreen.hidden = false;
+        resultScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
 
       const openModal = () => {
         estimateModal.hidden = false;

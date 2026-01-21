@@ -224,6 +224,16 @@ body {
   gap: 16px;
 }
 
+.result-trigger {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.result-screen {
+  margin-top: 28px;
+}
+
 .option-toggle {
   align-self: flex-start;
   padding: 8px 18px;
