@@ -96,9 +96,9 @@
             <label class="field-label" for="plan">プラン</label>
             <div class="select-wrap select-wrap--no-arrow">
               <select id="plan" class="field-select field-select--left">
-                <option value="personal">[個人向け]ワールドship</option>
-                <option value="biz">[法人向け]ワールドship for Biz</option>
-                <option value="logifit">[法人向け]LOGIFIT</option>
+                <option value="worldShip">[個人向け]ワールドship</option>
+                <option value="worldShipForBiz">[法人向け]ワールドship for Biz</option>
+                <option value="LOGIFIT">[法人向け]LOGIFIT</option>
               </select>
             </div>
 
@@ -192,12 +192,6 @@
         <p>
           実際の送料は条件により変動する場合があります。正確なお見積もり額をお求めの方は、お問い合わせください。
         </p>
-        <p class="contact-link">
-          お問い合わせはこちら：
-          <a href="mailto:allynair@worldshift-inc.com"
-            >allynair@worldshift-inc.com</a
-          >
-        </p>
       </section>
 
       <div class="modal-backdrop" id="estimateModal" hidden>
@@ -255,9 +249,9 @@
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
       const PLAN_FEES = {
-        personal: 0,
-        biz: 1200,
-        logifit: 1800,
+        worldShip: 0,
+        worldShipForBiz: 1200,
+        LOGIFIT: 1800,
       };
       const INSPECTION_FEE_PER_ITEM = 200;
       const PACKING_FEE_PER_ITEM = 300;
@@ -272,10 +266,10 @@
       const clamp = (value, min, max) =>
         Math.min(max, Math.max(min, value));
 
-      COUNTRY_NAMES.forEach((countryName, index) => {
+      COUNTRY_NAMES.forEach((country, index) => {
         const option = document.createElement("option");
-        option.value = countryName;
-        option.textContent = countryName;
+        option.value = country.value;
+        option.textContent = country.label;
         option.selected = index === 0;
         countryInput.appendChild(option);
       });
