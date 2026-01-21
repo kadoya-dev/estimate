@@ -305,6 +305,10 @@ body {
   padding: 20px;
 }
 
+.modal-backdrop[hidden] {
+  display: none;
+}
+
 .modal-card {
   background: #ffffff;
   border-radius: 16px;
