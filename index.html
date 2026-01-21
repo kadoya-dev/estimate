@@ -172,6 +172,9 @@
       </section>
 
       <section class="cta-row">
+        <button class="secondary-button" type="button" id="estimateButton">
+          法人向け見積書類出力
+        </button>
         <a
           class="cta-button"
           href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
@@ -181,6 +184,27 @@
           申し込みはこちら
         </a>
       </section>
+
+      <div class="modal-backdrop" id="estimateModal" hidden>
+        <div class="modal-card" role="dialog" aria-modal="true">
+          <h2>法人向け見積書類出力</h2>
+          <label class="modal-label" for="companyName">会社名</label>
+          <input
+            id="companyName"
+            class="field-input"
+            type="text"
+            placeholder="会社名を入力"
+          />
+          <div class="modal-actions">
+            <button class="secondary-button" type="button" id="closeModal">
+              閉じる
+            </button>
+            <button class="cta-button" type="button" id="createPdf">
+              作成
+            </button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script src="countries.js"></script>
@@ -203,6 +227,11 @@
       const returnInsuranceInput = document.getElementById("returnInsurance");
       const cargoInsuranceInput = document.getElementById("cargoInsurance");
       const insuredValueInput = document.getElementById("insuredValue");
+      const estimateButton = document.getElementById("estimateButton");
+      const estimateModal = document.getElementById("estimateModal");
+      const closeModal = document.getElementById("closeModal");
+      const createPdf = document.getElementById("createPdf");
+      const companyNameInput = document.getElementById("companyName");
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -324,6 +353,82 @@
       updateOptionToggleText();
       updateCargoInsuranceState();
       calculate();
+
+      const openModal = () => {
+        estimateModal.hidden = false;
+        companyNameInput.focus();
+      };
+
+      const closeEstimateModal = () => {
+        estimateModal.hidden = true;
+      };
+
+      estimateButton.addEventListener("click", openModal);
+      closeModal.addEventListener("click", closeEstimateModal);
+      estimateModal.addEventListener("click", (event) => {
+        if (event.target === estimateModal) {
+          closeEstimateModal();
+        }
+      });
+
+      createPdf.addEventListener("click", () => {
+        const companyName = companyNameInput.value.trim();
+        if (!companyName) {
+          companyNameInput.focus();
+          return;
+        }
+        const totalPrice = totalOutput.textContent;
+        const previewWindow = window.open("", "_blank");
+        if (!previewWindow) {
+          return;
+        }
+        previewWindow.document.write(`
+          <!DOCTYPE html>
+          <html lang="ja">
+            <head>
+              <meta charset="utf-8" />
+              <title>法人向け見積書</title>
+              <style>
+                body {
+                  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+                  padding: 32px;
+                  color: #151515;
+                }
+                h1 {
+                  font-size: 24px;
+                  margin-bottom: 24px;
+                }
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                }
+                th, td {
+                  border: 1px solid #ccc;
+                  padding: 12px;
+                  text-align: left;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>法人向け見積書</h1>
+              <table>
+                <tr>
+                  <th>会社名</th>
+                  <td>${companyName}</td>
+                </tr>
+                <tr>
+                  <th>シミュレーション送料</th>
+                  <td>${totalPrice} 円</td>
+                </tr>
+              </table>
+            </body>
+          </html>
+        `);
+        previewWindow.document.close();
+        previewWindow.focus();
+        previewWindow.print();
+        closeEstimateModal();
+      });
     </script>
   </body>
 </html>
