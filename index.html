@@ -76,12 +76,8 @@
             </div>
             <div class="result-box result-box--inline">
               <div class="result-row">
-                <span>容積重量</span>
-                <span><span id="volumetricWeight">10.8</span> kg</span>
-              </div>
-              <div class="result-row">
-                <span>請求重量</span>
-                <span><span id="billableWeight">11</span> kg</span>
+                <span>容積重量：<span id="volumetricWeight">10.8</span> kg</span>
+                <span>請求重量：<span id="billableWeight">11</span> kg</span>
               </div>
             </div>
           </div>
@@ -95,8 +91,8 @@
         <div class="option-panel" id="optionPanel" hidden>
           <div class="option-grid">
             <label class="field-label" for="plan">プラン</label>
-            <div class="select-wrap">
-              <select id="plan" class="field-select">
+            <div class="select-wrap select-wrap--no-arrow">
+              <select id="plan" class="field-select field-select--left">
                 <option value="personal">[個人向け]ワールドship</option>
                 <option value="biz">[法人向け]ワールドship for Biz</option>
                 <option value="logifit">[法人向け]LOGIFIT</option>
@@ -108,7 +104,7 @@
               id="inspectionCount"
               class="field-input"
               type="number"
-              min="1"
+              min="0"
               max="99"
               value="1"
             />
@@ -118,7 +114,7 @@
               id="packingCount"
               class="field-input"
               type="number"
-              min="1"
+              min="0"
               max="99"
               value="1"
             />
@@ -132,20 +128,20 @@
             <span class="field-label">インボイス発行</span>
             <label class="checkbox-row">
               <input type="checkbox" id="invoiceIssue" />
-              <span>発行する</span>
+              <span>利用する</span>
             </label>
 
             <span class="field-label">返送保険</span>
             <label class="checkbox-row">
               <input type="checkbox" id="returnInsurance" />
-              <span>付ける</span>
+              <span>利用する</span>
             </label>
 
             <span class="field-label">運送保険</span>
             <div class="insurance-row">
               <label class="checkbox-row">
                 <input type="checkbox" id="cargoInsurance" />
-                <span>付ける</span>
+                <span>利用する</span>
               </label>
               <div class="insurance-input">
                 <label for="insuredValue">商品価格</label>
@@ -295,11 +291,11 @@
         const baseTotal = billable * PRICE_PER_KG;
 
         const inspectionCount = clamp(
-          Number(inspectionInput.value || 1),
-          1,
+          Number(inspectionInput.value || 0),
+          0,
           99
         );
-        const packingCount = clamp(Number(packingInput.value || 1), 1, 99);
+        const packingCount = clamp(Number(packingInput.value || 0), 0, 99);
         inspectionInput.value = inspectionCount;
         packingInput.value = packingCount;
 

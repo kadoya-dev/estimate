@@ -161,8 +161,10 @@ body {
 
 .result-row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-direction: row;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
   font-weight: 600;
 }
 
