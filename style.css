@@ -153,14 +153,83 @@ body {
 }
 
 .result-box--inline {
-  min-width: 240px;
+  min-width: 320px;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 24px;
 }
 
 .result-row {
   display: flex;
-  justify-content: space-between;
-  gap: 16px;
+  flex-direction: column;
+  gap: 6px;
   font-weight: 600;
+}
+
+.option-section {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.option-toggle {
+  align-self: flex-start;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 2px solid #1a1a1a;
+  background: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.option-panel {
+  border: 1px solid #e0d8c7;
+  border-radius: 12px;
+  padding: 20px;
+  background: #fbf7ef;
+}
+
+.option-grid {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 16px 20px;
+  align-items: center;
+}
+
+.field-input {
+  padding: 10px 14px;
+  border: 2px solid #1a1a1a;
+  border-radius: 4px;
+  background: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.checkbox-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.insurance-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+}
+
+.insurance-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.option-note {
+  margin-top: 12px;
+  color: #6a6559;
+  font-size: 0.9rem;
 }
 
 .total-row {
@@ -222,6 +291,15 @@ body {
 
   .weight-result-row {
     flex-wrap: wrap;
+  }
+
+  .result-box--inline {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .option-grid {
+    grid-template-columns: 1fr;
   }
 }
 
