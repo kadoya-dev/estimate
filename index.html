@@ -9,15 +9,18 @@
   <body>
     <main class="simulation-screen">
       <header class="screen-header">
+        <div class="screen-brand">
+          <span class="screen-tagline">荷物も想いも届けるパートナー、</span>
+          <span class="screen-brand-name">Allynair（アリネア）</span>
+        </div>
         <h1 class="screen-title">送料シミュレーション</h1>
-        <p class="screen-subtitle">サイズと重量から概算送料を計算します</p>
       </header>
 
       <section class="simulation-card">
         <div class="input-grid">
           <label class="field-label" for="country">送り先国</label>
-          <div class="select-wrap">
-            <select id="country" class="field-select"></select>
+          <div class="select-wrap select-wrap--no-arrow">
+            <select id="country" class="field-select field-select--left"></select>
           </div>
 
           <span class="field-label">サイズ</span>
@@ -61,38 +64,119 @@
           </div>
 
           <label class="field-label" for="weight">重さ</label>
-          <div class="weight-row">
-            <div class="select-wrap">
-              <select id="weight" class="field-select">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
+          <div class="weight-result-row">
+            <div class="weight-row">
+              <div class="select-wrap">
+                <select id="weight" class="field-select">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+              <span class="unit">kg</span>
             </div>
-            <span class="unit">kg</span>
+            <div class="result-box result-box--inline">
+              <div class="result-row">
+                <span>容積重量：<span id="volumetricWeight">10.8</span> kg</span>
+                <span>請求重量：<span id="billableWeight">11</span> kg</span>
+              </div>
+            </div>
           </div>
         </div>
+      </section>
 
-        <div class="result-box">
-          <div class="result-row">
-            <span>容積重量</span>
-            <span><span id="volumetricWeight">10.8</span> kg</span>
+      <section class="option-section">
+        <button class="option-toggle" type="button" id="optionToggle">
+          オプション項目を表示
+        </button>
+        <div class="option-panel" id="optionPanel" hidden>
+          <div class="option-grid">
+            <label class="field-label" for="plan">プラン</label>
+            <div class="select-wrap select-wrap--no-arrow">
+              <select id="plan" class="field-select field-select--left">
+                <option value="personal">[個人向け]ワールドship</option>
+                <option value="biz">[法人向け]ワールドship for Biz</option>
+                <option value="logifit">[法人向け]LOGIFIT</option>
+              </select>
+            </div>
+
+          <label class="field-label" for="inspectionCount">検品数</label>
+          <input
+            id="inspectionCount"
+            class="field-input field-input--narrow"
+            type="number"
+            min="0"
+            max="99"
+            value="0"
+          />
+
+          <label class="field-label" for="packingCount">梱包数</label>
+          <input
+            id="packingCount"
+            class="field-input field-input--narrow"
+            type="number"
+            min="0"
+            max="99"
+            value="0"
+          />
+
+            <span class="field-label">輸出用段ボール利用</span>
+            <label class="checkbox-row">
+              <input type="checkbox" id="exportCarton" />
+              <span>利用する</span>
+            </label>
+
+            <span class="field-label">インボイス発行</span>
+            <label class="checkbox-row">
+              <input type="checkbox" id="invoiceIssue" />
+              <span>利用する</span>
+            </label>
+
+            <span class="field-label">返送保険</span>
+            <label class="checkbox-row">
+              <input type="checkbox" id="returnInsurance" />
+              <span>利用する</span>
+            </label>
+
+            <span class="field-label">運送保険</span>
+            <div class="insurance-row">
+              <label class="checkbox-row">
+                <input type="checkbox" id="cargoInsurance" />
+                <span>利用する</span>
+              </label>
+              <div class="insurance-input">
+                <label for="insuredValue">商品価格</label>
+                <input
+                  id="insuredValue"
+                  class="field-input"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="0"
+                  disabled
+                />
+                <span class="unit">円</span>
+              </div>
+            </div>
           </div>
-          <div class="result-row">
-            <span>請求重量</span>
-            <span><span id="billableWeight">11</span> kg</span>
-          </div>
+          <p class="option-note">※運送保険は発送する商品価格の2.0％です。</p>
         </div>
       </section>
 
       <section class="total-row">
         <span class="total-label">シミュレーション送料</span>
-        <span class="total-price"><span id="totalPrice">22,000</span> 円</span>
+        <span class="total-price"
+          ><span id="totalPrice">22,000</span>
+          <span id="totalUnit">円</span></span
+        >
       </section>
 
       <section class="cta-row">
+        <button class="secondary-button" type="button" id="estimateButton">
+          見積書出力(法人向け)
+        </button>
         <a
           class="cta-button"
           href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
@@ -102,6 +186,29 @@
           申し込みはこちら
         </a>
       </section>
+
+      <div class="modal-backdrop" id="estimateModal" hidden>
+        <div class="modal-card" role="dialog" aria-modal="true">
+          <button class="modal-close" type="button" id="closeModal">
+            ×
+          </button>
+          <label class="modal-label" for="companyName">会社名</label>
+          <input
+            id="companyName"
+            class="field-input"
+            type="text"
+            placeholder="会社名を入力"
+          />
+          <p class="modal-error" id="companyError" hidden>
+            会社名を入力してください
+          </p>
+          <div class="modal-actions">
+            <button class="cta-button" type="button" id="createPdf">
+              作成
+            </button>
+          </div>
+        </div>
+      </div>
     </main>
 
     <script src="countries.js"></script>
@@ -114,11 +221,43 @@
       const volumetricOutput = document.getElementById("volumetricWeight");
       const billableOutput = document.getElementById("billableWeight");
       const totalOutput = document.getElementById("totalPrice");
+      const totalUnit = document.getElementById("totalUnit");
+      const optionToggle = document.getElementById("optionToggle");
+      const optionPanel = document.getElementById("optionPanel");
+      const planInput = document.getElementById("plan");
+      const inspectionInput = document.getElementById("inspectionCount");
+      const packingInput = document.getElementById("packingCount");
+      const exportCartonInput = document.getElementById("exportCarton");
+      const invoiceInput = document.getElementById("invoiceIssue");
+      const returnInsuranceInput = document.getElementById("returnInsurance");
+      const cargoInsuranceInput = document.getElementById("cargoInsurance");
+      const insuredValueInput = document.getElementById("insuredValue");
+      const estimateButton = document.getElementById("estimateButton");
+      const estimateModal = document.getElementById("estimateModal");
+      const closeModal = document.getElementById("closeModal");
+      const createPdf = document.getElementById("createPdf");
+      const companyNameInput = document.getElementById("companyName");
+      const companyError = document.getElementById("companyError");
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
+      const PLAN_FEES = {
+        personal: 0,
+        biz: 1200,
+        logifit: 1800,
+      };
+      const INSPECTION_FEE_PER_ITEM = 200;
+      const PACKING_FEE_PER_ITEM = 300;
+      const EXPORT_CARTON_FEE = 500;
+      const INVOICE_FEE = 300;
+      const RETURN_INSURANCE_FEE = 400;
+      const CARGO_INSURANCE_RATE = 0.02;
+      const CARGO_INSURANCE_MESSAGE =
+        "運送保険を利用する場合は商品価格をご入力ください";
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
+      const clamp = (value, min, max) =>
+        Math.min(max, Math.max(min, value));
 
       COUNTRY_NAMES.forEach((countryName, index) => {
         const option = document.createElement("option");
@@ -126,6 +265,31 @@
         option.textContent = countryName;
         option.selected = index === 0;
         countryInput.appendChild(option);
+      });
+
+      const updateOptionToggleText = () => {
+        optionToggle.textContent = optionPanel.hidden
+          ? "オプション項目を表示"
+          : "オプション項目を非表示";
+      };
+
+      optionToggle.addEventListener("click", () => {
+        optionPanel.hidden = !optionPanel.hidden;
+        updateOptionToggleText();
+      });
+
+      const updateCargoInsuranceState = () => {
+        const enabled = cargoInsuranceInput.checked;
+        insuredValueInput.disabled = !enabled;
+        insuredValueInput.required = enabled;
+        if (!enabled) {
+          insuredValueInput.value = "";
+        }
+      };
+
+      cargoInsuranceInput.addEventListener("change", () => {
+        updateCargoInsuranceState();
+        calculate();
       });
 
       const calculate = () => {
@@ -136,18 +300,156 @@
 
         const volumetric = (length * width * height) / VOLUME_DIVISOR;
         const billable = Math.max(weight, Math.ceil(volumetric));
-        const total = billable * PRICE_PER_KG;
+        const baseTotal = billable * PRICE_PER_KG;
+
+        const inspectionCount = clamp(
+          Number(inspectionInput.value || 0),
+          0,
+          99
+        );
+        const packingCount = clamp(Number(packingInput.value || 0), 0, 99);
+        inspectionInput.value = inspectionCount;
+        packingInput.value = packingCount;
+
+        const planFee = PLAN_FEES[planInput.value] ?? 0;
+        const inspectionFee = inspectionCount * INSPECTION_FEE_PER_ITEM;
+        const packingFee = packingCount * PACKING_FEE_PER_ITEM;
+        const exportFee = exportCartonInput.checked ? EXPORT_CARTON_FEE : 0;
+        const invoiceFee = invoiceInput.checked ? INVOICE_FEE : 0;
+        const returnInsuranceFee = returnInsuranceInput.checked
+          ? RETURN_INSURANCE_FEE
+          : 0;
+        const insuredValue = cargoInsuranceInput.checked
+          ? Number(insuredValueInput.value || 0)
+          : 0;
+        if (cargoInsuranceInput.checked && insuredValue <= 0) {
+          volumetricOutput.textContent = volumetric.toFixed(1);
+          billableOutput.textContent = billable.toString();
+          totalOutput.textContent = CARGO_INSURANCE_MESSAGE;
+          totalOutput.classList.add("total-price-message");
+          totalUnit.textContent = "";
+          return;
+        }
+        const cargoInsuranceFee = cargoInsuranceInput.checked
+          ? Math.ceil(insuredValue * CARGO_INSURANCE_RATE)
+          : 0;
+
+        const optionTotal =
+          planFee +
+          inspectionFee +
+          packingFee +
+          exportFee +
+          invoiceFee +
+          returnInsuranceFee +
+          cargoInsuranceFee;
+        const total = baseTotal + optionTotal;
 
         volumetricOutput.textContent = volumetric.toFixed(1);
         billableOutput.textContent = billable.toString();
         totalOutput.textContent = formatNumber(total);
+        totalOutput.classList.remove("total-price-message");
+        totalUnit.textContent = "円";
       };
 
-      [lengthInput, widthInput, heightInput, weightInput].forEach((input) => {
+      [
+        lengthInput,
+        widthInput,
+        heightInput,
+        weightInput,
+        planInput,
+        inspectionInput,
+        packingInput,
+        exportCartonInput,
+        invoiceInput,
+        returnInsuranceInput,
+        insuredValueInput,
+      ].forEach((input) => {
         input.addEventListener("change", calculate);
+        input.addEventListener("input", calculate);
       });
 
+      updateOptionToggleText();
+      updateCargoInsuranceState();
       calculate();
+
+      const openModal = () => {
+        estimateModal.hidden = false;
+        companyError.hidden = true;
+        companyNameInput.focus();
+      };
+
+      const closeEstimateModal = () => {
+        estimateModal.hidden = true;
+      };
+
+      estimateButton.addEventListener("click", openModal);
+      closeModal.addEventListener("click", closeEstimateModal);
+      estimateModal.addEventListener("click", (event) => {
+        if (event.target === estimateModal) {
+          closeEstimateModal();
+        }
+      });
+
+      createPdf.addEventListener("click", () => {
+        const companyName = companyNameInput.value.trim();
+        if (!companyName) {
+          companyError.hidden = false;
+          companyNameInput.focus();
+          return;
+        }
+        companyError.hidden = true;
+        const totalPrice = totalOutput.textContent;
+        const previewWindow = window.open("", "_blank");
+        if (!previewWindow) {
+          return;
+        }
+        previewWindow.document.write(`
+          <!DOCTYPE html>
+          <html lang="ja">
+            <head>
+              <meta charset="utf-8" />
+              <title>法人向け見積書</title>
+              <style>
+                body {
+                  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+                  padding: 32px;
+                  color: #151515;
+                }
+                h1 {
+                  font-size: 24px;
+                  margin-bottom: 24px;
+                }
+                table {
+                  width: 100%;
+                  border-collapse: collapse;
+                }
+                th, td {
+                  border: 1px solid #ccc;
+                  padding: 12px;
+                  text-align: left;
+                }
+              </style>
+            </head>
+            <body>
+              <h1>法人向け見積書</h1>
+              <table>
+                <tr>
+                  <th>会社名</th>
+                  <td>${companyName}</td>
+                </tr>
+                <tr>
+                  <th>シミュレーション送料</th>
+                  <td>${totalPrice} 円</td>
+                </tr>
+              </table>
+            </body>
+          </html>
+        `);
+        previewWindow.document.close();
+        previewWindow.focus();
+        previewWindow.print();
+        closeEstimateModal();
+      });
     </script>
   </body>
 </html>
