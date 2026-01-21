@@ -10,6 +10,10 @@
     <main class="simulation-screen">
       <header class="screen-header">
         <h1 class="screen-title">送料シミュレーション</h1>
+        <div class="screen-brand">
+          <span class="screen-tagline">荷物も想いも届けるパートナー、</span>
+          <span class="screen-brand-name">Allynair（アリネア）</span>
+        </div>
       </header>
 
       <section class="simulation-card">
@@ -322,6 +326,7 @@
           volumetricOutput.textContent = volumetric.toFixed(1);
           billableOutput.textContent = billable.toString();
           totalOutput.textContent = CARGO_INSURANCE_MESSAGE;
+          totalOutput.classList.add("total-price-message");
           totalUnit.textContent = "";
           return;
         }
@@ -342,6 +347,7 @@
         volumetricOutput.textContent = volumetric.toFixed(1);
         billableOutput.textContent = billable.toString();
         totalOutput.textContent = formatNumber(total);
+        totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
       };
 
