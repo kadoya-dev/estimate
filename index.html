@@ -16,8 +16,8 @@
       <section class="simulation-card">
         <div class="input-grid">
           <label class="field-label" for="country">送り先国</label>
-          <div class="select-wrap">
-            <select id="country" class="field-select"></select>
+          <div class="select-wrap select-wrap--no-arrow">
+            <select id="country" class="field-select field-select--left"></select>
           </div>
 
           <span class="field-label">サイズ</span>
@@ -61,28 +61,29 @@
           </div>
 
           <label class="field-label" for="weight">重さ</label>
-          <div class="weight-row">
-            <div class="select-wrap">
-              <select id="weight" class="field-select">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3" selected>3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-              </select>
+          <div class="weight-result-row">
+            <div class="weight-row">
+              <div class="select-wrap">
+                <select id="weight" class="field-select">
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                </select>
+              </div>
+              <span class="unit">kg</span>
             </div>
-            <span class="unit">kg</span>
-          </div>
-        </div>
-
-        <div class="result-box">
-          <div class="result-row">
-            <span>容積重量</span>
-            <span><span id="volumetricWeight">10.8</span> kg</span>
-          </div>
-          <div class="result-row">
-            <span>請求重量</span>
-            <span><span id="billableWeight">11</span> kg</span>
+            <div class="result-box result-box--inline">
+              <div class="result-row">
+                <span>容積重量</span>
+                <span><span id="volumetricWeight">10.8</span> kg</span>
+              </div>
+              <div class="result-row">
+                <span>請求重量</span>
+                <span><span id="billableWeight">11</span> kg</span>
+              </div>
+            </div>
           </div>
         </div>
       </section>
