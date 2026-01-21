@@ -42,11 +42,6 @@ body {
   letter-spacing: 0.12em;
 }
 
-.screen-subtitle {
-  color: #6a6559;
-  font-size: 0.95rem;
-}
-
 .simulation-card {
   display: block;
   padding: 16px 0 8px;
@@ -282,19 +277,22 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 24px;
+  padding: 14px 32px;
   border-radius: 999px;
-  border: 2px solid #1a1a1a;
-  background: #ffffff;
-  color: #1a1a1a;
+  border: none;
+  background: #f0932b;
+  color: #ffffff;
   font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.05em;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
   cursor: pointer;
+  box-shadow: 0 12px 24px rgba(240, 147, 43, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .secondary-button:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 30px rgba(240, 147, 43, 0.3);
 }
 
 .modal-backdrop {
@@ -316,10 +314,31 @@ body {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #f3f3f3;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .modal-label {
   font-weight: 600;
+}
+
+.modal-error {
+  color: #d93025;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .modal-actions {

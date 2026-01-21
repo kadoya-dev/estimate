@@ -10,7 +10,6 @@
     <main class="simulation-screen">
       <header class="screen-header">
         <h1 class="screen-title">送料シミュレーション</h1>
-        <p class="screen-subtitle">サイズと重量から概算送料を計算します</p>
       </header>
 
       <section class="simulation-card">
@@ -183,7 +182,9 @@
 
       <div class="modal-backdrop" id="estimateModal" hidden>
         <div class="modal-card" role="dialog" aria-modal="true">
-          <h2>法人向け見積書類出力</h2>
+          <button class="modal-close" type="button" id="closeModal">
+            ×
+          </button>
           <label class="modal-label" for="companyName">会社名</label>
           <input
             id="companyName"
@@ -191,10 +192,10 @@
             type="text"
             placeholder="会社名を入力"
           />
+          <p class="modal-error" id="companyError" hidden>
+            会社名を入力してください
+          </p>
           <div class="modal-actions">
-            <button class="secondary-button" type="button" id="closeModal">
-              閉じる
-            </button>
             <button class="cta-button" type="button" id="createPdf">
               作成
             </button>
@@ -228,6 +229,7 @@
       const closeModal = document.getElementById("closeModal");
       const createPdf = document.getElementById("createPdf");
       const companyNameInput = document.getElementById("companyName");
+      const companyError = document.getElementById("companyError");
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -352,6 +354,7 @@
 
       const openModal = () => {
         estimateModal.hidden = false;
+        companyError.hidden = true;
         companyNameInput.focus();
       };
 
@@ -370,9 +373,11 @@
       createPdf.addEventListener("click", () => {
         const companyName = companyNameInput.value.trim();
         if (!companyName) {
+          companyError.hidden = false;
           companyNameInput.focus();
           return;
         }
+        companyError.hidden = true;
         const totalPrice = totalOutput.textContent;
         const previewWindow = window.open("", "_blank");
         if (!previewWindow) {
