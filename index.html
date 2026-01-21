@@ -248,6 +248,8 @@
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
+      const GAS_ENDPOINT =
+        "https://script.google.com/macros/s/AKfycbzvZLNaOTOeko6ylWC3MSUDEgdKLaHk4CFLBCNeFcdRxVvK-jKUU1lDNpAVVdwQ8Kt6rA/exec";
       const PLAN_FEES = {
         worldShip: 0,
         worldShipForBiz: 1200,
@@ -298,6 +300,32 @@
         updateCargoInsuranceState();
         calculate();
       });
+
+      let latestRequestId = 0;
+
+      const sendToGas = async (payload) => {
+        const requestId = ++latestRequestId;
+        try {
+          const response = await fetch(GAS_ENDPOINT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          if (requestId !== latestRequestId) {
+            return;
+          }
+          if (typeof data.simulationTotal === "number") {
+            totalOutput.textContent = formatNumber(data.simulationTotal);
+            totalOutput.classList.remove("total-price-message");
+            totalUnit.textContent = "円";
+          }
+        } catch (error) {
+          console.error("Failed to send data to GAS", error);
+        }
+      };
 
       const calculate = () => {
         const length = Number(lengthInput.value);
@@ -356,6 +384,18 @@
         totalOutput.textContent = formatNumber(total);
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
+
+        sendToGas({
+          destinationCountry: countryInput.value,
+          billableWeightKg: billable,
+          plan: planInput.value,
+          inspectionCount,
+          packingCount,
+          exportCarton: exportCartonInput.checked,
+          invoiceIssue: invoiceInput.checked,
+          returnInsurance: returnInsuranceInput.checked,
+          cargoInsurance: cargoInsuranceInput.checked,
+        });
       };
 
       [
