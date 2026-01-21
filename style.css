@@ -172,6 +172,13 @@ body {
   gap: 24px;
 }
 
+.result-box--inline {
+  min-width: 320px;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 24px;
+}
+
 .result-row {
   display: flex;
   flex-direction: row;
@@ -400,7 +407,12 @@ body {
     text-align: left;
   }
 
-  .result-box {
+  .weight-result-row {
+    flex-wrap: wrap;
+  }
+
+  .result-box--inline {
+    min-width: auto;
     width: 100%;
   }
 
