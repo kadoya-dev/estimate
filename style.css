@@ -203,6 +203,12 @@ body {
   font-weight: 600;
 }
 
+.field-input--narrow {
+  width: 50px;
+  text-align: center;
+  padding: 10px 8px;
+}
+
 .checkbox-row {
   display: inline-flex;
   align-items: center;

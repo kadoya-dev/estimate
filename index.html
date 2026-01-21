@@ -98,25 +98,25 @@
               </select>
             </div>
 
-            <label class="field-label" for="inspectionCount">検品数</label>
-            <input
-              id="inspectionCount"
-              class="field-input"
-              type="number"
-              min="0"
-              max="99"
-              value="1"
-            />
+          <label class="field-label" for="inspectionCount">検品数</label>
+          <input
+            id="inspectionCount"
+            class="field-input field-input--narrow"
+            type="number"
+            min="0"
+            max="99"
+            value="0"
+          />
 
-            <label class="field-label" for="packingCount">梱包数</label>
-            <input
-              id="packingCount"
-              class="field-input"
-              type="number"
-              min="0"
-              max="99"
-              value="1"
-            />
+          <label class="field-label" for="packingCount">梱包数</label>
+          <input
+            id="packingCount"
+            class="field-input field-input--narrow"
+            type="number"
+            min="0"
+            max="99"
+            value="0"
+          />
 
             <span class="field-label">輸出用段ボール利用</span>
             <label class="checkbox-row">
@@ -163,12 +163,15 @@
 
       <section class="total-row">
         <span class="total-label">シミュレーション送料</span>
-        <span class="total-price"><span id="totalPrice">22,000</span> 円</span>
+        <span class="total-price"
+          ><span id="totalPrice">22,000</span>
+          <span id="totalUnit">円</span></span
+        >
       </section>
 
       <section class="cta-row">
         <button class="secondary-button" type="button" id="estimateButton">
-          法人向け見積書類出力
+          見積書出力(法人向け)
         </button>
         <a
           class="cta-button"
@@ -214,6 +217,7 @@
       const volumetricOutput = document.getElementById("volumetricWeight");
       const billableOutput = document.getElementById("billableWeight");
       const totalOutput = document.getElementById("totalPrice");
+      const totalUnit = document.getElementById("totalUnit");
       const optionToggle = document.getElementById("optionToggle");
       const optionPanel = document.getElementById("optionPanel");
       const planInput = document.getElementById("plan");
@@ -244,6 +248,8 @@
       const INVOICE_FEE = 300;
       const RETURN_INSURANCE_FEE = 400;
       const CARGO_INSURANCE_RATE = 0.02;
+      const CARGO_INSURANCE_MESSAGE =
+        "運送保険を利用する場合は商品価格をご入力ください";
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
@@ -312,6 +318,13 @@
         const insuredValue = cargoInsuranceInput.checked
           ? Number(insuredValueInput.value || 0)
           : 0;
+        if (cargoInsuranceInput.checked && insuredValue <= 0) {
+          volumetricOutput.textContent = volumetric.toFixed(1);
+          billableOutput.textContent = billable.toString();
+          totalOutput.textContent = CARGO_INSURANCE_MESSAGE;
+          totalUnit.textContent = "";
+          return;
+        }
         const cargoInsuranceFee = cargoInsuranceInput.checked
           ? Math.ceil(insuredValue * CARGO_INSURANCE_RATE)
           : 0;
@@ -329,6 +342,7 @@
         volumetricOutput.textContent = volumetric.toFixed(1);
         billableOutput.textContent = billable.toString();
         totalOutput.textContent = formatNumber(total);
+        totalUnit.textContent = "円";
       };
 
       [
