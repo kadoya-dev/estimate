@@ -300,6 +300,25 @@
           logOutput.textContent === "待機中..." ? "" : logOutput.textContent;
         logOutput.textContent = `${current}${current ? "\n" : ""}${timestamp} ${message}`;
       };
+      const logErrorDetails = (label, error) => {
+        if (!error) {
+          logMessage(`${label}: 不明なエラー`);
+          return;
+        }
+        logMessage(`${label}: ${error.name || "Error"} - ${error.message || error}`);
+        if (error.stack) {
+          logMessage(`${label} stack: ${error.stack}`);
+        }
+      };
+
+      window.addEventListener("error", (event) => {
+        logMessage(
+          `window.error: ${event.message} (${event.filename}:${event.lineno}:${event.colno})`
+        );
+      });
+      window.addEventListener("unhandledrejection", (event) => {
+        logErrorDetails("unhandledrejection", event.reason);
+      });
 
       COUNTRY_NAMES.forEach((country, index) => {
         const option = document.createElement("option");
@@ -563,6 +582,10 @@
         };
 
         try {
+          logMessage(`送信先URL: ${GAS_ENDPOINT}`);
+          logMessage(`ブラウザ: ${navigator.userAgent}`);
+          logMessage(`ページURL: ${window.location.href}`);
+          logMessage(`送信データ: ${JSON.stringify(payload)}`);
           logMessage("GASに送信中...");
           const response = await fetch(GAS_ENDPOINT, {
             method: "POST",
@@ -584,7 +607,20 @@
           }
         } catch (error) {
           console.error("GAS request failed", error);
-          logMessage(`通信エラー: ${error.message}`);
+          logErrorDetails("通信エラー", error);
+          try {
+            logMessage("no-cors モードで再送信を試行します...");
+            const fallbackResponse = await fetch(GAS_ENDPOINT, {
+              method: "POST",
+              mode: "no-cors",
+              body: JSON.stringify(payload),
+            });
+            logMessage(
+              `no-cors 応答: type=${fallbackResponse.type} status=${fallbackResponse.status}`
+            );
+          } catch (fallbackError) {
+            logErrorDetails("no-cors 再送信失敗", fallbackError);
+          }
         }
 
         inputScreen.hidden = true;
