@@ -171,6 +171,10 @@
             料金をシミュレーションする
           </button>
         </div>
+        <div class="log-panel" aria-live="polite">
+          <p class="log-title">送信ログ</p>
+          <pre class="log-body" id="logOutput">待機中...</pre>
+        </div>
       </div>
 
       <div id="resultScreen" class="screen-section" hidden>
@@ -264,6 +268,7 @@
       const createPdf = document.getElementById("createPdf");
       const companyNameInput = document.getElementById("companyName");
       const companyError = document.getElementById("companyError");
+      const logOutput = document.getElementById("logOutput");
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -286,6 +291,15 @@
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
         Math.min(max, Math.max(min, value));
+      const logMessage = (message) => {
+        if (!logOutput) {
+          return;
+        }
+        const timestamp = new Date().toLocaleTimeString("ja-JP");
+        const current =
+          logOutput.textContent === "待機中..." ? "" : logOutput.textContent;
+        logOutput.textContent = `${current}${current ? "\n" : ""}${timestamp} ${message}`;
+      };
 
       COUNTRY_NAMES.forEach((country, index) => {
         const option = document.createElement("option");
@@ -529,6 +543,7 @@
       simulateButton.addEventListener("click", async () => {
         const result = calculate();
         if (result?.hasError) {
+          logMessage("運送保険の金額が未入力のため送信を中断しました。");
           return;
         }
 
@@ -545,21 +560,29 @@
         };
 
         try {
+          logMessage("GASに送信中...");
           const response = await fetch(GAS_ENDPOINT, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
+          logMessage(`GAS応答: ${response.status} ${response.statusText}`);
           if (response.ok) {
-            const data = await response.json();
+            const responseText = await response.text();
+            logMessage(`GAS応答本文: ${responseText}`);
+            const data = responseText ? JSON.parse(responseText) : {};
             if (typeof data.simulationTotal === "number") {
               totalOutput.textContent = formatNumber(data.simulationTotal);
               totalOutput.classList.remove("total-price-message");
               totalUnit.textContent = "円";
             }
+          } else {
+            const errorText = await response.text();
+            logMessage(`GASエラー本文: ${errorText}`);
           }
         } catch (error) {
           console.error("GAS request failed", error);
+          logMessage(`通信エラー: ${error.message}`);
         }
 
         inputScreen.hidden = true;
