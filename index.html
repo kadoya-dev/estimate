@@ -541,6 +541,9 @@
       });
 
       simulateButton.addEventListener("click", async () => {
+        if (logOutput) {
+          logOutput.textContent = "";
+        }
         const result = calculate();
         if (result?.hasError) {
           logMessage("運送保険の金額が未入力のため送信を中断しました。");
@@ -563,7 +566,6 @@
           logMessage("GASに送信中...");
           const response = await fetch(GAS_ENDPOINT, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
           logMessage(`GAS応答: ${response.status} ${response.statusText}`);
