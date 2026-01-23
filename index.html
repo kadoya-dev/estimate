@@ -16,183 +16,203 @@
         <h1 class="screen-title">送料シミュレーション</h1>
       </header>
 
-      <section class="simulation-card">
-        <div class="input-grid">
-          <label class="field-label" for="country">送り先国</label>
-          <div class="select-wrap select-wrap--no-arrow">
-            <select id="country" class="field-select field-select--left"></select>
-          </div>
-
-          <span class="field-label">サイズ</span>
-          <div class="dimension-group">
-            <div class="dimension-row">
-              <div class="select-wrap">
-                <select id="length" class="field-select">
-                  <option value="40">40</option>
-                  <option value="50">50</option>
-                  <option value="60" selected>60</option>
-                  <option value="70">70</option>
-                  <option value="80">80</option>
-                </select>
-              </div>
-              <span class="unit">cm</span>
-            </div>
-            <span class="dimension-multiply">×</span>
-            <div class="dimension-row">
-              <div class="select-wrap">
-                <select id="width" class="field-select">
-                  <option value="20">20</option>
-                  <option value="30" selected>30</option>
-                  <option value="40">40</option>
-                  <option value="50">50</option>
-                </select>
-              </div>
-              <span class="unit">cm</span>
-            </div>
-            <span class="dimension-multiply">×</span>
-            <div class="dimension-row">
-              <div class="select-wrap">
-                <select id="height" class="field-select">
-                  <option value="20">20</option>
-                  <option value="30" selected>30</option>
-                  <option value="40">40</option>
-                  <option value="50">50</option>
-                </select>
-              </div>
-              <span class="unit">cm</span>
-            </div>
-          </div>
-
-          <label class="field-label" for="weight">重さ</label>
-          <div class="weight-result-row">
-            <div class="weight-row">
-              <div class="select-wrap">
-                <select id="weight" class="field-select">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3" selected>3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                </select>
-              </div>
-              <span class="unit">kg</span>
-            </div>
-            <div class="result-box result-box--inline">
-              <div class="result-row">
-                <span>容積重量：<span id="volumetricWeight">10.8</span> kg</span>
-                <span>請求重量：<span id="billableWeight">11</span> kg</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="option-section">
-        <button class="option-toggle" type="button" id="optionToggle">
-          オプション項目を表示
-        </button>
-        <div class="option-panel" id="optionPanel" hidden>
-          <div class="option-grid">
-            <label class="field-label" for="plan">プラン</label>
+      <div id="inputScreen" class="screen-section">
+        <section class="simulation-card">
+          <div class="input-grid">
+            <label class="field-label" for="country">送り先国</label>
             <div class="select-wrap select-wrap--no-arrow">
-              <select id="plan" class="field-select field-select--left">
-                <option value="personal">[個人向け]ワールドship</option>
-                <option value="biz">[法人向け]ワールドship for Biz</option>
-                <option value="logifit">[法人向け]LOGIFIT</option>
-              </select>
+              <select id="country" class="field-select field-select--left"></select>
             </div>
 
-          <label class="field-label" for="inspectionCount">検品数</label>
-          <input
-            id="inspectionCount"
-            class="field-input field-input--narrow"
-            type="number"
-            min="0"
-            max="99"
-            value="0"
-          />
+            <span class="field-label">サイズ</span>
+            <div class="dimension-group">
+              <div class="dimension-row">
+                <div class="select-wrap">
+                  <select id="length" class="field-select">
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                    <option value="60" selected>60</option>
+                    <option value="70">70</option>
+                    <option value="80">80</option>
+                  </select>
+                </div>
+                <span class="unit">cm</span>
+              </div>
+              <span class="dimension-multiply">×</span>
+              <div class="dimension-row">
+                <div class="select-wrap">
+                  <select id="width" class="field-select">
+                    <option value="20">20</option>
+                    <option value="30" selected>30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+                <span class="unit">cm</span>
+              </div>
+              <span class="dimension-multiply">×</span>
+              <div class="dimension-row">
+                <div class="select-wrap">
+                  <select id="height" class="field-select">
+                    <option value="20">20</option>
+                    <option value="30" selected>30</option>
+                    <option value="40">40</option>
+                    <option value="50">50</option>
+                  </select>
+                </div>
+                <span class="unit">cm</span>
+              </div>
+            </div>
 
-          <label class="field-label" for="packingCount">梱包数</label>
-          <input
-            id="packingCount"
-            class="field-input field-input--narrow"
-            type="number"
-            min="0"
-            max="99"
-            value="0"
-          />
+            <label class="field-label" for="weight">重さ</label>
+            <div class="weight-result-row">
+              <div class="weight-row">
+                <div class="select-wrap">
+                  <select id="weight" class="field-select">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
+                </div>
+                <span class="unit">kg</span>
+              </div>
+              <div class="result-box result-box--inline">
+                <div class="result-row">
+                  <span>容積重量：<span id="volumetricWeight">10.8</span> kg</span>
+                  <span>請求重量：<span id="billableWeight">11</span> kg</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-            <span class="field-label">輸出用段ボール利用</span>
-            <label class="checkbox-row">
-              <input type="checkbox" id="exportCarton" />
-              <span>利用する</span>
-            </label>
+        <section class="option-section">
+          <button class="option-toggle" type="button" id="optionToggle">
+            オプション項目を表示
+          </button>
+          <div class="option-panel" id="optionPanel" hidden>
+            <div class="option-grid">
+              <label class="field-label" for="plan">プラン</label>
+              <div class="select-wrap select-wrap--no-arrow">
+                <select id="plan" class="field-select field-select--left">
+                  <option value="personal">[個人向け]ワールドship</option>
+                  <option value="biz">[法人向け]ワールドship for Biz</option>
+                  <option value="logifit">[法人向け]LOGIFIT</option>
+                </select>
+              </div>
 
-            <span class="field-label">インボイス発行</span>
-            <label class="checkbox-row">
-              <input type="checkbox" id="invoiceIssue" />
-              <span>利用する</span>
-            </label>
+              <label class="field-label" for="inspectionCount">検品数</label>
+              <input
+                id="inspectionCount"
+                class="field-input field-input--narrow"
+                type="number"
+                min="0"
+                max="99"
+                value="0"
+              />
 
-            <span class="field-label">返送保険</span>
-            <label class="checkbox-row">
-              <input type="checkbox" id="returnInsurance" />
-              <span>利用する</span>
-            </label>
+              <label class="field-label" for="packingCount">梱包数</label>
+              <input
+                id="packingCount"
+                class="field-input field-input--narrow"
+                type="number"
+                min="0"
+                max="99"
+                value="0"
+              />
 
-            <span class="field-label">運送保険</span>
-            <div class="insurance-row">
+              <span class="field-label">輸出用段ボール利用</span>
               <label class="checkbox-row">
-                <input type="checkbox" id="cargoInsurance" />
+                <input type="checkbox" id="exportCarton" />
                 <span>利用する</span>
               </label>
-              <div class="insurance-input">
-                <label for="insuredValue">商品価格</label>
-                <input
-                  id="insuredValue"
-                  class="field-input"
-                  type="number"
-                  min="0"
-                  step="1"
-                  placeholder="0"
-                  disabled
-                />
-                <span class="unit">円</span>
+
+              <span class="field-label">インボイス発行</span>
+              <label class="checkbox-row">
+                <input type="checkbox" id="invoiceIssue" />
+                <span>利用する</span>
+              </label>
+
+              <span class="field-label">返送保険</span>
+              <label class="checkbox-row">
+                <input type="checkbox" id="returnInsurance" />
+                <span>利用する</span>
+              </label>
+
+              <span class="field-label">運送保険</span>
+              <div class="insurance-row">
+                <label class="checkbox-row">
+                  <input type="checkbox" id="cargoInsurance" />
+                  <span>利用する</span>
+                </label>
+                <div class="insurance-input">
+                  <label for="insuredValue">商品価格</label>
+                  <input
+                    id="insuredValue"
+                    class="field-input"
+                    type="number"
+                    min="0"
+                    step="1"
+                    placeholder="0"
+                    disabled
+                  />
+                  <span class="unit">円</span>
+                </div>
               </div>
             </div>
+            <p class="option-note">※運送保険は発送する商品価格の2.0％です。</p>
           </div>
-          <p class="option-note">※運送保険は発送する商品価格の2.0％です。</p>
+        </section>
+
+        <div class="simulate-row">
+          <button class="cta-button" type="button" id="simulateButton">
+            料金をシミュレーションする
+          </button>
         </div>
-      </section>
+        <div class="log-panel" aria-live="polite">
+          <p class="log-title">送信ログ</p>
+          <pre class="log-body" id="logOutput">待機中...</pre>
+        </div>
+      </div>
 
-      <section class="total-row">
-        <span class="total-label">シミュレーション送料</span>
-        <span class="total-price"
-          ><span id="totalPrice">22,000</span>
-          <span id="totalUnit">円</span></span
-        >
-      </section>
+      <div id="resultScreen" class="screen-section" hidden>
+        <section class="total-row">
+          <span class="total-label">シミュレーション送料</span>
+          <span class="total-price"
+            ><span id="totalPrice">22,000</span>
+            <span id="totalUnit">円</span></span
+          >
+        </section>
 
-      <section class="cta-row">
-        <button class="secondary-button" type="button" id="estimateButton">
-          見積書出力(法人向け)
-        </button>
-        <a
-          class="cta-button"
-          href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
-          target="_blank"
-          rel="noreferrer"
-        >
-          申し込みはこちら
-        </a>
-      </section>
+        <section class="cta-row">
+          <button class="secondary-button" type="button" id="estimateButton">
+            見積書出力(法人向け)
+          </button>
+          <a
+            class="cta-button"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
+            target="_blank"
+            rel="noreferrer"
+          >
+            申し込みはこちら
+          </a>
+        </section>
 
-      <section class="disclaimer">
-        <p>※ 本シミュレーターの結果は参考値です。</p>
-        <p>
-          実際の送料は条件により変動する場合があります。正確なお見積もり額をお求めの方は、お問い合わせください。
-        </p>
-      </section>
+        <section class="disclaimer">
+          <p>※ 本シミュレーターの結果は参考値です。</p>
+          <p>
+            実際の送料は条件により変動する場合があります。正確なお見積もり額をお求めの方は、お問い合わせください。
+          </p>
+          <p class="contact-link">
+            お問い合わせはこちら：
+            <a href="mailto:allynair@worldshift-inc.com"
+              >allynair@worldshift-inc.com</a
+            >
+          </p>
+        </section>
+      </div>
 
       <div class="modal-backdrop" id="estimateModal" hidden>
         <div class="modal-card" role="dialog" aria-modal="true">
@@ -231,6 +251,9 @@
       const totalUnit = document.getElementById("totalUnit");
       const optionToggle = document.getElementById("optionToggle");
       const optionPanel = document.getElementById("optionPanel");
+      const simulateButton = document.getElementById("simulateButton");
+      const inputScreen = document.getElementById("inputScreen");
+      const resultScreen = document.getElementById("resultScreen");
       const planInput = document.getElementById("plan");
       const inspectionInput = document.getElementById("inspectionCount");
       const packingInput = document.getElementById("packingCount");
@@ -245,9 +268,12 @@
       const createPdf = document.getElementById("createPdf");
       const companyNameInput = document.getElementById("companyName");
       const companyError = document.getElementById("companyError");
+      const logOutput = document.getElementById("logOutput");
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
+      const GAS_ENDPOINT =
+        "https://script.google.com/macros/s/AKfycbzvZLNaOTOeko6ylWC3MSUDEgdKLaHk4CFLBCNeFcdRxVvK-jKUU1lDNpAVVdwQ8Kt6rA/exec";
       const PLAN_FEES = {
         personal: 0,
         biz: 1200,
@@ -265,6 +291,15 @@
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
         Math.min(max, Math.max(min, value));
+      const logMessage = (message) => {
+        if (!logOutput) {
+          return;
+        }
+        const timestamp = new Date().toLocaleTimeString("ja-JP");
+        const current =
+          logOutput.textContent === "待機中..." ? "" : logOutput.textContent;
+        logOutput.textContent = `${current}${current ? "\n" : ""}${timestamp} ${message}`;
+      };
 
       COUNTRY_NAMES.forEach((countryName, index) => {
         const option = document.createElement("option");
@@ -335,7 +370,7 @@
           totalOutput.textContent = CARGO_INSURANCE_MESSAGE;
           totalOutput.classList.add("total-price-message");
           totalUnit.textContent = "";
-          return;
+          return { billable, total: null, hasError: true };
         }
         const cargoInsuranceFee = cargoInsuranceInput.checked
           ? Math.ceil(insuredValue * CARGO_INSURANCE_RATE)
@@ -356,6 +391,7 @@
         totalOutput.textContent = formatNumber(total);
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
+        return { billable, total, hasError: false };
       };
 
       [
@@ -456,6 +492,58 @@
         previewWindow.focus();
         previewWindow.print();
         closeEstimateModal();
+      });
+
+      simulateButton.addEventListener("click", async () => {
+        if (logOutput) {
+          logOutput.textContent = "";
+        }
+        const result = calculate();
+        if (result?.hasError) {
+          logMessage("運送保険の金額が未入力のため送信を中断しました。");
+          return;
+        }
+
+        const payload = {
+          destinationCountry: countryInput.value,
+          billableWeightKg: result?.billable,
+          plan: planInput.value,
+          inspectionCount: Number(inspectionInput.value || 0),
+          packingCount: Number(packingInput.value || 0),
+          exportCarton: exportCartonInput.checked,
+          invoiceIssue: invoiceInput.checked,
+          returnInsurance: returnInsuranceInput.checked,
+          cargoInsurance: cargoInsuranceInput.checked,
+        };
+
+        try {
+          logMessage("GASに送信中...");
+          const response = await fetch(GAS_ENDPOINT, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
+          logMessage(`GAS応答: ${response.status} ${response.statusText}`);
+          if (response.ok) {
+            const responseText = await response.text();
+            logMessage(`GAS応答本文: ${responseText}`);
+            const data = responseText ? JSON.parse(responseText) : {};
+            if (typeof data.simulationTotal === "number") {
+              totalOutput.textContent = formatNumber(data.simulationTotal);
+              totalOutput.classList.remove("total-price-message");
+              totalUnit.textContent = "円";
+            }
+          } else {
+            const errorText = await response.text();
+            logMessage(`GASエラー本文: ${errorText}`);
+          }
+        } catch (error) {
+          console.error("GAS request failed", error);
+          logMessage(`通信エラー: ${error.message}`);
+        }
+
+        inputScreen.hidden = true;
+        resultScreen.hidden = false;
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     </script>
   </body>
