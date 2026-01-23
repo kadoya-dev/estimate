@@ -267,10 +267,12 @@
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
+      const GAS_ENDPOINT =
+        "https://script.google.com/macros/s/AKfycbzvZLNaOTOeko6ylWC3MSUDEgdKLaHk4CFLBCNeFcdRxVvK-jKUU1lDNpAVVdwQ8Kt6rA/exec";
       const PLAN_FEES = {
-        personal: 0,
-        biz: 1200,
-        logifit: 1800,
+        worldShip: 0,
+        worldShipForBiz: 1200,
+        LOGIFIT: 1800,
       };
       const INSPECTION_FEE_PER_ITEM = 200;
       const PACKING_FEE_PER_ITEM = 300;
@@ -285,10 +287,10 @@
       const clamp = (value, min, max) =>
         Math.min(max, Math.max(min, value));
 
-      COUNTRY_NAMES.forEach((countryName, index) => {
+      COUNTRY_NAMES.forEach((country, index) => {
         const option = document.createElement("option");
-        option.value = countryName;
-        option.textContent = countryName;
+        option.value = country.value;
+        option.textContent = country.label;
         option.selected = index === 0;
         countryInput.appendChild(option);
       });
@@ -317,6 +319,32 @@
         updateCargoInsuranceState();
         calculate();
       });
+
+      let latestRequestId = 0;
+
+      const sendToGas = async (payload) => {
+        const requestId = ++latestRequestId;
+        try {
+          const response = await fetch(GAS_ENDPOINT, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          if (requestId !== latestRequestId) {
+            return;
+          }
+          if (typeof data.simulationTotal === "number") {
+            totalOutput.textContent = formatNumber(data.simulationTotal);
+            totalOutput.classList.remove("total-price-message");
+            totalUnit.textContent = "円";
+          }
+        } catch (error) {
+          console.error("Failed to send data to GAS", error);
+        }
+      };
 
       const calculate = () => {
         const length = Number(lengthInput.value);
@@ -354,7 +382,7 @@
           totalOutput.textContent = CARGO_INSURANCE_MESSAGE;
           totalOutput.classList.add("total-price-message");
           totalUnit.textContent = "";
-          return;
+          return false;
         }
         const cargoInsuranceFee = cargoInsuranceInput.checked
           ? Math.ceil(insuredValue * CARGO_INSURANCE_RATE)
@@ -375,6 +403,7 @@
         totalOutput.textContent = formatNumber(total);
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
+        return true;
       };
 
       [
@@ -397,6 +426,26 @@
       updateOptionToggleText();
       updateCargoInsuranceState();
       calculate();
+
+      simulateButton.addEventListener("click", () => {
+        const isValid = calculate();
+        if (!isValid) {
+          return;
+        }
+        sendToGas({
+          destinationCountry: countryInput.value,
+          billableWeightKg: Number(billableOutput.textContent || 0),
+          plan: planInput.value,
+          inspectionCount: Number(inspectionInput.value || 0),
+          packingCount: Number(packingInput.value || 0),
+          exportCarton: exportCartonInput.checked,
+          invoiceIssue: invoiceInput.checked,
+          returnInsurance: returnInsuranceInput.checked,
+          cargoInsurance: cargoInsuranceInput.checked,
+        });
+        resultScreen.hidden = false;
+        resultScreen.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
 
       const openModal = () => {
         estimateModal.hidden = false;

@@ -200,7 +200,7 @@ body {
 }
 
 .result-box {
-  background: #e4f9e6;
+  background: #ffffff;
   padding: 18px 20px;
   border-radius: 6px;
   display: flex;
@@ -233,6 +233,16 @@ body {
   gap: 16px;
 }
 
+.result-trigger {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.result-screen {
+  margin-top: 28px;
+}
+
 .option-toggle {
   align-self: flex-start;
   padding: 8px 18px;
@@ -247,7 +257,7 @@ body {
   border: 1px solid #cfe8d1;
   border-radius: 12px;
   padding: 20px;
-  background: #f0fff1;
+  background: #ffffff;
 }
 
 .option-grid {
@@ -409,7 +419,7 @@ body {
   height: 32px;
   border: none;
   border-radius: 50%;
-  background: #f0fff1;
+  background: #ffffff;
   font-size: 20px;
   line-height: 1;
   cursor: pointer;
