@@ -268,7 +268,7 @@
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
       const GAS_ENDPOINT =
-        "https://script.google.com/macros/s/AKfycbzvZLNaOTOeko6ylWC3MSUDEgdKLaHk4CFLBCNeFcdRxVvK-jKUU1lDNpAVVdwQ8Kt6rA/exec";
+        "https://script.google.com/macros/s/DEPLOY_ID/exec";
       const PLAN_FEES = {
         worldShip: 0,
         worldShipForBiz: 1200,
@@ -382,7 +382,7 @@
           totalOutput.textContent = CARGO_INSURANCE_MESSAGE;
           totalOutput.classList.add("total-price-message");
           totalUnit.textContent = "";
-          return false;
+          return { billable, total: null, hasError: true };
         }
         const cargoInsuranceFee = cargoInsuranceInput.checked
           ? Math.ceil(insuredValue * CARGO_INSURANCE_RATE)
@@ -403,7 +403,7 @@
         totalOutput.textContent = formatNumber(total);
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
-        return true;
+        return { billable, total, hasError: false };
       };
 
       [
@@ -526,8 +526,42 @@
         closeEstimateModal();
       });
 
-      simulateButton.addEventListener("click", () => {
-        calculate();
+      simulateButton.addEventListener("click", async () => {
+        const result = calculate();
+        if (result?.hasError) {
+          return;
+        }
+
+        const payload = {
+          destinationCountry: countryInput.value,
+          billableWeightKg: result?.billable,
+          plan: planInput.value,
+          inspectionCount: Number(inspectionInput.value || 0),
+          packingCount: Number(packingInput.value || 0),
+          exportCarton: exportCartonInput.checked,
+          invoiceIssue: invoiceInput.checked,
+          returnInsurance: returnInsuranceInput.checked,
+          cargoInsurance: cargoInsuranceInput.checked,
+        };
+
+        try {
+          const response = await fetch(GAS_ENDPOINT, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (response.ok) {
+            const data = await response.json();
+            if (typeof data.simulationTotal === "number") {
+              totalOutput.textContent = formatNumber(data.simulationTotal);
+              totalOutput.classList.remove("total-price-message");
+              totalUnit.textContent = "円";
+            }
+          }
+        } catch (error) {
+          console.error("GAS request failed", error);
+        }
+
         inputScreen.hidden = true;
         resultScreen.hidden = false;
         window.scrollTo({ top: 0, behavior: "smooth" });
