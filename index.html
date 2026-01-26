@@ -1062,7 +1062,7 @@
           >
         </section>
 
-        <section class="cta-row">
+        <section class="cta-row" hidden>
           <div class="cta-row-group">
             <a
               class="cta-button cta-button--primary"
@@ -1157,6 +1157,7 @@
       const companyError = document.getElementById("companyError");
       const logOutput = document.getElementById("logOutput");
       const inputError = document.getElementById("inputError");
+      const ctaRow = document.querySelector(".cta-row");
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -1271,6 +1272,13 @@
         totalUnit.textContent = "";
       };
 
+      const setCtaVisibility = (isVisible) => {
+        if (!ctaRow) {
+          return;
+        }
+        ctaRow.hidden = !isVisible;
+      };
+
       const setInitialSimulationDisplay = () => {
         totalOutput.textContent = "ー";
         totalOutput.classList.remove("total-price-pending");
@@ -1364,6 +1372,7 @@
       updateCargoInsuranceState();
       calculate();
       setInitialSimulationDisplay();
+      setCtaVisibility(false);
       const initialValues = {
         country: countryInput.value,
         length: lengthInput.value,
@@ -1399,6 +1408,7 @@
         updateCargoInsuranceState();
         calculate();
         setInitialSimulationDisplay();
+        setCtaVisibility(false);
       };
 
       const openModal = () => {
@@ -1554,6 +1564,7 @@
 
         inputScreen.hidden = true;
         resultScreen.hidden = false;
+        setCtaVisibility(false);
         window.scrollTo({ top: 0, behavior: "smooth" });
 
         try {
@@ -1578,11 +1589,13 @@
               totalOutput.classList.remove("total-price-message");
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "円";
+              setCtaVisibility(true);
             } else {
               totalOutput.textContent = "算出結果が取得できませんでした";
               totalOutput.classList.add("total-price-message");
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "";
+              setCtaVisibility(true);
             }
           } else {
             const errorText = await response.text();
@@ -1591,6 +1604,7 @@
             totalOutput.classList.add("total-price-message");
             totalOutput.classList.remove("total-price-pending");
             totalUnit.textContent = "";
+            setCtaVisibility(true);
           }
         } catch (error) {
           console.error("GAS request failed", error);
@@ -1599,6 +1613,7 @@
           totalOutput.classList.add("total-price-message");
           totalOutput.classList.remove("total-price-pending");
           totalUnit.textContent = "";
+          setCtaVisibility(true);
           try {
             logMessage("no-cors モードで再送信を試行します...");
             const fallbackResponse = await fetch(GAS_ENDPOINT, {
