@@ -29,6 +29,7 @@
               <div class="dimension-row">
                 <div class="select-wrap">
                   <select id="length" class="field-select">
+                    <option value="" selected></option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -311,6 +312,7 @@
               <div class="dimension-row">
                 <div class="select-wrap">
                   <select id="width" class="field-select">
+                    <option value="" selected></option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -593,6 +595,7 @@
               <div class="dimension-row">
                 <div class="select-wrap">
                   <select id="height" class="field-select">
+                    <option value="" selected></option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
@@ -877,6 +880,7 @@
             <div class="weight-row">
               <div class="select-wrap">
                 <select id="weight" class="field-select">
+                    <option value="" selected></option>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3" selected>3</option>
@@ -963,10 +967,19 @@
               <label class="field-label" for="plan">プラン</label>
               <div class="select-wrap select-wrap--no-arrow">
                 <select id="plan" class="field-select field-select--left">
+                  <option value="" selected></option>
                   <option value="worldShip">[個人向け]ワールドship</option>
                   <option value="worldShipForBiz">[法人向け]ワールドship for Biz</option>
                   <option value="LOGIFIT">[法人向け]LOGIFIT</option>
                 </select>
+                <p class="field-note">
+                  <a
+                    href="https://worldshift-inc.jp/allynair/"
+                    target="_blank"
+                    rel="noreferrer"
+                    >※プランについてはこちらをご確認ください</a
+                  >
+                </p>
               </div>
 
               <label class="field-label" for="inspectionCount">検品数</label>
@@ -1198,11 +1211,16 @@
       const countryOptions = Array.isArray(COUNTRY_NAMES)
         ? COUNTRY_NAMES
         : [];
-      countryOptions.forEach((country, index) => {
+      const emptyCountryOption = document.createElement("option");
+      emptyCountryOption.value = "";
+      emptyCountryOption.textContent = "";
+      emptyCountryOption.selected = true;
+      countryInput.appendChild(emptyCountryOption);
+
+      countryOptions.forEach((country) => {
         const option = document.createElement("option");
         option.value = country.value;
         option.textContent = country.label;
-        option.selected = index === 0;
         countryInput.appendChild(option);
       });
 
