@@ -97,9 +97,9 @@
               <label class="field-label" for="plan">プラン</label>
               <div class="select-wrap select-wrap--no-arrow">
                 <select id="plan" class="field-select field-select--left">
-                  <option value="personal">[個人向け]ワールドship</option>
-                  <option value="biz">[法人向け]ワールドship for Biz</option>
-                  <option value="logifit">[法人向け]LOGIFIT</option>
+                  <option value="worldShip">[個人向け]ワールドship</option>
+                  <option value="worldShipForBiz">[法人向け]ワールドship for Biz</option>
+                  <option value="LOGIFIT">[法人向け]LOGIFIT</option>
                 </select>
               </div>
 
@@ -475,6 +475,9 @@
           invoiceIssue: invoiceInput.checked,
           returnInsurance: returnInsuranceInput.checked,
           cargoInsurance: cargoInsuranceInput.checked,
+          insuredValue: cargoInsuranceInput.checked
+            ? Number(insuredValueInput.value || 0)
+            : 0,
         });
         resultScreen.hidden = false;
         resultScreen.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -579,6 +582,9 @@
           invoiceIssue: invoiceInput.checked,
           returnInsurance: returnInsuranceInput.checked,
           cargoInsurance: cargoInsuranceInput.checked,
+          insuredValue: cargoInsuranceInput.checked
+            ? Number(insuredValueInput.value || 0)
+            : 0,
         };
 
         try {
