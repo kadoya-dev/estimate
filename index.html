@@ -387,6 +387,13 @@
         return null;
       };
 
+      const setSimulationPending = () => {
+        totalOutput.textContent = "計算中...";
+        totalOutput.classList.add("total-price-pending");
+        totalOutput.classList.remove("total-price-message");
+        totalUnit.textContent = "";
+      };
+
       const calculate = () => {
         const length = Number(lengthInput.value);
         const width = Number(widthInput.value);
