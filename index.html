@@ -180,7 +180,7 @@
             見積もりをやり直す
           </button>
           <button class="secondary-button" type="button" id="estimateButton">
-            見積書出力(法人向け)
+            結果をPDFで出力
           </button>
           <a
             class="cta-button"
@@ -190,7 +190,12 @@
           >
             申し込みはこちら
           </a>
-          <a class="secondary-button" href="mailto:allynair@worldshift-inc.com">
+          <a
+            class="secondary-button"
+            href="https://forms.gle/cbn4CHYc1obw9maU7"
+            target="_blank"
+            rel="noreferrer"
+          >
             お問合せはこちら
           </a>
         </section>
@@ -453,6 +458,41 @@
       updateOptionToggleText();
       updateCargoInsuranceState();
       calculate();
+      const initialValues = {
+        country: countryInput.value,
+        length: lengthInput.value,
+        width: widthInput.value,
+        height: heightInput.value,
+        weight: weightInput.value,
+        plan: planInput.value,
+        inspectionCount: inspectionInput.value,
+        packingCount: packingInput.value,
+        exportCarton: exportCartonInput.checked,
+        invoiceIssue: invoiceInput.checked,
+        returnInsurance: returnInsuranceInput.checked,
+        cargoInsurance: cargoInsuranceInput.checked,
+        insuredValue: insuredValueInput.value,
+      };
+
+      const resetInputs = () => {
+        countryInput.value = initialValues.country;
+        lengthInput.value = initialValues.length;
+        widthInput.value = initialValues.width;
+        heightInput.value = initialValues.height;
+        weightInput.value = initialValues.weight;
+        planInput.value = initialValues.plan;
+        inspectionInput.value = initialValues.inspectionCount;
+        packingInput.value = initialValues.packingCount;
+        exportCartonInput.checked = initialValues.exportCarton;
+        invoiceInput.checked = initialValues.invoiceIssue;
+        returnInsuranceInput.checked = initialValues.returnInsurance;
+        cargoInsuranceInput.checked = initialValues.cargoInsurance;
+        insuredValueInput.value = initialValues.insuredValue;
+        optionPanel.hidden = true;
+        updateOptionToggleText();
+        updateCargoInsuranceState();
+        calculate();
+      };
 
       const openModal = () => {
         estimateModal.hidden = false;
@@ -476,6 +516,7 @@
         resultScreen.hidden = true;
         inputScreen.hidden = false;
         setInputError("");
+        resetInputs();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
