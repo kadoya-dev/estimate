@@ -559,11 +559,14 @@
           logOutput.textContent = "";
         }
         setInputError("");
+        const isValidCountry = countryOptions.some(
+          (country) => country.value === countryInput.value
+        );
         const requiredInputs = [
           {
             field: countryInput,
             label: "送り先国",
-            isInvalid: (value) => value.trim() === "",
+            isInvalid: () => !isValidCountry,
           },
           {
             field: lengthInput,
