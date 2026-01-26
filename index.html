@@ -164,10 +164,6 @@
           </button>
         </div>
         <p class="error-message" id="inputError" hidden></p>
-        <div class="log-panel" aria-live="polite">
-          <p class="log-title">送信ログ</p>
-          <pre class="log-body" id="logOutput">待機中...</pre>
-        </div>
       </div>
 
       <div id="resultScreen" class="screen-section" hidden>
@@ -184,7 +180,7 @@
             見積もりをやり直す
           </button>
           <button class="secondary-button" type="button" id="estimateButton">
-            見積書出力(法人向け)
+            結果をPDFで出力
           </button>
           <a
             class="cta-button"
@@ -194,18 +190,21 @@
           >
             申し込みはこちら
           </a>
-          <a class="secondary-button" href="mailto:allynair@worldshift-inc.com">
+          <a
+            class="secondary-button"
+            href="https://forms.gle/cbn4CHYc1obw9maU7"
+            target="_blank"
+            rel="noreferrer"
+          >
             お問合せはこちら
           </a>
         </section>
 
         <section class="disclaimer">
+          <h2 class="disclaimer-title">注意事項</h2>
           <p>※ 本シミュレーターの結果は参考値です。</p>
           <p>
             実際の送料は条件により変動する場合があります。正確なお見積もり額をお求めの方は、お問い合わせください。
-          </p>
-          <p class="contact-link">
-            お問い合わせはこちら：allynair@worldshift-inc.com
           </p>
         </section>
       </div>
@@ -316,24 +315,16 @@
         logErrorDetails("unhandledrejection", event.reason);
       });
 
-      const countryOptions = Array.isArray(window.COUNTRY_NAMES)
-        ? window.COUNTRY_NAMES
+      const countryOptions = Array.isArray(COUNTRY_NAMES)
+        ? COUNTRY_NAMES
         : [];
-      if (countryOptions.length === 0) {
+      countryOptions.forEach((country, index) => {
         const option = document.createElement("option");
-        option.value = "";
-        option.textContent = "送り先国を選択してください";
-        option.selected = true;
+        option.value = country.value;
+        option.textContent = country.label;
+        option.selected = index === 0;
         countryInput.appendChild(option);
-      } else {
-        countryOptions.forEach((country, index) => {
-          const option = document.createElement("option");
-          option.value = country.value;
-          option.textContent = country.label;
-          option.selected = index === 0;
-          countryInput.appendChild(option);
-        });
-      }
+      });
 
       const updateOptionToggleText = () => {
         optionToggle.textContent = optionPanel.hidden
@@ -467,6 +458,41 @@
       updateOptionToggleText();
       updateCargoInsuranceState();
       calculate();
+      const initialValues = {
+        country: countryInput.value,
+        length: lengthInput.value,
+        width: widthInput.value,
+        height: heightInput.value,
+        weight: weightInput.value,
+        plan: planInput.value,
+        inspectionCount: inspectionInput.value,
+        packingCount: packingInput.value,
+        exportCarton: exportCartonInput.checked,
+        invoiceIssue: invoiceInput.checked,
+        returnInsurance: returnInsuranceInput.checked,
+        cargoInsurance: cargoInsuranceInput.checked,
+        insuredValue: insuredValueInput.value,
+      };
+
+      const resetInputs = () => {
+        countryInput.value = initialValues.country;
+        lengthInput.value = initialValues.length;
+        widthInput.value = initialValues.width;
+        heightInput.value = initialValues.height;
+        weightInput.value = initialValues.weight;
+        planInput.value = initialValues.plan;
+        inspectionInput.value = initialValues.inspectionCount;
+        packingInput.value = initialValues.packingCount;
+        exportCartonInput.checked = initialValues.exportCarton;
+        invoiceInput.checked = initialValues.invoiceIssue;
+        returnInsuranceInput.checked = initialValues.returnInsurance;
+        cargoInsuranceInput.checked = initialValues.cargoInsurance;
+        insuredValueInput.value = initialValues.insuredValue;
+        optionPanel.hidden = true;
+        updateOptionToggleText();
+        updateCargoInsuranceState();
+        calculate();
+      };
 
       const openModal = () => {
         estimateModal.hidden = false;
@@ -490,6 +516,7 @@
         resultScreen.hidden = true;
         inputScreen.hidden = false;
         setInputError("");
+        resetInputs();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
@@ -559,15 +586,38 @@
           logOutput.textContent = "";
         }
         setInputError("");
+        const isValidCountry = countryOptions.some(
+          (country) => country.value === countryInput.value
+        );
         const requiredInputs = [
-          { field: countryInput, label: "送り先国" },
-          { field: lengthInput, label: "サイズ（縦）" },
-          { field: widthInput, label: "サイズ（横）" },
-          { field: heightInput, label: "サイズ（高さ）" },
-          { field: weightInput, label: "重さ" },
+          {
+            field: countryInput,
+            label: "送り先国",
+            isInvalid: () => !isValidCountry,
+          },
+          {
+            field: lengthInput,
+            label: "サイズ（縦）",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
+          {
+            field: widthInput,
+            label: "サイズ（横）",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
+          {
+            field: heightInput,
+            label: "サイズ（高さ）",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
+          {
+            field: weightInput,
+            label: "重さ",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
         ];
-        const missingField = requiredInputs.find(
-          ({ field }) => field.value === "" || Number.isNaN(Number(field.value))
+        const missingField = requiredInputs.find(({ field, isInvalid }) =>
+          isInvalid(field.value)
         );
         if (missingField) {
           setInputError(`${missingField.label}を入力してください。`);
