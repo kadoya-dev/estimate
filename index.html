@@ -721,16 +721,34 @@
                   padding: 32px;
                   color: #151515;
                 }
+                .header-row {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-start;
+                  margin-bottom: 16px;
+                }
                 h1 {
                   font-size: 24px;
-                  margin-bottom: 24px;
+                  margin: 0;
+                }
+                .estimate-date {
+                  font-size: 0.95rem;
+                }
+                p {
+                  margin: 0 0 16px;
+                  line-height: 1.6;
+                }
+                .total-amount {
+                  font-size: 1.4rem;
+                  font-weight: 700;
+                  margin: 16px 0 20px;
                 }
                 p {
                   margin: 0 0 16px;
                   line-height: 1.6;
                 }
                 table {
-                  width: 100%;
+                  width: auto;
                   border-collapse: collapse;
                 }
                 th, td {
@@ -741,6 +759,9 @@
                 th {
                   width: 220px;
                   background: #f5f5f5;
+                }
+                td {
+                  width: 220px;
                 }
                 .notes {
                   margin-top: 24px;
@@ -753,20 +774,16 @@
               </style>
             </head>
             <body>
-              <h1>見積り書</h1>
+              <div class="header-row">
+                <h1>見積り書</h1>
+                <div class="estimate-date">見積り日: ${estimateDate}</div>
+              </div>
               <p>この度は弊社サービスのお見積りをいただき、誠に有難うございます。</p>
               <p>頂戴した貨物情報にて、下記の通り、概算費用を算出致しましたので、ご検討のほど宜しくお願い申し上げます。</p>
+              <div class="total-amount">合計見積り額: ${totalPrice} 円</div>
               <table>
-                <tr>
-                  <th>見積り日</th>
-                  <td>${estimateDate}</td>
-                </tr>
                 ${companyRow}
                 ${inputRows}
-                <tr>
-                  <th>シミュレーション結果の送料</th>
-                  <td>${totalPrice} 円</td>
-                </tr>
               </table>
               <ul class="notes">
                 <li>※ 送料は実重量と容積重量を比較したうえで、数値が大きい方を基準に算出しております。</li>
