@@ -319,15 +319,11 @@
       const countryOptions = Array.isArray(window.COUNTRY_NAMES)
         ? window.COUNTRY_NAMES
         : [];
-      const placeholderOption = document.createElement("option");
-      placeholderOption.value = "";
-      placeholderOption.textContent = "送り先国を選択してください";
-      placeholderOption.selected = true;
-      countryInput.appendChild(placeholderOption);
-      countryOptions.forEach((country) => {
+      countryOptions.forEach((country, index) => {
         const option = document.createElement("option");
         option.value = country.value;
         option.textContent = country.label;
+        option.selected = index === 0;
         countryInput.appendChild(option);
       });
 
