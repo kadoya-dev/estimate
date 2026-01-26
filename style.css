@@ -424,6 +424,7 @@ body {
   font-weight: 700;
   font-size: 1rem;
   letter-spacing: 0.08em;
+  text-decoration: none;
   cursor: pointer;
   box-shadow: 0 12px 24px rgba(252, 255, 82, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
