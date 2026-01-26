@@ -685,8 +685,8 @@
         companyError.hidden = true;
         const totalPrice = totalOutput.textContent;
         const estimateDate = new Date().toLocaleDateString("ja-JP");
-        const companyRow = companyName
-          ? `<tr><th>会社名</th><td>${companyName}</td></tr>`
+        const companyLine = companyName
+          ? `<div class="company-name">${companyName} 様</div>`
           : "";
         const selectedCountryLabel =
           countryInput.selectedOptions[0]?.textContent || "";
@@ -714,7 +714,7 @@
           <html lang="ja">
             <head>
               <meta charset="utf-8" />
-              <title>見積り書</title>
+              <title>見積書</title>
               <style>
                 body {
                   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
@@ -731,6 +731,11 @@
                   font-size: 24px;
                   margin: 0;
                 }
+                .company-name {
+                  margin: 8px 0 0;
+                  font-size: 1rem;
+                  font-weight: 600;
+                }
                 .estimate-date {
                   font-size: 0.95rem;
                 }
@@ -743,17 +748,14 @@
                   font-weight: 700;
                   margin: 16px 0 20px;
                 }
-                p {
-                  margin: 0 0 16px;
-                  line-height: 1.6;
-                }
                 table {
                   width: auto;
                   border-collapse: collapse;
+                  font-size: 0.6rem;
                 }
                 th, td {
                   border: 1px solid #ccc;
-                  padding: 12px;
+                  padding: 6px;
                   text-align: left;
                 }
                 th {
@@ -775,14 +777,14 @@
             </head>
             <body>
               <div class="header-row">
-                <h1>見積り書</h1>
+                <h1>見積書</h1>
                 <div class="estimate-date">見積り日: ${estimateDate}</div>
               </div>
+              ${companyLine}
               <p>この度は弊社サービスのお見積りをいただき、誠に有難うございます。</p>
               <p>頂戴した貨物情報にて、下記の通り、概算費用を算出致しましたので、ご検討のほど宜しくお願い申し上げます。</p>
               <div class="total-amount">合計見積り額: ${totalPrice} 円</div>
               <table>
-                ${companyRow}
                 ${inputRows}
               </table>
               <ul class="notes">
