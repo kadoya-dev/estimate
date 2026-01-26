@@ -19,12 +19,12 @@
       <div id="inputScreen" class="screen-section">
         <section class="simulation-card">
           <div class="input-grid">
-            <label class="field-label" for="country">送り先国</label>
+            <label class="field-label" for="country">送り先国（必須）</label>
             <div class="select-wrap select-wrap--no-arrow">
               <select id="country" class="field-select field-select--left"></select>
             </div>
 
-            <span class="field-label">サイズ</span>
+            <span class="field-label">サイズ（必須）</span>
             <div class="dimension-group">
               <div class="dimension-row">
                 <div class="select-wrap">
@@ -89,7 +89,7 @@
                     <option value="57">57</option>
                     <option value="58">58</option>
                     <option value="59">59</option>
-                    <option value="60" selected>60</option>
+                    <option value="60">60</option>
                     <option value="61">61</option>
                     <option value="62">62</option>
                     <option value="63">63</option>
@@ -342,7 +342,7 @@
                     <option value="27">27</option>
                     <option value="28">28</option>
                     <option value="29">29</option>
-                    <option value="30" selected>30</option>
+                    <option value="30">30</option>
                     <option value="31">31</option>
                     <option value="32">32</option>
                     <option value="33">33</option>
@@ -625,7 +625,7 @@
                     <option value="27">27</option>
                     <option value="28">28</option>
                     <option value="29">29</option>
-                    <option value="30" selected>30</option>
+                    <option value="30">30</option>
                     <option value="31">31</option>
                     <option value="32">32</option>
                     <option value="33">33</option>
@@ -876,14 +876,14 @@
               </div>
             </div>
 
-            <label class="field-label" for="weight">重さ</label>
+            <label class="field-label" for="weight">重さ（必須）</label>
             <div class="weight-row">
               <div class="select-wrap">
                 <select id="weight" class="field-select">
                     <option value="" selected></option>
                     <option value="1">1</option>
                     <option value="2">2</option>
-                    <option value="3" selected>3</option>
+                    <option value="3">3</option>
                     <option value="4">4</option>
                     <option value="5">5</option>
                     <option value="6">6</option>
@@ -1515,22 +1515,22 @@
           {
             field: lengthInput,
             label: "サイズ（縦）",
-            isInvalid: (value) => Number.isNaN(Number(value)),
+            isInvalid: (value) => value === "",
           },
           {
             field: widthInput,
             label: "サイズ（横）",
-            isInvalid: (value) => Number.isNaN(Number(value)),
+            isInvalid: (value) => value === "",
           },
           {
             field: heightInput,
             label: "サイズ（高さ）",
-            isInvalid: (value) => Number.isNaN(Number(value)),
+            isInvalid: (value) => value === "",
           },
           {
             field: weightInput,
             label: "重さ",
-            isInvalid: (value) => Number.isNaN(Number(value)),
+            isInvalid: (value) => value === "",
           },
         ];
         const missingField = requiredInputs.find(({ field, isInvalid }) =>
