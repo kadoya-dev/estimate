@@ -316,8 +316,8 @@
         logErrorDetails("unhandledrejection", event.reason);
       });
 
-      const countryOptions = Array.isArray(window.COUNTRY_NAMES)
-        ? window.COUNTRY_NAMES
+      const countryOptions = Array.isArray(COUNTRY_NAMES)
+        ? COUNTRY_NAMES
         : [];
       countryOptions.forEach((country, index) => {
         const option = document.createElement("option");
