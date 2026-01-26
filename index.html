@@ -1439,13 +1439,29 @@
 
       createPdf.addEventListener("click", () => {
         const companyName = companyNameInput.value.trim();
-        if (!companyName) {
-          companyError.hidden = false;
-          companyNameInput.focus();
-          return;
-        }
         companyError.hidden = true;
         const totalPrice = totalOutput.textContent;
+        const estimateDate = new Date().toLocaleDateString("ja-JP");
+        const companyRow = companyName
+          ? `<tr><th>会社名</th><td>${companyName}</td></tr>`
+          : "";
+        const selectedCountryLabel =
+          countryInput.selectedOptions[0]?.textContent || "";
+        const selectedPlanLabel =
+          planInput.selectedOptions[0]?.textContent || "";
+        const inputRows = `
+          <tr><th>送り先国</th><td>${selectedCountryLabel || "未選択"}</td></tr>
+          <tr><th>サイズ</th><td>${lengthInput.value || "未選択"} × ${widthInput.value || "未選択"} × ${heightInput.value || "未選択"} cm</td></tr>
+          <tr><th>重さ</th><td>${weightInput.value || "未選択"} kg</td></tr>
+          <tr><th>プラン</th><td>${selectedPlanLabel || "未選択"}</td></tr>
+          <tr><th>検品数</th><td>${inspectionInput.value || 0}</td></tr>
+          <tr><th>梱包数</th><td>${packingInput.value || 0}</td></tr>
+          <tr><th>輸出用段ボール利用</th><td>${exportCartonInput.checked ? "利用する" : "利用しない"}</td></tr>
+          <tr><th>インボイス発行</th><td>${invoiceInput.checked ? "利用する" : "利用しない"}</td></tr>
+          <tr><th>返送保険</th><td>${returnInsuranceInput.checked ? "利用する" : "利用しない"}</td></tr>
+          <tr><th>運送保険</th><td>${cargoInsuranceInput.checked ? "利用する" : "利用しない"}</td></tr>
+          <tr><th>商品価格</th><td>${insuredValueInput.value || 0} 円</td></tr>
+        `;
         const previewWindow = window.open("", "_blank");
         if (!previewWindow) {
           return;
@@ -1455,7 +1471,7 @@
           <html lang="ja">
             <head>
               <meta charset="utf-8" />
-              <title>法人向け見積書</title>
+              <title>見積り書</title>
               <style>
                 body {
                   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
@@ -1466,6 +1482,10 @@
                   font-size: 24px;
                   margin-bottom: 24px;
                 }
+                p {
+                  margin: 0 0 16px;
+                  line-height: 1.6;
+                }
                 table {
                   width: 100%;
                   border-collapse: collapse;
@@ -1475,20 +1495,40 @@
                   padding: 12px;
                   text-align: left;
                 }
+                th {
+                  width: 220px;
+                  background: #f5f5f5;
+                }
+                .notes {
+                  margin-top: 24px;
+                  font-size: 0.95rem;
+                  line-height: 1.6;
+                }
+                .notes li {
+                  margin-bottom: 8px;
+                }
               </style>
             </head>
             <body>
-              <h1>法人向け見積書</h1>
+              <h1>見積り書</h1>
+              <p>この度は弊社サービスのお見積りをいただき、誠に有難うございます。</p>
+              <p>頂戴した貨物情報にて、下記の通り、概算費用を算出致しましたので、ご検討のほど宜しくお願い申し上げます。</p>
               <table>
                 <tr>
-                  <th>会社名</th>
-                  <td>${companyName}</td>
+                  <th>見積り日</th>
+                  <td>${estimateDate}</td>
                 </tr>
+                ${companyRow}
+                ${inputRows}
                 <tr>
-                  <th>シミュレーション送料</th>
+                  <th>シミュレーション結果の送料</th>
                   <td>${totalPrice} 円</td>
                 </tr>
               </table>
+              <ul class="notes">
+                <li>※ 送料は実重量と容積重量を比較したうえで、数値が大きい方を基準に算出しております。</li>
+                <li>※サーチャージには下記の項目が含まれています。<br />① 燃料サーチャージ（必ず発生し、適用期間により変動します）<br />② その他追加サーチャージ（国際運送会社および適用期間により追加される費用です）</li>
+              </ul>
             </body>
           </html>
         `);
