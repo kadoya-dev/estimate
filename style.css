@@ -399,6 +399,12 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.cta-button--primary {
+  padding: 18px 40px;
+  font-size: 1.1rem;
+  min-width: 240px;
+}
+
 .secondary-button {
   display: inline-flex;
   align-items: center;
@@ -414,6 +420,17 @@ body {
   cursor: pointer;
   box-shadow: 0 12px 24px rgba(252, 255, 82, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#retryButton {
+  background: #ffffff;
+  color: #0d9217;
+  border: 2px solid #0d9217;
+  box-shadow: 0 12px 24px rgba(13, 146, 23, 0.18);
+}
+
+#retryButton:hover {
+  box-shadow: 0 16px 30px rgba(13, 146, 23, 0.3);
 }
 
 .secondary-button:hover {
