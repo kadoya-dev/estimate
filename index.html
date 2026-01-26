@@ -371,6 +371,29 @@
         totalUnit.textContent = "";
       };
 
+      const extractShippingTotal = (data) => {
+        if (!data || typeof data !== "object") {
+          return null;
+        }
+        if (typeof data.shipping === "number") {
+          return data.shipping;
+        }
+        if (typeof data.shippingFee === "number") {
+          return data.shippingFee;
+        }
+        if (typeof data.simulationTotal === "number") {
+          return data.simulationTotal;
+        }
+        return null;
+      };
+
+      const setSimulationPending = () => {
+        totalOutput.textContent = "計算中...";
+        totalOutput.classList.add("total-price-pending");
+        totalOutput.classList.remove("total-price-message");
+        totalUnit.textContent = "";
+      };
+
       const calculate = () => {
         const length = Number(lengthInput.value);
         const width = Number(widthInput.value);
@@ -588,8 +611,9 @@
             const responseText = await response.text();
             logMessage(`GAS応答本文: ${responseText}`);
             const data = responseText ? JSON.parse(responseText) : {};
-            if (typeof data.simulationTotal === "number") {
-              totalOutput.textContent = formatNumber(data.simulationTotal);
+            const shippingTotal = extractShippingTotal(data);
+            if (typeof shippingTotal === "number") {
+              totalOutput.textContent = formatNumber(shippingTotal);
               totalOutput.classList.remove("total-price-message");
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "円";
