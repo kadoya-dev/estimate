@@ -170,41 +170,45 @@
         <section class="total-row" hidden>
           <span class="total-label">シミュレーション送料</span>
           <span class="total-price"
-            ><span id="totalPrice">22,000</span>
+            ><span id="totalPrice">ー</span>
             <span id="totalUnit">円</span></span
           >
         </section>
 
         <section class="cta-row">
-          <a
-            class="cta-button cta-button--primary"
-            href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
-            target="_blank"
-            rel="noreferrer"
-          >
-            申し込みはこちら
-          </a>
-          <button class="secondary-button" type="button" id="retryButton">
-            見積もりをやり直す
-          </button>
-          <button class="secondary-button" type="button" id="estimateButton">
-            結果をPDFで出力
-          </button>
-          <a
-            class="secondary-button"
-            href="https://forms.gle/cbn4CHYc1obw9maU7"
-            target="_blank"
-            rel="noreferrer"
-          >
-            お問合せはこちら
-          </a>
+          <div class="cta-row-group">
+            <a
+              class="cta-button cta-button--primary"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
+              target="_blank"
+              rel="noreferrer"
+            >
+              申し込みはこちら
+            </a>
+          </div>
+          <div class="cta-row-group">
+            <button class="secondary-button" type="button" id="retryButton">
+              見積もりをやり直す
+            </button>
+            <button class="secondary-button" type="button" id="estimateButton">
+              結果をPDFで出力
+            </button>
+            <a
+              class="secondary-button"
+              href="https://forms.gle/cbn4CHYc1obw9maU7"
+              target="_blank"
+              rel="noreferrer"
+            >
+              お問合せはこちら
+            </a>
+          </div>
         </section>
 
         <section class="disclaimer">
           <h2 class="disclaimer-title">注意事項</h2>
           <p>※ 本シミュレーターの結果は参考値です。</p>
           <p>
-            実際の送料は条件により変動する場合があります。正確なお見積もり額をお求めの方は、お問い合わせください。
+            荷物の内容や国によっては送ることができない場合がございますので、詳しくはお問合せください。
           </p>
         </section>
       </div>
@@ -373,6 +377,13 @@
         totalUnit.textContent = "";
       };
 
+      const setInitialSimulationDisplay = () => {
+        totalOutput.textContent = "ー";
+        totalOutput.classList.remove("total-price-pending");
+        totalOutput.classList.remove("total-price-message");
+        totalUnit.textContent = "円";
+      };
+
       const extractShippingTotal = (data) => {
         if (!data || typeof data !== "object") {
           return null;
@@ -458,6 +469,7 @@
       updateOptionToggleText();
       updateCargoInsuranceState();
       calculate();
+      setInitialSimulationDisplay();
       const initialValues = {
         country: countryInput.value,
         length: lengthInput.value,
@@ -492,6 +504,7 @@
         updateOptionToggleText();
         updateCargoInsuranceState();
         calculate();
+        setInitialSimulationDisplay();
       };
 
       const openModal = () => {
