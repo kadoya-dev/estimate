@@ -560,14 +560,34 @@
         }
         setInputError("");
         const requiredInputs = [
-          { field: countryInput, label: "送り先国" },
-          { field: lengthInput, label: "サイズ（縦）" },
-          { field: widthInput, label: "サイズ（横）" },
-          { field: heightInput, label: "サイズ（高さ）" },
-          { field: weightInput, label: "重さ" },
+          {
+            field: countryInput,
+            label: "送り先国",
+            isInvalid: (value) => value.trim() === "",
+          },
+          {
+            field: lengthInput,
+            label: "サイズ（縦）",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
+          {
+            field: widthInput,
+            label: "サイズ（横）",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
+          {
+            field: heightInput,
+            label: "サイズ（高さ）",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
+          {
+            field: weightInput,
+            label: "重さ",
+            isInvalid: (value) => Number.isNaN(Number(value)),
+          },
         ];
-        const missingField = requiredInputs.find(
-          ({ field }) => field.value === "" || Number.isNaN(Number(field.value))
+        const missingField = requiredInputs.find(({ field, isInvalid }) =>
+          isInvalid(field.value)
         );
         if (missingField) {
           setInputError(`${missingField.label}を入力してください。`);
