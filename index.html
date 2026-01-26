@@ -316,13 +316,24 @@
         logErrorDetails("unhandledrejection", event.reason);
       });
 
-      COUNTRY_NAMES.forEach((country, index) => {
+      const countryOptions = Array.isArray(window.COUNTRY_NAMES)
+        ? window.COUNTRY_NAMES
+        : [];
+      if (countryOptions.length === 0) {
         const option = document.createElement("option");
-        option.value = country.value;
-        option.textContent = country.label;
-        option.selected = index === 0;
+        option.value = "";
+        option.textContent = "送り先国を選択してください";
+        option.selected = true;
         countryInput.appendChild(option);
-      });
+      } else {
+        countryOptions.forEach((country, index) => {
+          const option = document.createElement("option");
+          option.value = country.value;
+          option.textContent = country.label;
+          option.selected = index === 0;
+          countryInput.appendChild(option);
+        });
+      }
 
       const updateOptionToggleText = () => {
         optionToggle.textContent = optionPanel.hidden
@@ -385,13 +396,6 @@
           return data.simulationTotal;
         }
         return null;
-      };
-
-      const setSimulationPending = () => {
-        totalOutput.textContent = "計算中...";
-        totalOutput.classList.add("total-price-pending");
-        totalOutput.classList.remove("total-price-message");
-        totalUnit.textContent = "";
       };
 
       const calculate = () => {
