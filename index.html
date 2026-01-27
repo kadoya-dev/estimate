@@ -649,6 +649,18 @@
         COMPANY_NAME_REQUIRED_PLANS.includes(planInput.value);
 
       const generatePdf = (companyName) => {
+        const formatDateForFilename = (date) => {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}${month}${day}`;
+        };
+        const safeCompanyName = companyName.replace(/[\\/:*?"<>|]/g, "");
+        const today = new Date();
+        const fileDate = formatDateForFilename(today);
+        const fileTitle = safeCompanyName
+          ? `Allynair見積書_${safeCompanyName}様_${fileDate}`
+          : `Allynair見積書_${fileDate}`;
         const totalPrice = totalOutput.textContent;
         const estimateDate = new Date().toLocaleDateString("ja-JP");
         const companyLine = companyName
@@ -680,7 +692,7 @@
           <html lang="ja">
             <head>
               <meta charset="utf-8" />
-              <title>見積書</title>
+              <title>${fileTitle}</title>
               <style>
                 body {
                   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
@@ -696,6 +708,8 @@
                 h1 {
                   font-size: 24px;
                   margin: 0;
+                  text-align: center;
+                  flex: 1;
                 }
                 .company-name {
                   margin: 8px 0 0;
@@ -747,7 +761,7 @@
                 <div class="estimate-date">見積り日: ${estimateDate}</div>
               </div>
               ${companyLine}
-              <p>この度は弊社サービスのお見積りをいただき、誠に有難うございます。</p>
+              <p>この度は弊社サービス【Allynair(アリネア)】のお見積りをいただき、誠に有難うございます。</p>
               <p>下記の通り概算費用を算出致しましたので、ご検討のほど宜しくお願い申し上げます。</p>
               <div class="total-amount">合計見積り額: ${totalPrice} 円</div>
               <table>
