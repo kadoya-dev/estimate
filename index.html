@@ -893,7 +893,7 @@
               totalOutput.classList.add("total-price-message");
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "";
-              setCtaVisibility(true);
+              setCtaVisibility(false);
               hasSimulationResult = false;
             }
           } else {
@@ -903,7 +903,7 @@
             totalOutput.classList.add("total-price-message");
             totalOutput.classList.remove("total-price-pending");
             totalUnit.textContent = "";
-            setCtaVisibility(true);
+            setCtaVisibility(false);
             hasSimulationResult = false;
           }
         } catch (error) {
@@ -913,7 +913,7 @@
           totalOutput.classList.add("total-price-message");
           totalOutput.classList.remove("total-price-pending");
           totalUnit.textContent = "";
-          setCtaVisibility(true);
+          setCtaVisibility(false);
           hasSimulationResult = false;
           try {
             logMessage("no-cors モードで再送信を試行します...");
