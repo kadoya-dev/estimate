@@ -295,7 +295,7 @@
           </div>
           <div class="cta-row-group">
             <button class="secondary-button" type="button" id="retryButton">
-              入力内容をリセットする
+              見積りをやり直す
             </button>
           </div>
         </section>
@@ -365,6 +365,8 @@
       const logOutput = document.getElementById("logOutput");
       const inputError = document.getElementById("inputError");
       const ctaRow = document.querySelector(".cta-row");
+      const totalRow = document.querySelector(".total-row");
+      const disclaimer = document.querySelector(".disclaimer");
       const COMPANY_NAME_REQUIRED_PLANS = ["worldShipForBiz", "LOGIFIT"];
 
       const PRICE_PER_KG = 2000;
@@ -492,6 +494,20 @@
         ctaRow.hidden = !isVisible;
       };
 
+      const setTotalVisibility = (isVisible) => {
+        if (!totalRow) {
+          return;
+        }
+        totalRow.hidden = !isVisible;
+      };
+
+      const setDisclaimerVisibility = (isVisible) => {
+        if (!disclaimer) {
+          return;
+        }
+        disclaimer.hidden = !isVisible;
+      };
+
       const setInitialSimulationDisplay = () => {
         totalOutput.textContent = "ー";
         totalOutput.classList.remove("total-price-pending");
@@ -506,6 +522,8 @@
         }
         setInitialSimulationDisplay();
         setCtaVisibility(false);
+        setDisclaimerVisibility(false);
+        setTotalVisibility(false);
         hasSimulationResult = false;
       };
 
@@ -596,6 +614,8 @@
       calculate();
       setInitialSimulationDisplay();
       setCtaVisibility(false);
+      setTotalVisibility(false);
+      setDisclaimerVisibility(false);
       const initialValues = {
         country: countryInput.value,
         length: lengthInput.value,
@@ -632,6 +652,8 @@
         calculate();
         setInitialSimulationDisplay();
         setCtaVisibility(false);
+        setTotalVisibility(false);
+        setDisclaimerVisibility(false);
         hasSimulationResult = false;
       };
 
@@ -749,6 +771,8 @@
                   margin-top: 24px;
                   font-size: 0.95rem;
                   line-height: 1.6;
+                  list-style: none;
+                  padding-left: 0;
                 }
                 .notes li {
                   margin-bottom: 8px;
@@ -761,7 +785,7 @@
                 <div class="estimate-date">見積り日: ${estimateDate}</div>
               </div>
               ${companyLine}
-              <p>この度は弊社サービス【Allynair(アリネア)】のお見積りをいただき、誠に有難うございます。</p>
+              <p>この度は弊社サービス Allynair(アリネア)のお見積りをいただき、誠に有難うございます。</p>
               <p>下記の通り概算費用を算出致しましたので、ご検討のほど宜しくお願い申し上げます。</p>
               <div class="total-amount">合計見積り額: ${totalPrice} 円</div>
               <table>
@@ -873,9 +897,10 @@
             : 0,
         };
 
-        inputScreen.hidden = true;
         resultScreen.hidden = false;
         setCtaVisibility(false);
+        setTotalVisibility(true);
+        setDisclaimerVisibility(false);
 
         try {
           setSimulationPending();
@@ -900,6 +925,7 @@
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "円";
               setCtaVisibility(true);
+              setDisclaimerVisibility(true);
               hasSimulationResult = true;
             } else {
               totalOutput.textContent = "算出結果が取得できませんでした";
@@ -907,6 +933,7 @@
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "";
               setCtaVisibility(false);
+              setDisclaimerVisibility(false);
               hasSimulationResult = false;
             }
           } else {
@@ -917,6 +944,7 @@
             totalOutput.classList.remove("total-price-pending");
             totalUnit.textContent = "";
             setCtaVisibility(false);
+            setDisclaimerVisibility(false);
             hasSimulationResult = false;
           }
         } catch (error) {
@@ -927,6 +955,7 @@
           totalOutput.classList.remove("total-price-pending");
           totalUnit.textContent = "";
           setCtaVisibility(false);
+          setDisclaimerVisibility(false);
           hasSimulationResult = false;
           try {
             logMessage("no-cors モードで再送信を試行します...");
