@@ -365,6 +365,7 @@
       const logOutput = document.getElementById("logOutput");
       const inputError = document.getElementById("inputError");
       const ctaRow = document.querySelector(".cta-row");
+      const COMPANY_NAME_REQUIRED_PLANS = ["worldShipForBiz", "LOGIFIT"];
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -452,9 +453,14 @@
         }
       };
 
+      const handleInputChange = () => {
+        calculate();
+        resetSimulationIfNeeded();
+      };
+
       cargoInsuranceInput.addEventListener("change", () => {
         updateCargoInsuranceState();
-        calculate();
+        handleInputChange();
       });
 
       let latestRequestId = 0;
@@ -491,6 +497,16 @@
         totalOutput.classList.remove("total-price-pending");
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
+      };
+      let hasSimulationResult = false;
+
+      const resetSimulationIfNeeded = () => {
+        if (!hasSimulationResult) {
+          return;
+        }
+        setInitialSimulationDisplay();
+        setCtaVisibility(false);
+        hasSimulationResult = false;
       };
 
       const extractShippingTotal = (data) => {
@@ -571,8 +587,8 @@
         returnInsuranceInput,
         insuredValueInput,
       ].forEach((input) => {
-        input.addEventListener("change", calculate);
-        input.addEventListener("input", calculate);
+        input.addEventListener("change", handleInputChange);
+        input.addEventListener("input", handleInputChange);
       });
 
       updateOptionToggleText();
@@ -616,6 +632,7 @@
         calculate();
         setInitialSimulationDisplay();
         setCtaVisibility(false);
+        hasSimulationResult = false;
       };
 
       const openModal = () => {
@@ -628,25 +645,10 @@
         estimateModal.hidden = true;
       };
 
-      estimateButton.addEventListener("click", openModal);
-      closeModal.addEventListener("click", closeEstimateModal);
-      estimateModal.addEventListener("click", (event) => {
-        if (event.target === estimateModal) {
-          closeEstimateModal();
-        }
-      });
+      const isCompanyNameRequired = () =>
+        COMPANY_NAME_REQUIRED_PLANS.includes(planInput.value);
 
-      retryButton.addEventListener("click", () => {
-        resultScreen.hidden = true;
-        inputScreen.hidden = false;
-        setInputError("");
-        resetInputs();
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-
-      createPdf.addEventListener("click", () => {
-        const companyName = companyNameInput.value.trim();
-        companyError.hidden = true;
+      const generatePdf = (companyName) => {
         const totalPrice = totalOutput.textContent;
         const estimateDate = new Date().toLocaleDateString("ja-JP");
         const companyLine = companyName
@@ -754,6 +756,7 @@
               <ul class="notes">
                 <li>※ 送料は実重量と容積重量を比較したうえで、数値が大きい方を基準に算出しております。</li>
                 <li>※サーチャージには下記の項目が含まれています。<br />① 燃料サーチャージ（必ず発生し、適用期間により変動します）<br />② その他追加サーチャージ（国際運送会社および適用期間により追加される費用です）</li>
+                <li>※本見積書の有効期限は、見積日を起算日とし、当該週の日曜日までとします。</li>
               </ul>
             </body>
           </html>
@@ -761,6 +764,34 @@
         previewWindow.document.close();
         previewWindow.focus();
         previewWindow.print();
+      };
+
+      estimateButton.addEventListener("click", () => {
+        if (isCompanyNameRequired()) {
+          openModal();
+          return;
+        }
+        generatePdf("");
+      });
+      closeModal.addEventListener("click", closeEstimateModal);
+      estimateModal.addEventListener("click", (event) => {
+        if (event.target === estimateModal) {
+          closeEstimateModal();
+        }
+      });
+
+      retryButton.addEventListener("click", () => {
+        resultScreen.hidden = true;
+        inputScreen.hidden = false;
+        setInputError("");
+        resetInputs();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      createPdf.addEventListener("click", () => {
+        const companyName = companyNameInput.value.trim();
+        companyError.hidden = true;
+        generatePdf(companyName);
         closeEstimateModal();
       });
 
@@ -856,12 +887,14 @@
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "円";
               setCtaVisibility(true);
+              hasSimulationResult = true;
             } else {
               totalOutput.textContent = "算出結果が取得できませんでした";
               totalOutput.classList.add("total-price-message");
               totalOutput.classList.remove("total-price-pending");
               totalUnit.textContent = "";
-              setCtaVisibility(true);
+              setCtaVisibility(false);
+              hasSimulationResult = false;
             }
           } else {
             const errorText = await response.text();
@@ -870,7 +903,8 @@
             totalOutput.classList.add("total-price-message");
             totalOutput.classList.remove("total-price-pending");
             totalUnit.textContent = "";
-            setCtaVisibility(true);
+            setCtaVisibility(false);
+            hasSimulationResult = false;
           }
         } catch (error) {
           console.error("GAS request failed", error);
@@ -879,7 +913,8 @@
           totalOutput.classList.add("total-price-message");
           totalOutput.classList.remove("total-price-pending");
           totalUnit.textContent = "";
-          setCtaVisibility(true);
+          setCtaVisibility(false);
+          hasSimulationResult = false;
           try {
             logMessage("no-cors モードで再送信を試行します...");
             const fallbackResponse = await fetch(GAS_ENDPOINT, {
