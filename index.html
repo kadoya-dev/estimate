@@ -20,8 +20,14 @@
         <section class="simulation-card">
           <div class="input-grid">
             <label class="field-label" for="country">送り先国（必須）</label>
-            <div class="select-wrap select-wrap--no-arrow">
-              <select id="country" class="field-select field-select--left"></select>
+            <div class="country-select-row">
+              <div class="select-wrap select-wrap--no-arrow">
+                <select id="country" class="field-select field-select--left"></select>
+              </div>
+              <p class="field-note field-note--inline" id="chinaNotice" hidden>
+                ※「中国南部」は重慶市、福建省、広東省、湖南省、江西省、広西チワン族自治区、海南省、雲南省<br />
+                「中国北部」は上記以外を指します
+              </p>
             </div>
 
             <span class="field-label">サイズ（必須）</span>
@@ -256,6 +262,14 @@
           <button class="cta-button" type="button" id="simulateButton">
             シミュレーションを実行する
           </button>
+          <a
+            class="secondary-button secondary-button--outline"
+            href="https://forms.gle/cbn4CHYc1obw9maU7"
+            target="_blank"
+            rel="noreferrer"
+          >
+            お問合せはこちら
+          </a>
         </div>
         <p class="error-message" id="inputError" hidden></p>
       </div>
@@ -281,21 +295,11 @@
             </a>
           </div>
           <div class="cta-row-group">
-            <button class="secondary-button" type="button" id="estimateButton">
-              結果をPDFで出力
-            </button>
-            <a
-              class="secondary-button"
-              href="https://forms.gle/cbn4CHYc1obw9maU7"
-              target="_blank"
-              rel="noreferrer"
-            >
-              お問合せはこちら
-            </a>
-          </div>
-          <div class="cta-row-group">
             <button class="secondary-button" type="button" id="retryButton">
               見積りをやり直す
+            </button>
+            <button class="secondary-button" type="button" id="estimateButton">
+              結果をPDFで出力
             </button>
           </div>
         </section>
@@ -342,6 +346,7 @@
       const weightInput = document.getElementById("weight");
       const totalOutput = document.getElementById("totalPrice");
       const totalUnit = document.getElementById("totalUnit");
+      const chinaNotice = document.getElementById("chinaNotice");
       const optionToggle = document.getElementById("optionToggle");
       const optionPanel = document.getElementById("optionPanel");
       const simulateButton = document.getElementById("simulateButton");
@@ -434,6 +439,17 @@
         option.textContent = country.label;
         countryInput.appendChild(option);
       });
+
+      const updateChinaNotice = () => {
+        if (!chinaNotice) {
+          return;
+        }
+        const selectedLabel =
+          countryInput.selectedOptions[0]?.textContent || "";
+        const shouldShow =
+          selectedLabel.includes("中国北部") || selectedLabel.includes("中国南部");
+        chinaNotice.hidden = !shouldShow;
+      };
 
       const updateOptionToggleText = () => {
         optionToggle.textContent = optionPanel.hidden
@@ -608,9 +624,15 @@
         input.addEventListener("change", handleInputChange);
         input.addEventListener("input", handleInputChange);
       });
+      countryInput.addEventListener("change", () => {
+        updateChinaNotice();
+        handleInputChange();
+      });
+      countryInput.addEventListener("input", updateChinaNotice);
 
       updateOptionToggleText();
       updateCargoInsuranceState();
+      updateChinaNotice();
       calculate();
       setInitialSimulationDisplay();
       setCtaVisibility(false);
