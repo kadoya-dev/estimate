@@ -45,4 +45,5 @@ const COUNTRY_NAMES = [
   { label: "ケニア", value: "Kenya" },
   { label: "南アフリカ", value: "South Africa" },
   { label: "ジンバブエ", value: "Zimbabwe" },
+  { label: "その他", value: "Other" },
 ];

@@ -28,6 +28,9 @@
                 ※「中国南部」は重慶市、福建省、広東省、湖南省、江西省、広西チワン族自治区、海南省、雲南省<br />
                 「中国北部」は上記以外を指します
               </p>
+              <p class="field-note field-note--alert" id="otherCountryNotice" hidden>
+                リストに選択肢がない国への発送は個別に見積もりいたします。お手数ですが、「お問合せはこちら」からご連絡ください
+              </p>
             </div>
 
             <span class="field-label">サイズ（必須）</span>
@@ -347,6 +350,7 @@
       const totalOutput = document.getElementById("totalPrice");
       const totalUnit = document.getElementById("totalUnit");
       const chinaNotice = document.getElementById("chinaNotice");
+      const otherCountryNotice = document.getElementById("otherCountryNotice");
       const optionToggle = document.getElementById("optionToggle");
       const optionPanel = document.getElementById("optionPanel");
       const simulateButton = document.getElementById("simulateButton");
@@ -449,6 +453,16 @@
         const shouldShow =
           selectedLabel.includes("中国北部") || selectedLabel.includes("中国南部");
         chinaNotice.hidden = !shouldShow;
+      };
+
+      const isOtherCountrySelected = () =>
+        countryInput.selectedOptions[0]?.textContent === "その他";
+
+      const updateOtherCountryState = () => {
+        if (otherCountryNotice) {
+          otherCountryNotice.hidden = !isOtherCountrySelected();
+        }
+        simulateButton.disabled = isOtherCountrySelected();
       };
 
       const updateOptionToggleText = () => {
@@ -626,13 +640,18 @@
       });
       countryInput.addEventListener("change", () => {
         updateChinaNotice();
+        updateOtherCountryState();
         handleInputChange();
       });
-      countryInput.addEventListener("input", updateChinaNotice);
+      countryInput.addEventListener("input", () => {
+        updateChinaNotice();
+        updateOtherCountryState();
+      });
 
       updateOptionToggleText();
       updateCargoInsuranceState();
       updateChinaNotice();
+      updateOtherCountryState();
       calculate();
       setInitialSimulationDisplay();
       setCtaVisibility(false);
@@ -671,6 +690,7 @@
         optionPanel.hidden = true;
         updateOptionToggleText();
         updateCargoInsuranceState();
+        updateOtherCountryState();
         calculate();
         setInitialSimulationDisplay();
         setCtaVisibility(false);
