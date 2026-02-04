@@ -319,6 +319,12 @@ body {
   padding: 10px 8px;
 }
 
+.field-input--dimension {
+  width: 72px;
+  text-align: center;
+  padding: 10px 8px;
+}
+
 .checkbox-row {
   display: inline-flex;
   align-items: center;
@@ -351,13 +357,6 @@ body {
   margin-top: 8px;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.secondary-button--outline {
-  background: #ffffff;
-  border: 2px solid #0b9e16;
-  color: #0b3d14;
-  box-shadow: none;
 }
 
 .error-message {
@@ -461,8 +460,22 @@ body {
 
 .cta-button--primary {
   padding: 18px 40px;
-  font-size: 1.1rem;
-  min-width: 240px;
+  font-size: 1.15rem;
+  min-width: 260px;
+  background: #fcff52;
+  color: #0b3d14;
+  box-shadow: 0 16px 30px rgba(252, 255, 82, 0.35);
+  border: 2px solid #e2e64b;
+}
+
+.cta-button--primary:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 20px 36px rgba(252, 255, 82, 0.45);
+}
+
+.cta-button--primary:focus-visible {
+  outline: 3px solid #fff2a8;
+  outline-offset: 4px;
 }
 
 .secondary-button {
@@ -483,11 +496,33 @@ body {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.secondary-button.secondary-button--outline {
+  background: #ffffff;
+  border: 2px solid #0d9217;
+  color: #0d9217;
+  box-shadow: 0 12px 24px rgba(13, 146, 23, 0.18);
+}
+
+.secondary-button.secondary-button--outline:hover {
+  box-shadow: 0 16px 30px rgba(13, 146, 23, 0.3);
+}
+
 #retryButton {
   background: #ffffff;
   color: #0d9217;
   border: 2px solid #0d9217;
   box-shadow: 0 12px 24px rgba(13, 146, 23, 0.18);
+}
+
+#estimateButton {
+  background: #0b9e16;
+  color: #ffffff;
+  border: 2px solid #0b7d12;
+  box-shadow: 0 12px 24px rgba(11, 158, 22, 0.35);
+}
+
+#estimateButton:hover {
+  box-shadow: 0 16px 30px rgba(11, 158, 22, 0.45);
 }
 
 #retryButton:hover {
