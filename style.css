@@ -359,17 +359,6 @@ body {
   flex-wrap: wrap;
 }
 
-.secondary-button--outline {
-  background: #ffffff;
-  border: 2px solid #0d9217;
-  color: #0d9217;
-  box-shadow: 0 12px 24px rgba(13, 146, 23, 0.18);
-}
-
-.secondary-button--outline:hover {
-  box-shadow: 0 16px 30px rgba(13, 146, 23, 0.3);
-}
-
 .error-message {
   margin-top: 8px;
   color: #d93025;
@@ -505,6 +494,17 @@ body {
   cursor: pointer;
   box-shadow: 0 12px 24px rgba(252, 255, 82, 0.35);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.secondary-button.secondary-button--outline {
+  background: #ffffff;
+  border: 2px solid #0d9217;
+  color: #0d9217;
+  box-shadow: 0 12px 24px rgba(13, 146, 23, 0.18);
+}
+
+.secondary-button.secondary-button--outline:hover {
+  box-shadow: 0 16px 30px rgba(13, 146, 23, 0.3);
 }
 
 #retryButton {
