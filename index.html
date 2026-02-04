@@ -36,139 +36,52 @@
             <span class="field-label">サイズ（必須）</span>
             <div class="dimension-group">
               <div class="dimension-row">
-                <div class="select-wrap">
-                  <select id="length" class="field-select">
-                    <option value="" selected></option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                    <option value="60">60</option>
-                    <option value="70">70</option>
-                    <option value="80">80</option>
-                    <option value="90">90</option>
-                    <option value="100">100</option>
-                    <option value="110">110</option>
-                    <option value="120">120</option>
-                    <option value="130">130</option>
-                    <option value="140">140</option>
-                    <option value="150">150</option>
-                    <option value="160">160</option>
-                    <option value="170">170</option>
-                    <option value="180">180</option>
-                    <option value="190">190</option>
-                    <option value="200">200</option>
-                    <option value="210">210</option>
-                    <option value="220">220</option>
-                    <option value="230">230</option>
-                    <option value="240">240</option>
-                    <option value="250">250</option>
-                    <option value="260">260</option>
-                    <option value="270">270</option>
-                  </select>
-                </div>
+                <input
+                  id="length"
+                  class="field-input field-input--dimension"
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                />
                 <span class="unit">cm</span>
               </div>
               <span class="dimension-multiply">×</span>
               <div class="dimension-row">
-                <div class="select-wrap">
-                  <select id="width" class="field-select">
-                    <option value="" selected></option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                    <option value="60">60</option>
-                    <option value="70">70</option>
-                    <option value="80">80</option>
-                    <option value="90">90</option>
-                    <option value="100">100</option>
-                    <option value="110">110</option>
-                    <option value="120">120</option>
-                    <option value="130">130</option>
-                    <option value="140">140</option>
-                    <option value="150">150</option>
-                    <option value="160">160</option>
-                    <option value="170">170</option>
-                    <option value="180">180</option>
-                    <option value="190">190</option>
-                    <option value="200">200</option>
-                    <option value="210">210</option>
-                    <option value="220">220</option>
-                    <option value="230">230</option>
-                    <option value="240">240</option>
-                    <option value="250">250</option>
-                    <option value="260">260</option>
-                    <option value="270">270</option>
-                  </select>
-                </div>
+                <input
+                  id="width"
+                  class="field-input field-input--dimension"
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                />
                 <span class="unit">cm</span>
               </div>
               <span class="dimension-multiply">×</span>
               <div class="dimension-row">
-                <div class="select-wrap">
-                  <select id="height" class="field-select">
-                    <option value="" selected></option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="30">30</option>
-                    <option value="40">40</option>
-                    <option value="50">50</option>
-                    <option value="60">60</option>
-                    <option value="70">70</option>
-                    <option value="80">80</option>
-                    <option value="90">90</option>
-                    <option value="100">100</option>
-                    <option value="110">110</option>
-                    <option value="120">120</option>
-                    <option value="130">130</option>
-                    <option value="140">140</option>
-                    <option value="150">150</option>
-                    <option value="160">160</option>
-                    <option value="170">170</option>
-                    <option value="180">180</option>
-                    <option value="190">190</option>
-                    <option value="200">200</option>
-                    <option value="210">210</option>
-                    <option value="220">220</option>
-                    <option value="230">230</option>
-                    <option value="240">240</option>
-                    <option value="250">250</option>
-                    <option value="260">260</option>
-                    <option value="270">270</option>
-                  </select>
-                </div>
+                <input
+                  id="height"
+                  class="field-input field-input--dimension"
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                />
                 <span class="unit">cm</span>
               </div>
             </div>
 
             <label class="field-label" for="weight">重さ（必須）</label>
             <div class="weight-row">
-              <div class="select-wrap">
-                <select id="weight" class="field-select">
-                    <option value="" selected></option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                    <option value="20">20</option>
-                    <option value="25">25</option>
-                    <option value="30">30</option>
-                    <option value="35">35</option>
-                    <option value="40">40</option>
-                    <option value="45">45</option>
-                    <option value="50">50</option>
-                    <option value="55">55</option>
-                    <option value="60">60</option>
-                    <option value="65">65</option>
-                    <option value="70">70</option>
-                </select>
-              </div>
+              <input
+                id="weight"
+                class="field-input field-input--dimension"
+                type="number"
+                min="0"
+                step="1"
+                inputmode="numeric"
+              />
               <span class="unit">kg</span>
             </div>
           </div>
@@ -290,7 +203,7 @@
           <div class="cta-row-group">
             <a
               class="cta-button cta-button--primary"
-              href="https://docs.google.com/forms/d/e/1FAIpQLSeXNte-uwfs4oDoWZVvpVkpKte16sbaR8dbRVCldun4vzNAyw/viewform?usp=pp_url&entry.1267146174=%E3%82%A2%E3%83%A1%E3%83%AA%E3%82%AB%E5%90%88%E8%A1%86%E5%9B%BD&entry.1734532613=5&entry.1429645362=10+20+30"
+              href="https://forms.gle/ZMg5vsfgoxfMh3U9A"
               target="_blank"
               rel="noreferrer"
             >
