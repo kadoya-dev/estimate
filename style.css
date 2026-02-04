@@ -319,6 +319,12 @@ body {
   padding: 10px 8px;
 }
 
+.field-input--dimension {
+  width: 72px;
+  text-align: center;
+  padding: 10px 8px;
+}
+
 .checkbox-row {
   display: inline-flex;
   align-items: center;
