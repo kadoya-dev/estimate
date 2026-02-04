@@ -319,6 +319,12 @@ body {
   padding: 10px 8px;
 }
 
+.field-input--dimension {
+  width: 72px;
+  text-align: center;
+  padding: 10px 8px;
+}
+
 .checkbox-row {
   display: inline-flex;
   align-items: center;
@@ -461,8 +467,22 @@ body {
 
 .cta-button--primary {
   padding: 18px 40px;
-  font-size: 1.1rem;
-  min-width: 240px;
+  font-size: 1.15rem;
+  min-width: 260px;
+  background: linear-gradient(135deg, #ffe66b, #ffd000);
+  color: #0b3d14;
+  box-shadow: 0 16px 30px rgba(255, 208, 0, 0.35);
+  border: 2px solid #f1b900;
+}
+
+.cta-button--primary:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 20px 36px rgba(255, 208, 0, 0.45);
+}
+
+.cta-button--primary:focus-visible {
+  outline: 3px solid #ffe59a;
+  outline-offset: 4px;
 }
 
 .secondary-button {
@@ -488,6 +508,17 @@ body {
   color: #0d9217;
   border: 2px solid #0d9217;
   box-shadow: 0 12px 24px rgba(13, 146, 23, 0.18);
+}
+
+#estimateButton {
+  background: #0b9e16;
+  color: #ffffff;
+  border: 2px solid #0b7d12;
+  box-shadow: 0 12px 24px rgba(11, 158, 22, 0.35);
+}
+
+#estimateButton:hover {
+  box-shadow: 0 16px 30px rgba(11, 158, 22, 0.45);
 }
 
 #retryButton:hover {
