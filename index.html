@@ -319,6 +319,7 @@
       const countryInput = document.getElementById("country");
       const totalOutput = document.getElementById("totalPrice");
       const totalUnit = document.getElementById("totalUnit");
+      const totalLabel = document.querySelector(".total-label");
       const chinaNotice = document.getElementById("chinaNotice");
       const otherCountryNotice = document.getElementById("otherCountryNotice");
       const simulateButton = document.getElementById("simulateButton");
@@ -554,16 +555,12 @@
       };
 
       const setSimulationPending = () => {
-        totalOutput.innerHTML = `
-          <div class="shipping-loader" role="status" aria-live="polite">
-            <span class="truck">🛫</span>
-            <span class="text">送料算出中</span>
-            <div class="dots" aria-hidden="true">
-              <span></span><span></span><span></span>
-            </div>
-          </div>
-        `;
+        if (totalLabel) {
+          totalLabel.hidden = true;
+        }
+        totalOutput.textContent = "🛫送料算出中...";
         totalOutput.classList.add("total-price-pending");
+        totalOutput.classList.add("total-price-pending--center");
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "";
       };
@@ -592,8 +589,12 @@
       const setInitialSimulationDisplay = () => {
         totalOutput.textContent = "ー";
         totalOutput.classList.remove("total-price-pending");
+        totalOutput.classList.remove("total-price-pending--center");
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
+        if (totalLabel) {
+          totalLabel.hidden = false;
+        }
         if (simulateRow) {
           simulateRow.hidden = false;
         }
@@ -1185,7 +1186,11 @@
               totalOutput.textContent = formatNumber(shippingTotal);
               totalOutput.classList.remove("total-price-message");
               totalOutput.classList.remove("total-price-pending");
+              totalOutput.classList.remove("total-price-pending--center");
               totalUnit.textContent = "円";
+              if (totalLabel) {
+                totalLabel.hidden = false;
+              }
               setCtaVisibility(true);
               setDisclaimerVisibility(true);
               hasSimulationResult = true;
@@ -1196,7 +1201,11 @@
               totalOutput.textContent = "算出結果が取得できませんでした";
               totalOutput.classList.add("total-price-message");
               totalOutput.classList.remove("total-price-pending");
+              totalOutput.classList.remove("total-price-pending--center");
               totalUnit.textContent = "";
+              if (totalLabel) {
+                totalLabel.hidden = false;
+              }
               setCtaVisibility(false);
               setDisclaimerVisibility(false);
               hasSimulationResult = false;
@@ -1214,7 +1223,11 @@
             totalOutput.textContent = "通信に失敗しました";
             totalOutput.classList.add("total-price-message");
             totalOutput.classList.remove("total-price-pending");
+            totalOutput.classList.remove("total-price-pending--center");
             totalUnit.textContent = "";
+            if (totalLabel) {
+              totalLabel.hidden = false;
+            }
             setCtaVisibility(false);
             setDisclaimerVisibility(false);
             hasSimulationResult = false;
@@ -1232,7 +1245,11 @@
           totalOutput.textContent = "通信に失敗しました";
           totalOutput.classList.add("total-price-message");
           totalOutput.classList.remove("total-price-pending");
+          totalOutput.classList.remove("total-price-pending--center");
           totalUnit.textContent = "";
+          if (totalLabel) {
+            totalLabel.hidden = false;
+          }
           setCtaVisibility(false);
           setDisclaimerVisibility(false);
           hasSimulationResult = false;

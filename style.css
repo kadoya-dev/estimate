@@ -551,6 +551,11 @@ body {
   font-size: clamp(1.8rem, 4vw, 2.6rem);
 }
 
+.total-price-pending--center {
+  width: 100%;
+  text-align: center;
+}
+
 .shipping-loader {
   width: min(500px, 100%);
   height: 50px;
