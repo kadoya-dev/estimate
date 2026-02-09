@@ -549,7 +549,15 @@
       };
 
       const setSimulationPending = () => {
-        totalOutput.textContent = "計算中...";
+        totalOutput.innerHTML = `
+          <div class="shipping-loader" role="status" aria-live="polite">
+            <span class="truck">🚚</span>
+            <span class="text">送料を算出しています</span>
+            <div class="dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        `;
         totalOutput.classList.add("total-price-pending");
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "";
@@ -637,7 +645,6 @@
         const boxes = Array.from(boxList.querySelectorAll(".box-card"));
         let baseTotal = 0;
         let billableTotal = 0;
-        const billableByBox = [];
         let inspectionFee = 0;
         let packingFee = 0;
         let exportFee = 0;
@@ -657,7 +664,6 @@
           const volumetric = (length * width * height) / VOLUME_DIVISOR;
           const billable = Math.max(weight, Math.ceil(volumetric));
           billableTotal += billable;
-          billableByBox.push(billable);
           baseTotal += billable * PRICE_PER_KG;
 
           const productCountInput = box.querySelector(".box-product-count");
@@ -711,12 +717,7 @@
           returnInsuranceFee +
           cargoInsuranceFee;
         const total = baseTotal + optionTotal;
-        return {
-          billable: billableTotal,
-          billableByBox,
-          total,
-          hasError: false,
-        };
+        return { billable: billableTotal, total, hasError: false };
       };
 
       [invoiceInput, returnInsuranceInput, insuredValueInput].forEach(
@@ -1104,18 +1105,17 @@
         }));
         const payload = {
           destinationCountry: countryInput.value,
+          errorMessage: "",
           customerType: getCustomerType(),
           plan: getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip",
+          billableWeightKg: result?.billable,
           invoiceIssue: invoiceInput.checked,
           returnInsurance: returnInsuranceInput.checked,
           cargoInsurance: cargoInsuranceInput.checked,
           insuredValue: cargoInsuranceInput.checked
             ? Number(insuredValueInput.value || 0)
             : 0,
-          boxDetails: boxDetails.map((box, index) => ({
-            ...box,
-            billableWeightKg: result?.billableByBox?.[index] ?? 0,
-          })),
+          boxDetails,
         };
 
         resultScreen.hidden = false;
