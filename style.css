@@ -703,6 +703,18 @@ body {
   box-shadow: 0 12px 24px rgba(11, 158, 22, 0.35);
 }
 
+#estimateButton:hover,
+.secondary-button--accent:hover {
+  box-shadow: 0 16px 30px rgba(11, 158, 22, 0.45);
+}
+
+.secondary-button--accent {
+  background: #0b9e16;
+  color: #ffffff;
+  border: 2px solid #0b7d12;
+  box-shadow: 0 12px 24px rgba(11, 158, 22, 0.35);
+}
+
 #estimateButton:hover {
   box-shadow: 0 16px 30px rgba(11, 158, 22, 0.45);
 }

@@ -141,18 +141,10 @@
           </div>
         </section>
 
-        <div class="simulate-row">
+        <div class="simulate-row" id="simulateRow">
           <button class="cta-button" type="button" id="simulateButton">
             シミュレーションを実行する
           </button>
-          <a
-            class="secondary-button secondary-button--outline"
-            href="https://forms.gle/cbn4CHYc1obw9maU7"
-            target="_blank"
-            rel="noreferrer"
-          >
-            お問合せはこちら
-          </a>
         </div>
         <p class="error-message" id="inputError" hidden></p>
       </div>
@@ -182,6 +174,14 @@
             <button class="secondary-button" type="button" id="retryButton">
               見積りをやり直す
             </button>
+            <a
+              class="secondary-button secondary-button--accent"
+              href="https://forms.gle/cbn4CHYc1obw9maU7"
+              target="_blank"
+              rel="noreferrer"
+            >
+              お問合せはこちら
+            </a>
             <button class="secondary-button" type="button" id="estimateButton">
               結果をPDFで出力
             </button>
@@ -322,6 +322,7 @@
       const chinaNotice = document.getElementById("chinaNotice");
       const otherCountryNotice = document.getElementById("otherCountryNotice");
       const simulateButton = document.getElementById("simulateButton");
+      const simulateRow = document.getElementById("simulateRow");
       const inputScreen = document.getElementById("inputScreen");
       const resultScreen = document.getElementById("resultScreen");
       const customerTypeGroup = document.getElementById("customerTypeGroup");
@@ -592,6 +593,9 @@
         totalOutput.classList.remove("total-price-pending");
         totalOutput.classList.remove("total-price-message");
         totalUnit.textContent = "円";
+        if (simulateRow) {
+          simulateRow.hidden = false;
+        }
       };
       let hasSimulationResult = false;
       let latestReceiptNo = "";
@@ -1015,6 +1019,9 @@
           logOutput.textContent = "";
         }
         setInputError("");
+        if (simulateRow) {
+          simulateRow.hidden = true;
+        }
         const isValidCountry = countryOptions.some(
           (country) => country.value === countryInput.value
         );
@@ -1087,12 +1094,18 @@
         );
         if (missingField) {
           setInputError(`${missingField.label}を入力してください。`);
+          if (simulateRow) {
+            simulateRow.hidden = false;
+          }
           return;
         }
         const result = calculate();
         if (result?.hasError) {
           setInputError(CARGO_INSURANCE_MESSAGE);
           logMessage("運送保険の金額が未入力のため送信を中断しました。");
+          if (simulateRow) {
+            simulateRow.hidden = false;
+          }
           return;
         }
 
@@ -1175,6 +1188,9 @@
               setCtaVisibility(true);
               setDisclaimerVisibility(true);
               hasSimulationResult = true;
+              if (simulateRow) {
+                simulateRow.hidden = true;
+              }
             } else {
               totalOutput.textContent = "算出結果が取得できませんでした";
               totalOutput.classList.add("total-price-message");
@@ -1186,6 +1202,9 @@
               latestReceiptNo = "";
               if (applyLink) {
                 applyLink.href = APPLY_LINK_BASE;
+              }
+              if (simulateRow) {
+                simulateRow.hidden = false;
               }
             }
           } else {
@@ -1202,6 +1221,9 @@
             if (applyLink) {
               applyLink.href = APPLY_LINK_BASE;
             }
+            if (simulateRow) {
+              simulateRow.hidden = false;
+            }
           }
         } catch (error) {
           console.error("GAS request failed", error);
@@ -1216,6 +1238,9 @@
           latestReceiptNo = "";
           if (applyLink) {
             applyLink.href = APPLY_LINK_BASE;
+          }
+          if (simulateRow) {
+            simulateRow.hidden = false;
           }
           try {
             logMessage("no-cors モードで再送信を試行します...");
