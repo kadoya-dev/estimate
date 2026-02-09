@@ -143,7 +143,7 @@
 
         <div class="simulate-row" id="simulateRow">
           <button class="cta-button" type="button" id="simulateButton">
-            シミュレーションを実行する
+            見積り算出スタート
           </button>
         </div>
         <p class="error-message" id="inputError" hidden></p>
@@ -598,7 +598,7 @@
         }
       };
       let hasSimulationResult = false;
-      let latestReceiptNo = "";
+      let latestCustomerNumber = "";
 
       const resetSimulationIfNeeded = () => {
         if (!hasSimulationResult) {
@@ -609,7 +609,7 @@
         setDisclaimerVisibility(false);
         setTotalVisibility(false);
         hasSimulationResult = false;
-        latestReceiptNo = "";
+        latestCustomerNumber = "";
         if (applyLink) {
           applyLink.href = APPLY_LINK_BASE;
         }
@@ -631,15 +631,15 @@
         return null;
       };
 
-      const extractReceiptNo = (data) => {
+      const extractCustomerNumber = (data) => {
         if (!data || typeof data !== "object") {
           return "";
         }
-        if (typeof data.receiptNo === "string") {
-          return data.receiptNo;
+        if (typeof data.customerNumber === "string") {
+          return data.customerNumber;
         }
-        if (typeof data.receiptNo === "number") {
-          return String(data.receiptNo);
+        if (typeof data.customerNumber === "number") {
+          return String(data.customerNumber);
         }
         return "";
       };
@@ -876,8 +876,8 @@
           <tr><th>運送保険</th><td>${cargoInsuranceInput.checked ? "利用する" : "利用しない"}</td></tr>
           <tr><th>商品価格合計</th><td>${insuredValueInput.value || 0} 円</td></tr>
         `;
-        const receiptLine = latestReceiptNo
-          ? `<div class="receipt-no">顧客番号：${latestReceiptNo}</div>`
+        const receiptLine = latestCustomerNumber
+          ? `<div class="receipt-no">顧客番号：${latestCustomerNumber}</div>`
           : "";
         const previewWindow = window.open("", "_blank");
         if (!previewWindow) {
@@ -1171,10 +1171,10 @@
             logMessage(`GAS応答本文: ${responseText}`);
             const data = responseText ? JSON.parse(responseText) : {};
             const shippingTotal = extractShippingTotal(data);
-            latestReceiptNo = extractReceiptNo(data);
+            latestCustomerNumber = extractCustomerNumber(data);
             if (applyLink) {
-              if (latestReceiptNo) {
-                const receiptParam = encodeURIComponent(latestReceiptNo);
+              if (latestCustomerNumber) {
+                const receiptParam = encodeURIComponent(latestCustomerNumber);
                 applyLink.href = `${APPLY_LINK_BASE}?usp=pp_url&${RECEIPT_QUERY_PARAM}=${receiptParam}`;
               } else {
                 applyLink.href = APPLY_LINK_BASE;
@@ -1199,7 +1199,7 @@
               setCtaVisibility(false);
               setDisclaimerVisibility(false);
               hasSimulationResult = false;
-              latestReceiptNo = "";
+              latestCustomerNumber = "";
               if (applyLink) {
                 applyLink.href = APPLY_LINK_BASE;
               }
@@ -1217,7 +1217,7 @@
             setCtaVisibility(false);
             setDisclaimerVisibility(false);
             hasSimulationResult = false;
-            latestReceiptNo = "";
+            latestCustomerNumber = "";
             if (applyLink) {
               applyLink.href = APPLY_LINK_BASE;
             }
@@ -1235,7 +1235,7 @@
           setCtaVisibility(false);
           setDisclaimerVisibility(false);
           hasSimulationResult = false;
-          latestReceiptNo = "";
+          latestCustomerNumber = "";
           if (applyLink) {
             applyLink.href = APPLY_LINK_BASE;
           }
