@@ -280,23 +280,26 @@
             <span class="unit">kg</span>
           </div>
 
-          <label class="field-label">検品数</label>
+          <label class="field-label">商品数</label>
           <input
-            class="field-input field-input--narrow box-inspection"
+            class="field-input field-input--narrow box-product-count"
             type="number"
             min="0"
             max="99"
             value="0"
           />
 
-          <label class="field-label">梱包数</label>
-          <input
-            class="field-input field-input--narrow box-packing"
-            type="number"
-            min="0"
-            max="99"
-            value="0"
-          />
+          <span class="field-label">検品</span>
+          <label class="checkbox-row">
+            <input type="checkbox" class="box-inspection" />
+            <span>利用する</span>
+          </label>
+
+          <span class="field-label">梱包</span>
+          <label class="checkbox-row">
+            <input type="checkbox" class="box-packing" />
+            <span>利用する</span>
+          </label>
 
           <span class="field-label">輸出用段ボール</span>
           <label class="checkbox-row">
@@ -610,23 +613,22 @@
           billableTotal += billable;
           baseTotal += billable * PRICE_PER_KG;
 
-          const inspectionInput = box.querySelector(".box-inspection");
-          const packingInput = box.querySelector(".box-packing");
-          const inspectionCount = clamp(
-            Number(inspectionInput?.value || 0),
+          const productCountInput = box.querySelector(".box-product-count");
+          const productCount = clamp(
+            Number(productCountInput?.value || 0),
             0,
             99
           );
-          const packingCount = clamp(Number(packingInput?.value || 0), 0, 99);
-          if (inspectionInput) {
-            inspectionInput.value = inspectionCount;
-          }
-          if (packingInput) {
-            packingInput.value = packingCount;
+          if (productCountInput) {
+            productCountInput.value = productCount;
           }
 
-          inspectionFee += inspectionCount * INSPECTION_FEE_PER_ITEM;
-          packingFee += packingCount * PACKING_FEE_PER_ITEM;
+          inspectionFee += box.querySelector(".box-inspection")?.checked
+            ? productCount * INSPECTION_FEE_PER_ITEM
+            : 0;
+          packingFee += box.querySelector(".box-packing")?.checked
+            ? productCount * PACKING_FEE_PER_ITEM
+            : 0;
           exportFee += box.querySelector(".box-export")?.checked
             ? EXPORT_CARTON_FEE
             : 0;
@@ -782,12 +784,17 @@
           const width = box.querySelector(".box-width")?.value || "未選択";
           const height = box.querySelector(".box-height")?.value || "未選択";
           const weight = box.querySelector(".box-weight")?.value || "未選択";
-          const inspection = box.querySelector(".box-inspection")?.value || 0;
-          const packing = box.querySelector(".box-packing")?.value || 0;
+          const productCount = box.querySelector(".box-product-count")?.value || 0;
+          const inspection = box.querySelector(".box-inspection")?.checked
+            ? "利用する"
+            : "利用しない";
+          const packing = box.querySelector(".box-packing")?.checked
+            ? "利用する"
+            : "利用しない";
           const exportCarton = box.querySelector(".box-export")?.checked
             ? "利用する"
             : "利用しない";
-          return `#${index + 1}: ${length} × ${width} × ${height} cm / ${weight} kg / 検品数 ${inspection} / 梱包数 ${packing} / 輸出用段ボール ${exportCarton}`;
+          return `#${index + 1}: ${length} × ${width} × ${height} cm / ${weight} kg / 商品数 ${productCount} / 検品 ${inspection} / 梱包 ${packing} / 輸出用段ボール ${exportCarton}`;
         });
         const inputRows = `
           <tr><th>送り先国</th><td>${selectedCountryLabel || "未選択"}</td></tr>
@@ -1000,10 +1007,11 @@
           width: Number(box.querySelector(".box-width")?.value || 0),
           height: Number(box.querySelector(".box-height")?.value || 0),
           weight: Number(box.querySelector(".box-weight")?.value || 0),
-          inspectionCount: Number(
-            box.querySelector(".box-inspection")?.value || 0
+          productCount: Number(
+            box.querySelector(".box-product-count")?.value || 0
           ),
-          packingCount: Number(box.querySelector(".box-packing")?.value || 0),
+          inspection: box.querySelector(".box-inspection")?.checked || false,
+          packing: box.querySelector(".box-packing")?.checked || false,
           exportCarton: box.querySelector(".box-export")?.checked || false,
         }));
         const payload = {
