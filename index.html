@@ -1105,8 +1105,12 @@
           productCount: Number(
             box.querySelector(".box-product-count")?.value || 0
           ),
-          inspection: box.querySelector(".box-inspection")?.checked || false,
-          packing: box.querySelector(".box-packing")?.checked || false,
+          inspectionCount: box.querySelector(".box-inspection")?.checked
+            ? Number(box.querySelector(".box-product-count")?.value || 0)
+            : 0,
+          packingCount: box.querySelector(".box-packing")?.checked
+            ? Number(box.querySelector(".box-product-count")?.value || 0)
+            : 0,
           exportCarton: box.querySelector(".box-export")?.checked || false,
         }));
         const payload = {

@@ -421,28 +421,6 @@ body {
   margin-top: 28px;
 }
 
-.remove-box-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.box-grid {
-  display: grid;
-  grid-template-columns: 160px minmax(0, 1fr);
-  gap: 16px 20px;
-  align-items: center;
-}
-
-.result-trigger {
-  margin-top: 24px;
-  display: flex;
-  justify-content: center;
-}
-
-.result-screen {
-  margin-top: 28px;
-}
-
 .option-panel {
   border: 1px solid #cfe8d1;
   border-radius: 12px;
