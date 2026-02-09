@@ -558,7 +558,15 @@
         if (totalLabel) {
           totalLabel.hidden = true;
         }
-        totalOutput.textContent = "🛫送料算出中...";
+        totalOutput.innerHTML = `
+          <div class="shipping-loader" role="status" aria-live="polite">
+            <span class="truck">🛫</span>
+            <span class="text">送料を算出しています</span>
+            <div class="dots" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+        `;
         totalOutput.classList.add("total-price-pending");
         totalOutput.classList.add("total-price-pending--center");
         totalOutput.classList.remove("total-price-message");
