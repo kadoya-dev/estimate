@@ -173,6 +173,7 @@
               href="https://forms.gle/ZMg5vsfgoxfMh3U9A"
               target="_blank"
               rel="noreferrer"
+              id="applyLink"
             >
               申し込みはこちら
             </a>
@@ -338,6 +339,7 @@
       const estimateModal = document.getElementById("estimateModal");
       const closeModal = document.getElementById("closeModal");
       const createPdf = document.getElementById("createPdf");
+      const applyLink = document.getElementById("applyLink");
       const companyNameInput = document.getElementById("companyName");
       const companyError = document.getElementById("companyError");
       const logOutput = document.getElementById("logOutput");
@@ -346,6 +348,8 @@
       const totalRow = document.querySelector(".total-row");
       const disclaimer = document.querySelector(".disclaimer");
       const COMPANY_NAME_REQUIRED_PLANS = ["worldShipForBiz", "LOGIFIT"];
+      const APPLY_LINK_BASE = "https://forms.gle/ZMg5vsfgoxfMh3U9A";
+      const RECEIPT_QUERY_PARAM = "entry.1696897520";
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -579,6 +583,7 @@
         totalUnit.textContent = "円";
       };
       let hasSimulationResult = false;
+      let latestReceiptNo = "";
 
       const resetSimulationIfNeeded = () => {
         if (!hasSimulationResult) {
@@ -589,6 +594,10 @@
         setDisclaimerVisibility(false);
         setTotalVisibility(false);
         hasSimulationResult = false;
+        latestReceiptNo = "";
+        if (applyLink) {
+          applyLink.href = APPLY_LINK_BASE;
+        }
       };
 
       const extractShippingTotal = (data) => {
@@ -605,6 +614,19 @@
           return data.simulationTotal;
         }
         return null;
+      };
+
+      const extractReceiptNo = (data) => {
+        if (!data || typeof data !== "object") {
+          return "";
+        }
+        if (typeof data.receiptNo === "string") {
+          return data.receiptNo;
+        }
+        if (typeof data.receiptNo === "number") {
+          return String(data.receiptNo);
+        }
+        return "";
       };
 
       const calculate = () => {
@@ -839,6 +861,9 @@
           <tr><th>運送保険</th><td>${cargoInsuranceInput.checked ? "利用する" : "利用しない"}</td></tr>
           <tr><th>商品価格合計</th><td>${insuredValueInput.value || 0} 円</td></tr>
         `;
+        const receiptLine = latestReceiptNo
+          ? `<div class="receipt-no">顧客番号：${latestReceiptNo}</div>`
+          : "";
         const previewWindow = window.open("", "_blank");
         if (!previewWindow) {
           return;
@@ -860,6 +885,11 @@
                   justify-content: space-between;
                   align-items: flex-start;
                   margin-bottom: 16px;
+                }
+                .receipt-no {
+                  font-size: 0.95rem;
+                  font-weight: 600;
+                  margin-bottom: 6px;
                 }
                 h1 {
                   font-size: 24px;
@@ -915,6 +945,7 @@
               </style>
             </head>
             <body>
+              ${receiptLine}
               <div class="header-row">
                 <h1>見積書</h1>
                 <div class="estimate-date">見積り日: ${estimateDate}</div>
@@ -1101,6 +1132,15 @@
             logMessage(`GAS応答本文: ${responseText}`);
             const data = responseText ? JSON.parse(responseText) : {};
             const shippingTotal = extractShippingTotal(data);
+            latestReceiptNo = extractReceiptNo(data);
+            if (applyLink) {
+              if (latestReceiptNo) {
+                const receiptParam = encodeURIComponent(latestReceiptNo);
+                applyLink.href = `${APPLY_LINK_BASE}?usp=pp_url&${RECEIPT_QUERY_PARAM}=${receiptParam}`;
+              } else {
+                applyLink.href = APPLY_LINK_BASE;
+              }
+            }
             if (typeof shippingTotal === "number") {
               totalOutput.textContent = formatNumber(shippingTotal);
               totalOutput.classList.remove("total-price-message");
@@ -1117,6 +1157,10 @@
               setCtaVisibility(false);
               setDisclaimerVisibility(false);
               hasSimulationResult = false;
+              latestReceiptNo = "";
+              if (applyLink) {
+                applyLink.href = APPLY_LINK_BASE;
+              }
             }
           } else {
             const errorText = await response.text();
@@ -1128,6 +1172,10 @@
             setCtaVisibility(false);
             setDisclaimerVisibility(false);
             hasSimulationResult = false;
+            latestReceiptNo = "";
+            if (applyLink) {
+              applyLink.href = APPLY_LINK_BASE;
+            }
           }
         } catch (error) {
           console.error("GAS request failed", error);
@@ -1139,6 +1187,10 @@
           setCtaVisibility(false);
           setDisclaimerVisibility(false);
           hasSimulationResult = false;
+          latestReceiptNo = "";
+          if (applyLink) {
+            applyLink.href = APPLY_LINK_BASE;
+          }
           try {
             logMessage("no-cors モードで再送信を試行します...");
             const fallbackResponse = await fetch(GAS_ENDPOINT, {
