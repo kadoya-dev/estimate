@@ -1079,6 +1079,22 @@
               isInvalid: () => true,
             });
           }
+          const lengthValue = Number(box.querySelector(".box-length")?.value || 0);
+          const widthValue = Number(box.querySelector(".box-width")?.value || 0);
+          const heightValue = Number(box.querySelector(".box-height")?.value || 0);
+          const weightValue = Number(box.querySelector(".box-weight")?.value || 0);
+          if (
+            lengthValue === 0 ||
+            widthValue === 0 ||
+            heightValue === 0 ||
+            weightValue === 0
+          ) {
+            requiredInputs.push({
+              field: box.querySelector(".box-length"),
+              label: "正確な数値を入力ください",
+              isInvalid: () => true,
+            });
+          }
           requiredInputs.push(
             {
               field: box.querySelector(".box-length"),
