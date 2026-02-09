@@ -147,6 +147,18 @@ body {
   color: #0b3d14;
 }
 
+.required-note {
+  color: #d93025;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.required-mark {
+  color: #d93025;
+  margin-left: 4px;
+  font-weight: 700;
+}
+
 .select-wrap {
   position: relative;
   display: inline-block;
@@ -237,6 +249,26 @@ body {
   gap: 8px;
 }
 
+.radio-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.radio-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.plan-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .weight-result-row {
   display: flex;
   align-items: center;
@@ -283,6 +315,87 @@ body {
   gap: 16px;
 }
 
+.box-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.box-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.box-section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0b3d14;
+}
+
+.add-box-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid #0d9217;
+  background: #ffffff;
+  color: #0d9217;
+  font-size: 1.4rem;
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.box-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.box-card {
+  border: 1px solid #cfe8d1;
+  border-radius: 12px;
+  padding: 16px;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.box-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.box-card-title {
+  font-weight: 700;
+  color: #0b3d14;
+}
+
+.remove-box-button {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid #d93025;
+  background: #ffffff;
+  color: #d93025;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.remove-box-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.box-grid {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  gap: 16px 20px;
+  align-items: center;
+}
+
 .result-trigger {
   margin-top: 24px;
   display: flex;
@@ -291,16 +404,6 @@ body {
 
 .result-screen {
   margin-top: 28px;
-}
-
-.option-toggle {
-  align-self: flex-start;
-  padding: 8px 18px;
-  border-radius: 20px;
-  border: 2px solid #1a1a1a;
-  background: #ffffff;
-  font-weight: 700;
-  cursor: pointer;
 }
 
 .option-panel {
@@ -431,6 +534,57 @@ body {
 .total-price-pending {
   color: #0b3d14;
   font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.shipping-loader {
+  width: min(500px, 100%);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 0 20px;
+  box-sizing: border-box;
+  gap: 10px;
+}
+
+.shipping-loader .truck {
+  margin-right: 4px;
+}
+
+.shipping-loader .text {
+  font-weight: 600;
+}
+
+.shipping-loader .dots span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-left: 4px;
+  background: #3b82f6;
+  border-radius: 50%;
+  animation: shipping-blink 1.4s infinite both;
+}
+
+.shipping-loader .dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.shipping-loader .dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes shipping-blink {
+  0% {
+    opacity: 0.2;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.2;
+  }
 }
 
 .cta-row {
@@ -645,6 +799,10 @@ body {
   }
 
   .option-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .box-grid {
     grid-template-columns: 1fr;
   }
 }
