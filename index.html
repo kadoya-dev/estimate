@@ -145,14 +145,6 @@
           <button class="cta-button" type="button" id="simulateButton">
             見積り算出スタート
           </button>
-          <a
-            class="secondary-button secondary-button--outline"
-            href="https://forms.gle/cbn4CHYc1obw9maU7"
-            target="_blank"
-            rel="noreferrer"
-          >
-            お問合せはこちら
-          </a>
         </div>
         <p class="error-message" id="inputError" hidden></p>
       </div>
@@ -563,8 +555,8 @@
       const setSimulationPending = () => {
         totalOutput.innerHTML = `
           <div class="shipping-loader" role="status" aria-live="polite">
-            <span class="truck">🚚</span>
-            <span class="text">送料を算出しています</span>
+            <span class="truck">🛫</span>
+            <span class="text">送料算出中</span>
             <div class="dots" aria-hidden="true">
               <span></span><span></span><span></span>
             </div>
