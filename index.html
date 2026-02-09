@@ -1096,26 +1096,35 @@
           return;
         }
 
-        const boxDetails = boxCards.map((box, index) => ({
-          index: index + 1,
-          length: Number(box.querySelector(".box-length")?.value || 0),
-          width: Number(box.querySelector(".box-width")?.value || 0),
-          height: Number(box.querySelector(".box-height")?.value || 0),
-          weight: Number(box.querySelector(".box-weight")?.value || 0),
-          productCount: Number(
+        const boxDetails = boxCards.map((box, index) => {
+          const length = Number(box.querySelector(".box-length")?.value || 0);
+          const width = Number(box.querySelector(".box-width")?.value || 0);
+          const height = Number(box.querySelector(".box-height")?.value || 0);
+          const weight = Number(box.querySelector(".box-weight")?.value || 0);
+          const volumetric = (length * width * height) / VOLUME_DIVISOR;
+          const billableWeightKg = Math.max(weight, Math.ceil(volumetric));
+          const productCount = Number(
             box.querySelector(".box-product-count")?.value || 0
-          ),
-          inspectionCount: box.querySelector(".box-inspection")?.checked
-            ? Number(box.querySelector(".box-product-count")?.value || 0)
-            : 0,
-          packingCount: box.querySelector(".box-packing")?.checked
-            ? Number(box.querySelector(".box-product-count")?.value || 0)
-            : 0,
-          exportCarton: box.querySelector(".box-export")?.checked || false,
-        }));
+          );
+          return {
+            index: index + 1,
+            length,
+            width,
+            height,
+            weight,
+            billableWeightKg,
+            productCount,
+            inspectionCount: box.querySelector(".box-inspection")?.checked
+              ? productCount
+              : 0,
+            packingCount: box.querySelector(".box-packing")?.checked
+              ? productCount
+              : 0,
+            exportCarton: box.querySelector(".box-export")?.checked || false,
+          };
+        });
         const payload = {
           destinationCountry: countryInput.value,
-          errorMessage: "",
           customerType: getCustomerType(),
           plan: getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip",
           billableWeightKg: result?.billable,
