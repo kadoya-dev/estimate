@@ -71,12 +71,12 @@
             <div class="plan-group" id="planGroup" hidden>
               <div class="radio-group">
                 <label class="radio-row">
-                  <input type="radio" name="plan" value="worldShipForBiz" />
-                  <span>ワールドship for Biz</span>
-                </label>
-                <label class="radio-row">
                   <input type="radio" name="plan" value="LOGIFIT" />
                   <span>LOGIFIT</span>
+                </label>
+                <label class="radio-row">
+                  <input type="radio" name="plan" value="worldShipForBiz" />
+                  <span>ワールドship for Biz</span>
                 </label>
               </div>
               <p class="field-note">
@@ -173,6 +173,7 @@
               href="https://forms.gle/ZMg5vsfgoxfMh3U9A"
               target="_blank"
               rel="noreferrer"
+              id="applyLink"
             >
               申し込みはこちら
             </a>
@@ -289,6 +290,11 @@
             value="0"
           />
 
+          <span class="field-label"></span>
+          <p class="field-note field-note--alert box-product-error" hidden>
+            ※商品数を入力ください
+          </p>
+
           <span class="field-label">検品</span>
           <label class="checkbox-row">
             <input type="checkbox" class="box-inspection" />
@@ -333,6 +339,7 @@
       const estimateModal = document.getElementById("estimateModal");
       const closeModal = document.getElementById("closeModal");
       const createPdf = document.getElementById("createPdf");
+      const applyLink = document.getElementById("applyLink");
       const companyNameInput = document.getElementById("companyName");
       const companyError = document.getElementById("companyError");
       const logOutput = document.getElementById("logOutput");
@@ -341,6 +348,8 @@
       const totalRow = document.querySelector(".total-row");
       const disclaimer = document.querySelector(".disclaimer");
       const COMPANY_NAME_REQUIRED_PLANS = ["worldShipForBiz", "LOGIFIT"];
+      const APPLY_LINK_BASE = "https://forms.gle/ZMg5vsfgoxfMh3U9A";
+      const RECEIPT_QUERY_PARAM = "entry.1696897520";
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -483,6 +492,7 @@
         }
         boxList.appendChild(fragment);
         updateRemoveButtons();
+        updateProductCountErrors();
       };
 
       addBoxButton.addEventListener("click", addBox);
@@ -496,7 +506,24 @@
         }
       };
 
+      const updateProductCountErrors = () => {
+        const boxes = Array.from(boxList.querySelectorAll(".box-card"));
+        boxes.forEach((box) => {
+          const productCount = Number(
+            box.querySelector(".box-product-count")?.value || 0
+          );
+          const needsCount =
+            box.querySelector(".box-inspection")?.checked ||
+            box.querySelector(".box-packing")?.checked;
+          const productCountError = box.querySelector(".box-product-error");
+          if (productCountError) {
+            productCountError.hidden = !(needsCount && productCount <= 0);
+          }
+        });
+      };
+
       const handleInputChange = () => {
+        updateProductCountErrors();
         calculate();
         resetSimulationIfNeeded();
       };
@@ -556,6 +583,7 @@
         totalUnit.textContent = "円";
       };
       let hasSimulationResult = false;
+      let latestReceiptNo = "";
 
       const resetSimulationIfNeeded = () => {
         if (!hasSimulationResult) {
@@ -566,6 +594,10 @@
         setDisclaimerVisibility(false);
         setTotalVisibility(false);
         hasSimulationResult = false;
+        latestReceiptNo = "";
+        if (applyLink) {
+          applyLink.href = APPLY_LINK_BASE;
+        }
       };
 
       const extractShippingTotal = (data) => {
@@ -584,6 +616,19 @@
         return null;
       };
 
+      const extractReceiptNo = (data) => {
+        if (!data || typeof data !== "object") {
+          return "";
+        }
+        if (typeof data.receiptNo === "string") {
+          return data.receiptNo;
+        }
+        if (typeof data.receiptNo === "number") {
+          return String(data.receiptNo);
+        }
+        return "";
+      };
+
       const calculate = () => {
         const planValue =
           getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip";
@@ -592,7 +637,6 @@
         const boxes = Array.from(boxList.querySelectorAll(".box-card"));
         let baseTotal = 0;
         let billableTotal = 0;
-        const billableByBox = [];
         let inspectionFee = 0;
         let packingFee = 0;
         let exportFee = 0;
@@ -612,10 +656,10 @@
           const volumetric = (length * width * height) / VOLUME_DIVISOR;
           const billable = Math.max(weight, Math.ceil(volumetric));
           billableTotal += billable;
-          billableByBox.push(billable);
           baseTotal += billable * PRICE_PER_KG;
 
           const productCountInput = box.querySelector(".box-product-count");
+          const productCountError = box.querySelector(".box-product-error");
           const productCount = clamp(
             Number(productCountInput?.value || 0),
             0,
@@ -623,6 +667,12 @@
           );
           if (productCountInput) {
             productCountInput.value = productCount;
+          }
+          if (productCountError) {
+            const needsCount =
+              box.querySelector(".box-inspection")?.checked ||
+              box.querySelector(".box-packing")?.checked;
+            productCountError.hidden = !(needsCount && productCount <= 0);
           }
 
           inspectionFee += box.querySelector(".box-inspection")?.checked
@@ -659,12 +709,7 @@
           returnInsuranceFee +
           cargoInsuranceFee;
         const total = baseTotal + optionTotal;
-        return {
-          billable: billableTotal,
-          billableByBox,
-          total,
-          hasError: false,
-        };
+        return { billable: billableTotal, total, hasError: false };
       };
 
       [invoiceInput, returnInsuranceInput, insuredValueInput].forEach(
@@ -692,9 +737,11 @@
 
       updatePlanVisibility();
       updateCargoInsuranceState();
+      updateProductCountErrors();
       updateChinaNotice();
       updateOtherCountryState();
       addBox();
+      updateProductCountErrors();
       calculate();
       setInitialSimulationDisplay();
       setCtaVisibility(false);
@@ -730,6 +777,7 @@
         cargoInsuranceInput.checked = initialValues.cargoInsurance;
         insuredValueInput.value = initialValues.insuredValue;
         resetBoxValues();
+        updateProductCountErrors();
         updatePlanVisibility();
         updateCargoInsuranceState();
         updateOtherCountryState();
@@ -813,6 +861,9 @@
           <tr><th>運送保険</th><td>${cargoInsuranceInput.checked ? "利用する" : "利用しない"}</td></tr>
           <tr><th>商品価格合計</th><td>${insuredValueInput.value || 0} 円</td></tr>
         `;
+        const receiptLine = latestReceiptNo
+          ? `<div class="receipt-no">顧客番号：${latestReceiptNo}</div>`
+          : "";
         const previewWindow = window.open("", "_blank");
         if (!previewWindow) {
           return;
@@ -834,6 +885,11 @@
                   justify-content: space-between;
                   align-items: flex-start;
                   margin-bottom: 16px;
+                }
+                .receipt-no {
+                  font-size: 0.95rem;
+                  font-weight: 600;
+                  margin-bottom: 6px;
                 }
                 h1 {
                   font-size: 24px;
@@ -889,6 +945,7 @@
               </style>
             </head>
             <body>
+              ${receiptLine}
               <div class="header-row">
                 <h1>見積書</h1>
                 <div class="estimate-date">見積り日: ${estimateDate}</div>
@@ -971,6 +1028,23 @@
         }
         const boxCards = Array.from(boxList.querySelectorAll(".box-card"));
         boxCards.forEach((box, index) => {
+          const productCount = Number(
+            box.querySelector(".box-product-count")?.value || 0
+          );
+          const needsProductCount =
+            box.querySelector(".box-inspection")?.checked ||
+            box.querySelector(".box-packing")?.checked;
+          const productCountError = box.querySelector(".box-product-error");
+          if (productCountError) {
+            productCountError.hidden = !(needsProductCount && productCount <= 0);
+          }
+          if (needsProductCount && productCount <= 0) {
+            requiredInputs.push({
+              field: box.querySelector(".box-product-count"),
+              label: "※商品数を入力ください",
+              isInvalid: () => true,
+            });
+          }
           requiredInputs.push(
             {
               field: box.querySelector(".box-length"),
@@ -1023,6 +1097,7 @@
         }));
         const payload = {
           destinationCountry: countryInput.value,
+          errorMessage: "",
           customerType: getCustomerType(),
           plan: getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip",
           billableWeightKg: result?.billable,
@@ -1032,10 +1107,7 @@
           insuredValue: cargoInsuranceInput.checked
             ? Number(insuredValueInput.value || 0)
             : 0,
-          boxDetails: boxDetails.map((box, index) => ({
-            ...box,
-            billableWeightKg: result?.billableByBox?.[index] ?? 0,
-          })),
+          boxDetails,
         };
 
         resultScreen.hidden = false;
@@ -1060,6 +1132,15 @@
             logMessage(`GAS応答本文: ${responseText}`);
             const data = responseText ? JSON.parse(responseText) : {};
             const shippingTotal = extractShippingTotal(data);
+            latestReceiptNo = extractReceiptNo(data);
+            if (applyLink) {
+              if (latestReceiptNo) {
+                const receiptParam = encodeURIComponent(latestReceiptNo);
+                applyLink.href = `${APPLY_LINK_BASE}?usp=pp_url&${RECEIPT_QUERY_PARAM}=${receiptParam}`;
+              } else {
+                applyLink.href = APPLY_LINK_BASE;
+              }
+            }
             if (typeof shippingTotal === "number") {
               totalOutput.textContent = formatNumber(shippingTotal);
               totalOutput.classList.remove("total-price-message");
@@ -1076,6 +1157,10 @@
               setCtaVisibility(false);
               setDisclaimerVisibility(false);
               hasSimulationResult = false;
+              latestReceiptNo = "";
+              if (applyLink) {
+                applyLink.href = APPLY_LINK_BASE;
+              }
             }
           } else {
             const errorText = await response.text();
@@ -1087,6 +1172,10 @@
             setCtaVisibility(false);
             setDisclaimerVisibility(false);
             hasSimulationResult = false;
+            latestReceiptNo = "";
+            if (applyLink) {
+              applyLink.href = APPLY_LINK_BASE;
+            }
           }
         } catch (error) {
           console.error("GAS request failed", error);
@@ -1098,6 +1187,10 @@
           setCtaVisibility(false);
           setDisclaimerVisibility(false);
           hasSimulationResult = false;
+          latestReceiptNo = "";
+          if (applyLink) {
+            applyLink.href = APPLY_LINK_BASE;
+          }
           try {
             logMessage("no-cors モードで再送信を試行します...");
             const fallbackResponse = await fetch(GAS_ENDPOINT, {
