@@ -390,6 +390,14 @@
       const APPLY_LINK_BASE =
         "https://docs.google.com/forms/d/e/1FAIpQLSd0F2BwC-SIciWrrHSJ9OIwLEU0uJ-9-HHsuqvmxyJbzGJIzQ/viewform";
       const RECEIPT_QUERY_PARAM = "entry.1696897520";
+      const FORM_QUERY_PARAMS = {
+        customerType: "entry.1401542135",
+        serviceName: "entry.1029867203",
+        packing: "entry.1339505299",
+        invoice: "entry.741660248",
+        insuredValue: "entry.295734913",
+        returnInsurance: "entry.2146525778",
+      };
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -488,6 +496,53 @@
 
       const getSelectedPlan = () =>
         document.querySelector('input[name="plan"]:checked')?.value || "";
+
+      const buildApplyLink = ({ customerNumber = "" } = {}) => {
+        const params = new URLSearchParams();
+        params.set("usp", "pp_url");
+
+        if (customerNumber) {
+          params.set(RECEIPT_QUERY_PARAM, customerNumber);
+        }
+
+        const customerType = getCustomerType();
+        if (customerType === "corporate") {
+          params.set(FORM_QUERY_PARAMS.customerType, "法人");
+          const selectedPlan = getSelectedPlan();
+          if (selectedPlan === "LOGIFIT") {
+            params.set(FORM_QUERY_PARAMS.serviceName, "LOGIFIT");
+          } else if (selectedPlan === "worldShipForBiz") {
+            params.set(FORM_QUERY_PARAMS.serviceName, "ワールドship for Biz");
+          }
+        } else if (customerType === "personal") {
+          params.set(FORM_QUERY_PARAMS.customerType, "個人");
+        }
+
+        const hasExportCarton = Array.from(
+          boxList.querySelectorAll(".box-export")
+        ).some((input) => input.checked);
+        if (hasExportCarton) {
+          params.set(FORM_QUERY_PARAMS.packing, "段ボールを希望する");
+        }
+
+        if (invoiceInput.checked) {
+          params.set(FORM_QUERY_PARAMS.invoice, "インボイス発行を希望する");
+        }
+
+        if (returnInsuranceInput.checked) {
+          params.set(
+            FORM_QUERY_PARAMS.returnInsurance,
+            "返送保険を希望する"
+          );
+        }
+
+        const insuredValue = insuredValueInput.value.trim();
+        if (insuredValue !== "") {
+          params.set(FORM_QUERY_PARAMS.insuredValue, insuredValue);
+        }
+
+        return `${APPLY_LINK_BASE}?${params.toString()}`;
+      };
 
       const updatePlanVisibility = () => {
         const isCorporate = getCustomerType() === "corporate";
@@ -1318,12 +1373,9 @@
             const shippingTotal = extractShippingTotal(data);
             latestCustomerNumber = extractCustomerNumber(data);
             if (applyLink) {
-              if (latestCustomerNumber) {
-                const receiptParam = encodeURIComponent(latestCustomerNumber);
-                applyLink.href = `${APPLY_LINK_BASE}?usp=pp_url&${RECEIPT_QUERY_PARAM}=${receiptParam}`;
-              } else {
-                applyLink.href = APPLY_LINK_BASE;
-              }
+              applyLink.href = buildApplyLink({
+                customerNumber: latestCustomerNumber,
+              });
             }
             if (typeof shippingTotal === "number") {
               totalOutput.textContent = formatNumber(shippingTotal);
