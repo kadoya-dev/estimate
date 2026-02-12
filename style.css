@@ -925,6 +925,7 @@ body {
 .disclaimer a {
   color: #0b3d14;
   word-break: break-all;
+  text-decoration: underline;
 }
 
 @media (max-width: 820px) {

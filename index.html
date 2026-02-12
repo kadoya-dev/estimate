@@ -212,12 +212,12 @@
             <li>・本お見積もりは現時点での概算金額となります。実際のご利用時に内容変更や追加費用が発生する場合がございます。</li>
             <li>
               ・荷物の内容や国によっては送ることができない場合がございますので、詳しくは以下リンクをご確認ください。<br />
-              <a href="https://drive.google.com/file/d/1C6jVKnMnA-RGuwM8us9dbC737dWL8K7z/view" target="_blank" rel="noreferrer">https://drive.google.com/file/d/1C6jVKnMnA-RGuwM8us9dbC737dWL8K7z/view</a>
+              <a href="https://drive.google.com/file/d/1C6jVKnMnA-RGuwM8us9dbC737dWL8K7z/view" target="_blank" rel="noreferrer">輸出不可＆規制品一覧（共通＆国ごと）</a>
             </li>
             <li>
               ・関税が発生した場合は、受取人側にてご請求が発生しますので、あらかじめご了承ください。<br />
               　関税の基本については以下ブログをご確認ください<br />
-              　　<a href="https://worldshift-inc.jp/blog/%e3%80%90%e5%88%9d%e5%bf%83%e8%80%85%e5%90%91%e3%81%91%e3%80%91%e5%80%8b%e4%ba%ba%e3%81%a7%e6%b5%b7%e5%a4%96%e3%81%ab%e8%8d%b7%e7%89%a9%e3%82%92%e9%80%81%e3%82%8b%e5%89%8d%e3%81%ab%e7%9f%a5%e3%81%a3/" target="_blank" rel="noreferrer">https://worldshift-inc.jp/blog/%e3%80%90%e5%88%9d%e5%bf%83%e8%80%85%e5%90%91%e3%81%91%e3%80%91%e5%80%8b%e4%ba%ba%e3%81%a7%e6%b5%b7%e5%a4%96%e3%81%ab%e8%8d%b7%e7%89%a9%e3%82%92%e9%80%81%e3%82%8b%e5%89%8d%e3%81%ab%e7%9f%a5%e3%81%a3/</a>
+              　　<a href="https://worldshift-inc.jp/blog/%e3%80%90%e5%88%9d%e5%bf%83%e8%80%85%e5%90%91%e3%81%91%e3%80%91%e5%80%8b%e4%ba%ba%e3%81%a7%e6%b5%b7%e5%a4%96%e3%81%ab%e8%8d%b7%e7%89%a9%e3%82%92%e9%80%81%e3%82%8b%e5%89%8d%e3%81%ab%e7%9f%a5%e3%81%a3/" target="_blank" rel="noreferrer">【初心者向け】個人で海外に荷物を送る前に知っておきたい「関税」の基本</a>
             </li>
             <li>・送料は実重量と容積重量を比較したうえで、数値が大きい方を基準に算出しております。</li>
             <li>・弊社に送付いただいた荷物を、弊社にて再度【実重量】【容積重量】を図らせていただき、それを基に送料等を算出いたします。<br />
@@ -270,6 +270,7 @@
                 class="field-input field-input--dimension box-length"
                 type="number"
                 min="0"
+                max="999"
                 step="1"
                 inputmode="numeric"
               />
@@ -281,6 +282,7 @@
                 class="field-input field-input--dimension box-width"
                 type="number"
                 min="0"
+                max="999"
                 step="1"
                 inputmode="numeric"
               />
@@ -292,6 +294,7 @@
                 class="field-input field-input--dimension box-height"
                 type="number"
                 min="0"
+                max="999"
                 step="1"
                 inputmode="numeric"
               />
@@ -307,6 +310,7 @@
               class="field-input field-input--dimension box-weight"
               type="number"
               min="0"
+              max="99"
               step="1"
               inputmode="numeric"
             />
@@ -551,6 +555,24 @@
         if (!enabled) {
           insuredValueInput.value = "";
         }
+      };
+
+      const enforceBoxInputDigitLimits = (target) => {
+        if (!(target instanceof HTMLInputElement)) {
+          return;
+        }
+        const isDimensionField =
+          target.classList.contains("box-length") ||
+          target.classList.contains("box-width") ||
+          target.classList.contains("box-height");
+        const isWeightField = target.classList.contains("box-weight");
+        if (!isDimensionField && !isWeightField) {
+          return;
+        }
+
+        const maxDigits = isWeightField ? 2 : 3;
+        const digitsOnly = target.value.replace(/\D/g, "").slice(0, maxDigits);
+        target.value = digitsOnly;
       };
 
       const updateProductCountErrors = () => {
@@ -831,7 +853,10 @@
       });
       planGroup.addEventListener("change", handleInputChange);
       boxList.addEventListener("change", handleInputChange);
-      boxList.addEventListener("input", handleInputChange);
+      boxList.addEventListener("input", (event) => {
+        enforceBoxInputDigitLimits(event.target);
+        handleInputChange();
+      });
 
       updatePlanVisibility();
       updateCargoInsuranceState();
