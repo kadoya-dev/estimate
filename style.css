@@ -318,6 +318,53 @@ body {
   opacity: 1;
 }
 
+.info-tooltip {
+  position: relative;
+  display: inline-block;
+  cursor: help;
+}
+
+.info-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  width: max-content;
+  max-width: min(360px, 86vw);
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #0b3d14;
+  color: #ffffff;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  white-space: pre-line;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 20;
+}
+
+.info-tooltip::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: calc(100% + 4px);
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #0b3d14;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 20;
+}
+
+.info-tooltip:hover::after,
+.info-tooltip:hover::before,
+.info-tooltip:focus-visible::after,
+.info-tooltip:focus-visible::before {
+  opacity: 1;
+}
+
 .weight-result-row {
   display: flex;
   align-items: center;
