@@ -247,6 +247,7 @@ body {
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-wrap: wrap;
 }
 
 .radio-group {
@@ -961,4 +962,18 @@ body {
   .dimension-group {
     flex-wrap: wrap;
   }
+}
+
+.tooltip-indicator {
+  margin-left: 4px;
+  font-size: 0.85em;
+}
+
+.box-limit-error {
+  margin: 0 0 0 4px;
+  min-height: 1.2em;
+}
+
+.box-limit-error.is-hidden {
+  visibility: hidden;
 }

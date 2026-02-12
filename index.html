@@ -70,7 +70,7 @@
             <span class="field-label" id="planLabel" hidden><span class="plan-tooltip" data-tooltip="LOGIFITプランなら面倒な
 ・検品／梱包
 ・輸送用段ボールの用意
-が不要です✨">プラン</span></span>
+が不要です✨">プラン<span class="tooltip-indicator" aria-hidden="true"></span></span></span>
             <div class="plan-group" id="planGroup" hidden>
               <div class="radio-group">
                 <label class="radio-row">
@@ -78,14 +78,14 @@
                   <span class="plan-tooltip" data-tooltip="LOGIFITプランなら面倒な
 ・検品／梱包
 ・輸送用段ボールの用意
-が不要です✨">LOGIFIT</span>
+が不要です✨">LOGIFIT<span class="tooltip-indicator" aria-hidden="true"></span></span>
                 </label>
                 <label class="radio-row">
                   <input type="radio" name="plan" value="worldShipForBiz" />
                   <span class="plan-tooltip" data-tooltip="LOGIFITプランなら面倒な
 ・検品／梱包
 ・輸送用段ボールの用意
-が不要です✨">ワールドship for Biz</span>
+が不要です✨">ワールドship for Biz<span class="tooltip-indicator" aria-hidden="true"></span></span>
                 </label>
               </div>
               <p class="field-note">
@@ -120,7 +120,7 @@
               </label>
 
               <span class="field-label"><span class="info-tooltip" tabindex="0" data-tooltip="返送保険《発送する荷物1箱につき￥1,000》
-弊社に荷物を送っていただいた際、発送できない商品が含まれていた場合、無料で返送もしくは廃棄">返送保険</span></span>
+弊社に荷物を送っていただいた際、発送できない商品が含まれていた場合、無料で返送もしくは廃棄">返送保険<span class="tooltip-indicator" aria-hidden="true">ℹ️</span></span></span>
               <label class="checkbox-row">
                 <input type="checkbox" id="returnInsurance" />
                 <span>利用する</span>
@@ -131,7 +131,7 @@
 ※商品金額が１円未満のものは対象外
 ※以下は免責になります
 ・自然災害による荷物の紛失や破損
-・戦争や暴動による荷物の紛失や破損">運送保険</span></span>
+・戦争や暴動による荷物の紛失や破損">運送保険<span class="tooltip-indicator" aria-hidden="true">ℹ️</span></span></span>
               <div class="insurance-row">
                 <label class="checkbox-row">
                   <input type="checkbox" id="cargoInsurance" />
@@ -311,6 +311,9 @@
               inputmode="numeric"
             />
             <span class="unit">kg</span>
+            <p class="field-note field-note--alert box-limit-error is-hidden">
+              規定超過となるので画面下部の「お問合せはこちら」からご連絡ください
+            </p>
           </div>
 
           <label class="field-label">商品数</label>
@@ -328,21 +331,21 @@
           </div>
 
           <span class="field-label"><span class="info-tooltip" tabindex="0" data-tooltip="検品
-商品に不備がないか／予定されている内容が含まれているかを点検・確認いたします">検品</span></span>
+商品に不備がないか／予定されている内容が含まれているかを点検・確認いたします">検品<span class="tooltip-indicator" aria-hidden="true">ℹ️</span></span></span>
           <label class="checkbox-row">
             <input type="checkbox" class="box-inspection" />
             <span>利用する</span>
           </label>
 
           <span class="field-label"><span class="info-tooltip" tabindex="0" data-tooltip="梱包
-商品を輸送中の衝撃から守るために、緩衝材で梱包いたします">梱包</span></span>
+商品を輸送中の衝撃から守るために、緩衝材で梱包いたします">梱包<span class="tooltip-indicator" aria-hidden="true">ℹ️</span></span></span>
           <label class="checkbox-row">
             <input type="checkbox" class="box-packing" />
             <span>利用する</span>
           </label>
 
           <span class="field-label"><span class="info-tooltip" tabindex="0" data-tooltip="輸出用段ボール
-海外発送向けの丈夫な専用段ボールです">輸出用段ボール</span></span>
+海外発送向けの丈夫な専用段ボールです">輸出用段ボール<span class="tooltip-indicator" aria-hidden="true">ℹ️</span></span></span>
           <label class="checkbox-row">
             <input type="checkbox" class="box-export" />
             <span>利用する</span>
@@ -406,6 +409,11 @@
       const CARGO_INSURANCE_RATE = 0.02;
       const CARGO_INSURANCE_MESSAGE =
         "運送保険を利用する場合は商品価格合計をご入力ください";
+      const LIMIT_EXCEEDED_MESSAGE =
+        "規定超過となるので画面下部の「お問合せはこちら」からご連絡ください";
+      const MAX_BOX_WEIGHT_KG = 70;
+      const MAX_LONGEST_SIDE_CM = 274;
+      const MAX_LENGTH_PLUS_GIRTH_CM = 400;
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
@@ -531,6 +539,7 @@
         boxList.appendChild(fragment);
         updateRemoveButtons();
         updateProductCountErrors();
+        updateBoxLimitErrors();
       };
 
       addBoxButton.addEventListener("click", addBox);
@@ -563,8 +572,37 @@
         });
       };
 
+      const hasBoxLimitViolation = (box) => {
+        const length = Number(box.querySelector(".box-length")?.value || 0);
+        const width = Number(box.querySelector(".box-width")?.value || 0);
+        const height = Number(box.querySelector(".box-height")?.value || 0);
+        const weight = Number(box.querySelector(".box-weight")?.value || 0);
+
+        const longestSide = Math.max(length, width, height);
+        const girth = 2 * (length + width + height - longestSide);
+        const lengthPlusGirth = longestSide + girth;
+
+        return (
+          weight > MAX_BOX_WEIGHT_KG ||
+          longestSide > MAX_LONGEST_SIDE_CM ||
+          lengthPlusGirth > MAX_LENGTH_PLUS_GIRTH_CM
+        );
+      };
+
+      const updateBoxLimitErrors = () => {
+        const boxes = Array.from(boxList.querySelectorAll(".box-card"));
+        boxes.forEach((box) => {
+          const limitError = box.querySelector(".box-limit-error");
+          if (!limitError) {
+            return;
+          }
+          limitError.classList.toggle("is-hidden", !hasBoxLimitViolation(box));
+        });
+      };
+
       const handleInputChange = () => {
         updateProductCountErrors();
+        updateBoxLimitErrors();
         calculate();
         resetSimulationIfNeeded();
       };
@@ -1154,6 +1192,15 @@
             }
           );
         });
+        const hasLimitViolation = boxCards.some((box) => hasBoxLimitViolation(box));
+        if (hasLimitViolation) {
+          setInputError(LIMIT_EXCEEDED_MESSAGE);
+          if (simulateRow) {
+            simulateRow.hidden = false;
+          }
+          return;
+        }
+
         const missingField = requiredInputs.find(({ field, isInvalid }) =>
           isInvalid(field?.value)
         );
