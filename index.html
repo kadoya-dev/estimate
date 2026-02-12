@@ -505,6 +505,8 @@
       const MAX_BOX_WEIGHT_KG = 70;
       const MAX_LONGEST_SIDE_CM = 274;
       const MAX_LENGTH_PLUS_GIRTH_CM = 400;
+      const MAX_BOX_COUNT = 100;
+      const MAX_BOX_COUNT_MESSAGE = "箱情報は最大100箱まで追加できます";
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
@@ -655,7 +657,7 @@
               (box) =>
                 `${box.index}箱目①${box.weight}②${box.length}*${box.width}*${box.height}③${box.inspectionCount}④${box.packingCount}`
             )
-            .join("\n");
+            .join(" ");
           params.set(EXTRA_BOX_INFO_QUERY_PARAM, extraBoxInfo);
         }
 
@@ -713,10 +715,17 @@
             removeButton.disabled = boxes.length <= 1;
           }
         });
+        addBoxButton.disabled = boxes.length >= MAX_BOX_COUNT;
       };
 
       const addBox = () => {
         if (!boxTemplate) {
+          return;
+        }
+        const currentBoxCount = boxList.querySelectorAll(".box-card").length;
+        if (currentBoxCount >= MAX_BOX_COUNT) {
+          setInputError(MAX_BOX_COUNT_MESSAGE);
+          updateRemoveButtons();
           return;
         }
         const fragment = boxTemplate.content.cloneNode(true);
@@ -726,6 +735,9 @@
           if (removeButton) {
             removeButton.addEventListener("click", () => {
               box.remove();
+              if (inputError && inputError.textContent === MAX_BOX_COUNT_MESSAGE) {
+                setInputError("");
+              }
               updateRemoveButtons();
               handleInputChange();
             });
