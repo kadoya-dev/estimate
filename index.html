@@ -200,7 +200,7 @@
               rel="noreferrer"
               id="estimateInquiryLink"
             >
-              <span class="info-tooltip" tabindex="0" data-tooltip="お問合せ前にPDF出力して見積り結果を保存してください">見積り結果についてお問合せ<span class="tooltip-indicator" aria-hidden="true"></span></span>
+              見積り結果についてお問合せ
             </a>
             <button class="secondary-button" type="button" id="estimateButton">
               結果をPDFで出力
@@ -1396,6 +1396,16 @@
           return;
         }
         generatePdf("");
+      });
+
+      estimateInquiryLink?.addEventListener("click", (event) => {
+        event.preventDefault();
+        const hasSavedEstimate = window.confirm("見積り結果は保存しましたか？");
+        if (hasSavedEstimate) {
+          window.open(estimateInquiryLink.href, "_blank", "noopener,noreferrer");
+          return;
+        }
+        estimateButton.click();
       });
       closeModal.addEventListener("click", closeEstimateModal);
       estimateModal.addEventListener("click", (event) => {
