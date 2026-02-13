@@ -471,6 +471,22 @@ body {
   color: #0b3d14;
 }
 
+.box-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.duplicate-box-button {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 2px solid #0d9217;
+  background: #ffffff;
+  color: #0d9217;
+  font-weight: 700;
+  cursor: pointer;
+}
+
 .remove-box-button {
   padding: 6px 12px;
   border-radius: 999px;
