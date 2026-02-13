@@ -20,7 +20,7 @@ body {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 40px 24px;
+  padding: 96px 24px 40px;
   overflow-y: scroll;
   background-color: #0d9217;
   background-image: radial-gradient(
@@ -38,6 +38,21 @@ body {
       rgba(11, 158, 22, 0.35),
       rgba(13, 146, 23, 0) 65%
     );
+}
+
+.app-logo {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  display: inline-flex;
+  align-items: center;
+  z-index: 10;
+}
+
+.app-logo img {
+  display: block;
+  height: 38px;
+  width: auto;
 }
 
 .simulation-screen {
@@ -86,19 +101,6 @@ body {
   gap: 4px;
   font-weight: 600;
   color: #0d9217;
-}
-
-.screen-logo {
-  display: inline-flex;
-  align-items: center;
-  align-self: flex-start;
-  margin-bottom: 4px;
-}
-
-.screen-logo img {
-  display: block;
-  height: 38px;
-  width: auto;
 }
 
 .screen-tagline {
