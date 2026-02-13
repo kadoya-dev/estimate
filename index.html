@@ -275,7 +275,7 @@
                 class="field-input field-input--dimension box-length"
                 type="number"
                 min="0"
-                step="0.1"
+                step="10"
                 inputmode="decimal"
               />
               <span class="unit">cm</span>
@@ -286,7 +286,7 @@
                 class="field-input field-input--dimension box-width"
                 type="number"
                 min="0"
-                step="0.1"
+                step="10"
                 inputmode="decimal"
               />
               <span class="unit">cm</span>
@@ -297,7 +297,7 @@
                 class="field-input field-input--dimension box-height"
                 type="number"
                 min="0"
-                step="0.1"
+                step="10"
                 inputmode="decimal"
               />
               <span class="unit">cm</span>
@@ -312,7 +312,7 @@
               class="field-input field-input--dimension box-weight"
               type="number"
               min="0"
-              step="0.1"
+              step="10"
               inputmode="decimal"
             />
             <span class="unit">kg</span>
@@ -1381,7 +1381,6 @@
         resultScreen.hidden = true;
         inputScreen.hidden = false;
         setInputError("");
-        resetInputs();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
