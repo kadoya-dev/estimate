@@ -195,11 +195,12 @@
             </button>
             <a
               class="secondary-button secondary-button--accent"
-              href="https://forms.gle/cbn4CHYc1obw9maU7"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdoEFiaTdnr-6lB_s2KWynHlvZ213CS62Eq4eKefM1_gBh9cA/viewform?usp=pp_url&entry.1685188045=%E8%A6%8B%E7%A9%8D%E3%82%8A%E7%B5%90%E6%9E%9C%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6&entry.860373797=AN0000&entry.1267146174=%E9%9F%93%E5%9B%BD"
               target="_blank"
               rel="noreferrer"
+              id="estimateInquiryLink"
             >
-              お問合せはこちら
+              <span class="info-tooltip" tabindex="0" data-tooltip="問合せ前にPDF出力して見積り結果を保存してください">見積り結果についてお問合せ<span class="tooltip-indicator" aria-hidden="true">ℹ️</span></span>
             </a>
             <button class="secondary-button" type="button" id="estimateButton">
               結果をPDFで出力
@@ -382,6 +383,7 @@
       const closeModal = document.getElementById("closeModal");
       const createPdf = document.getElementById("createPdf");
       const applyLink = document.getElementById("applyLink");
+      const estimateInquiryLink = document.getElementById("estimateInquiryLink");
       const companyNameInput = document.getElementById("companyName");
       const companyError = document.getElementById("companyError");
       const logOutput = document.getElementById("logOutput");
@@ -392,7 +394,14 @@
       const COMPANY_NAME_REQUIRED_PLANS = ["worldShipForBiz", "LOGIFIT"];
       const APPLY_LINK_BASE =
         "https://docs.google.com/forms/d/e/1FAIpQLSd0F2BwC-SIciWrrHSJ9OIwLEU0uJ-9-HHsuqvmxyJbzGJIzQ/viewform";
+      const ESTIMATE_INQUIRY_LINK_BASE =
+        "https://docs.google.com/forms/d/e/1FAIpQLSdoEFiaTdnr-6lB_s2KWynHlvZ213CS62Eq4eKefM1_gBh9cA/viewform";
       const RECEIPT_QUERY_PARAM = "entry.1696897520";
+      const ESTIMATE_INQUIRY_QUERY_PARAMS = {
+        inquiryContent: "entry.1685188045",
+        customerNumber: "entry.860373797",
+        countryName: "entry.1267146174",
+      };
       const FORM_QUERY_PARAMS = {
         customerType: "entry.1401542135",
         serviceName: "entry.1029867203",
@@ -690,6 +699,22 @@
         return `${APPLY_LINK_BASE}?${params.toString()}`;
       };
 
+      const buildEstimateInquiryLink = ({ customerNumber = "" } = {}) => {
+        const params = new URLSearchParams();
+        params.set("usp", "pp_url");
+        params.set(ESTIMATE_INQUIRY_QUERY_PARAMS.inquiryContent, "見積り結果について");
+        params.set(
+          ESTIMATE_INQUIRY_QUERY_PARAMS.customerNumber,
+          customerNumber || "AN0000"
+        );
+
+        const selectedCountryLabel =
+          countryInput.selectedOptions[0]?.textContent?.trim() || "韓国";
+        params.set(ESTIMATE_INQUIRY_QUERY_PARAMS.countryName, selectedCountryLabel);
+
+        return `${ESTIMATE_INQUIRY_LINK_BASE}?${params.toString()}`;
+      };
+
       const updatePlanVisibility = () => {
         const isCorporate = getCustomerType() === "corporate";
         planLabel.hidden = !isCorporate;
@@ -981,6 +1006,9 @@
         latestCustomerNumber = "";
         if (applyLink) {
           applyLink.href = APPLY_LINK_BASE;
+        }
+        if (estimateInquiryLink) {
+          estimateInquiryLink.href = buildEstimateInquiryLink();
         }
       };
 
@@ -1578,6 +1606,11 @@
                 customerNumber: latestCustomerNumber,
               });
             }
+            if (estimateInquiryLink) {
+              estimateInquiryLink.href = buildEstimateInquiryLink({
+                customerNumber: latestCustomerNumber,
+              });
+            }
             if (typeof shippingTotal === "number") {
               totalOutput.textContent = formatNumber(shippingTotal);
               totalOutput.classList.remove("total-price-message");
@@ -1609,6 +1642,9 @@
               if (applyLink) {
                 applyLink.href = APPLY_LINK_BASE;
               }
+              if (estimateInquiryLink) {
+                estimateInquiryLink.href = buildEstimateInquiryLink();
+              }
               if (simulateRow) {
                 simulateRow.hidden = false;
               }
@@ -1631,6 +1667,9 @@
             if (applyLink) {
               applyLink.href = APPLY_LINK_BASE;
             }
+            if (estimateInquiryLink) {
+              estimateInquiryLink.href = buildEstimateInquiryLink();
+            }
             if (simulateRow) {
               simulateRow.hidden = false;
             }
@@ -1652,6 +1691,9 @@
           latestCustomerNumber = "";
           if (applyLink) {
             applyLink.href = APPLY_LINK_BASE;
+          }
+          if (estimateInquiryLink) {
+            estimateInquiryLink.href = buildEstimateInquiryLink();
           }
           if (simulateRow) {
             simulateRow.hidden = false;
