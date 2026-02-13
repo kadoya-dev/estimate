@@ -113,7 +113,7 @@
         <section class="option-section">
           <div class="option-panel">
             <div class="option-grid">
-              <span class="field-label">インボイス発行</span>
+              <span class="field-label"><span class="info-tooltip" tabindex="0" data-tooltip="PDF形式で発行し、メールにて送付いたします。">インボイス発行<span class="tooltip-indicator" aria-hidden="true">ℹ️</span></span></span>
               <label class="checkbox-row">
                 <input type="checkbox" id="invoiceIssue" />
                 <span>利用する</span>
@@ -1119,7 +1119,8 @@
       });
       planGroup.addEventListener("change", handleInputChange);
       boxList.addEventListener("change", handleInputChange);
-      boxList.addEventListener("input", (event) => {
+      boxList.addEventListener("input", handleInputChange);
+      boxList.addEventListener("focusout", (event) => {
         enforceBoxInputDigitLimits(event.target);
         handleInputChange();
       });
