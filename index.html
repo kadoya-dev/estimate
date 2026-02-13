@@ -258,7 +258,12 @@
       <div class="box-card">
         <div class="box-card-header">
           <span class="box-card-title"></span>
-          <button class="remove-box-button" type="button">削除</button>
+          <div class="box-card-actions">
+            <button class="duplicate-box-button" type="button">
+              箱情報を複製する
+            </button>
+            <button class="remove-box-button" type="button">削除</button>
+          </div>
         </div>
         <div class="box-grid">
           <span class="field-label"
@@ -718,7 +723,38 @@
         addBoxButton.disabled = boxes.length >= MAX_BOX_COUNT;
       };
 
-      const addBox = () => {
+      const getBoxFieldValues = (box) => ({
+        length: box.querySelector(".box-length")?.value || "",
+        width: box.querySelector(".box-width")?.value || "",
+        height: box.querySelector(".box-height")?.value || "",
+        weight: box.querySelector(".box-weight")?.value || "",
+        productCount: box.querySelector(".box-product-count")?.value || "0",
+        inspection: Boolean(box.querySelector(".box-inspection")?.checked),
+        packing: Boolean(box.querySelector(".box-packing")?.checked),
+        export: Boolean(box.querySelector(".box-export")?.checked),
+      });
+
+      const applyBoxFieldValues = (box, values) => {
+        const lengthInput = box.querySelector(".box-length");
+        const widthInput = box.querySelector(".box-width");
+        const heightInput = box.querySelector(".box-height");
+        const weightInput = box.querySelector(".box-weight");
+        const productCountInput = box.querySelector(".box-product-count");
+        const inspectionInput = box.querySelector(".box-inspection");
+        const packingInput = box.querySelector(".box-packing");
+        const exportInput = box.querySelector(".box-export");
+
+        if (lengthInput) lengthInput.value = values.length;
+        if (widthInput) widthInput.value = values.width;
+        if (heightInput) heightInput.value = values.height;
+        if (weightInput) weightInput.value = values.weight;
+        if (productCountInput) productCountInput.value = values.productCount;
+        if (inspectionInput) inspectionInput.checked = values.inspection;
+        if (packingInput) packingInput.checked = values.packing;
+        if (exportInput) exportInput.checked = values.export;
+      };
+
+      const addBox = ({ cloneFromBox = null } = {}) => {
         if (!boxTemplate) {
           return;
         }
@@ -741,6 +777,15 @@
               updateRemoveButtons();
               handleInputChange();
             });
+          }
+          const duplicateButton = box.querySelector(".duplicate-box-button");
+          if (duplicateButton) {
+            duplicateButton.addEventListener("click", () => {
+              addBox({ cloneFromBox: box });
+            });
+          }
+          if (cloneFromBox) {
+            applyBoxFieldValues(box, getBoxFieldValues(cloneFromBox));
           }
         }
         boxList.appendChild(fragment);
@@ -774,7 +819,12 @@
         }
 
         const maxIntegerDigits = isWeightField ? 2 : 3;
-        const sanitized = target.value.replace(/[^0-9.]/g, "");
+        const normalized = target.value
+          .replace(/[０-９]/g, (digit) =>
+            String.fromCharCode(digit.charCodeAt(0) - 0xfee0)
+          )
+          .replace(/[，、。]/g, ".");
+        const sanitized = normalized.replace(/[^0-9.]/g, "");
         const [rawIntegerPart = "", ...decimalParts] = sanitized.split(".");
         const integerPart = rawIntegerPart.slice(0, maxIntegerDigits);
         const decimalPart = decimalParts.join("").replace(/\./g, "");
