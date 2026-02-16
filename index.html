@@ -68,25 +68,17 @@
               </label>
             </div>
 
-            <span class="field-label" id="planLabel" hidden><span class="plan-tooltip" data-tooltip="LOGIFITプランなら面倒な
-・検品／梱包
-・輸送用段ボールの用意
-が不要です✨">プラン<span class="tooltip-indicator" aria-hidden="true"></span></span></span>
+            <span class="field-label" id="planLabel" hidden>プラン</span>
             <div class="plan-group" id="planGroup" hidden>
               <div class="radio-group">
                 <label class="radio-row">
                   <input type="radio" name="plan" value="LOGIFIT" />
-                  <span class="plan-tooltip" data-tooltip="LOGIFITプランなら面倒な
-・検品／梱包
-・輸送用段ボールの用意
-が不要です✨">LOGIFIT<span class="tooltip-indicator" aria-hidden="true"></span></span>
+                  <span class="plan-tooltip" data-tooltip="検品・梱包・書類作成まで、すべて弊社で対応。
+発送にかかる手間を最大限なくした、フルサポートサービスです。">LOGIFIT<span class="tooltip-indicator" aria-hidden="true"></span></span>
                 </label>
                 <label class="radio-row">
                   <input type="radio" name="plan" value="worldShipForBiz" />
-                  <span class="plan-tooltip" data-tooltip="LOGIFITプランなら面倒な
-・検品／梱包
-・輸送用段ボールの用意
-が不要です✨">ワールドship for Biz<span class="tooltip-indicator" aria-hidden="true"></span></span>
+                  <span class="plan-tooltip" data-tooltip="弊社に送っていただいた荷物をそのまま転送します ">ワールドship for Biz<span class="tooltip-indicator" aria-hidden="true"></span></span>
                 </label>
               </div>
               <p class="field-note">
@@ -202,9 +194,12 @@
             >
               見積り結果についてお問合せ
             </a>
-            <button class="secondary-button" type="button" id="estimateButton">
-              結果をPDFで出力
-            </button>
+            <div class="pdf-save-hint-wrap">
+              <button class="secondary-button" type="button" id="estimateButton">
+                結果をPDFで出力
+              </button>
+              <p class="pdf-save-hint">⇧見積結果を保存するならこちら⇧</p>
+            </div>
           </div>
         </section>
 
@@ -1398,15 +1393,6 @@
         generatePdf("");
       });
 
-      estimateInquiryLink?.addEventListener("click", (event) => {
-        event.preventDefault();
-        const hasSavedEstimate = window.confirm("見積り結果は保存しましたか？");
-        if (hasSavedEstimate) {
-          window.open(estimateInquiryLink.href, "_blank", "noopener,noreferrer");
-          return;
-        }
-        estimateButton.click();
-      });
       closeModal.addEventListener("click", closeEstimateModal);
       estimateModal.addEventListener("click", (event) => {
         if (event.target === estimateModal) {
