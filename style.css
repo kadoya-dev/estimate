@@ -736,6 +736,7 @@ body {
 .cta-row-group {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 16px;
 }
