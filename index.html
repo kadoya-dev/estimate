@@ -75,16 +75,16 @@
             </div>
 
             <span class="field-label"
-              >法人／個人<span class="required-mark">*</span></span
+              >送り主<span class="required-mark">*</span></span
             >
             <div class="radio-group" id="customerTypeGroup">
               <label class="radio-row">
                 <input type="radio" name="customerType" value="personal" />
-                <span>個人</span>
+                <span>個人利用</span>
               </label>
               <label class="radio-row">
                 <input type="radio" name="customerType" value="corporate" />
-                <span>法人</span>
+                <span>法人利用</span>
               </label>
             </div>
 
@@ -646,7 +646,7 @@
 
         const customerType = getCustomerType();
         if (customerType === "corporate") {
-          params.set(FORM_QUERY_PARAMS.customerType, "法人");
+          params.set(FORM_QUERY_PARAMS.customerType, "法人利用");
           const selectedPlan = getSelectedPlan();
           if (selectedPlan === "LOGIFIT") {
             params.set(FORM_QUERY_PARAMS.serviceName, "LOGIFIT");
@@ -654,7 +654,7 @@
             params.set(FORM_QUERY_PARAMS.serviceName, "ワールドship for Biz");
           }
         } else if (customerType === "personal") {
-          params.set(FORM_QUERY_PARAMS.customerType, "個人");
+          params.set(FORM_QUERY_PARAMS.customerType, "個人利用");
         }
 
         const selectedCountryLabel =
@@ -1260,8 +1260,8 @@
             : "ワールドship";
         const selectedCustomerType = getCustomerType()
           ? getCustomerType() === "corporate"
-            ? "法人"
-            : "個人"
+            ? "法人利用"
+            : "個人利用"
           : "未選択";
         const boxSummary = Array.from(
           boxList.querySelectorAll(".box-card")
@@ -1284,7 +1284,7 @@
         });
         const inputRows = `
           <tr><th>送り先国</th><td>${selectedCountryLabel || "未選択"}</td></tr>
-          <tr><th>法人／個人</th><td>${selectedCustomerType}</td></tr>
+          <tr><th>送り主</th><td>${selectedCustomerType}</td></tr>
           <tr><th>プラン</th><td>${selectedPlanLabel || "未選択"}</td></tr>
           <tr><th>箱情報</th><td>${boxSummary.join("<br />") || "未選択"}</td></tr>
           <tr><th>インボイス発行</th><td>${invoiceInput.checked ? "利用する" : "利用しない"}</td></tr>
@@ -1456,7 +1456,7 @@
           },
           {
             field: customerTypeGroup,
-            label: "法人／個人",
+            label: "送り主",
             isInvalid: () => !getCustomerType(),
           },
         ];
