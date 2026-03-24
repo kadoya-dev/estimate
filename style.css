@@ -136,6 +136,10 @@ body {
   align-items: center;
 }
 
+.input-grid--additional {
+  margin-top: 24px;
+}
+
 .country-select-row {
   display: flex;
   align-items: center;
