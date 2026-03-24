@@ -87,7 +87,6 @@
                 <span>法人利用</span>
               </label>
             </div>
-
             <span class="field-label" id="planLabel" hidden>プラン</span>
             <div class="plan-group" id="planGroup" hidden>
               <div class="radio-group">
@@ -1622,6 +1621,11 @@
             ? "法人利用"
             : "個人利用"
           : "未選択";
+        const selectedCategories = getSelectedCategories();
+        const selectedUsagePurpose =
+          usagePurposeInput.value === "その他" && usagePurposeOtherInput.value.trim()
+            ? `その他（${usagePurposeOtherInput.value.trim()}）`
+            : usagePurposeInput.value || "未選択";
         const boxSummary = Array.from(
           boxList.querySelectorAll(".box-card")
         ).map((box, index) => {
@@ -1644,6 +1648,8 @@
         const inputRows = `
           <tr><th>送り先国</th><td>${selectedCountryLabel || "未選択"}</td></tr>
           <tr><th>送り主</th><td>${selectedCustomerType}</td></tr>
+          <tr><th>カテゴリー</th><td>${selectedCategories.join("、") || "未選択"}</td></tr>
+          <tr><th>利用用途</th><td>${selectedUsagePurpose}</td></tr>
           <tr><th>プラン</th><td>${selectedPlanLabel || "未選択"}</td></tr>
           <tr><th>箱情報</th><td>${boxSummary.join("<br />") || "未選択"}</td></tr>
           <tr><th>インボイス発行</th><td>${invoiceInput.checked ? "利用する" : "利用しない"}</td></tr>
@@ -1963,6 +1969,13 @@
         const payload = {
           destinationCountry: countryInput.value,
           customerType: getCustomerType(),
+          categories: getSelectedCategories(),
+          usagePurpose:
+            usagePurposeInput.value === "その他"
+              ? usagePurposeOtherInput.value.trim()
+                ? `その他（${usagePurposeOtherInput.value.trim()}）`
+                : "その他"
+              : usagePurposeInput.value,
           plan: getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip",
           category: getSelectedCategories(),
           usagePurpose:
