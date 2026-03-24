@@ -259,6 +259,20 @@
         </section>
       </div>
 
+      <section
+        class="comparison-image-section"
+        id="comparisonImageSection"
+        aria-label="送料比較イメージ"
+        hidden
+      >
+        <img
+          src=""
+          alt="送料比較イメージ"
+          class="comparison-image"
+          id="comparisonImage"
+        />
+      </section>
+
       <div class="modal-backdrop" id="estimateModal" hidden>
         <div class="modal-card" role="dialog" aria-modal="true">
           <button class="modal-close" type="button" id="closeModal">
@@ -957,6 +971,7 @@
         updateBoxLimitErrors();
         calculate();
         resetSimulationIfNeeded();
+        updateComparisonImage();
       };
 
       cargoInsuranceInput.addEventListener("change", () => {
@@ -1031,6 +1046,7 @@
         if (simulateRow) {
           simulateRow.hidden = false;
         }
+        updateComparisonImage();
       };
       let hasSimulationResult = false;
       let latestCustomerNumber = "";
@@ -1204,6 +1220,7 @@
       setCtaVisibility(false);
       setTotalVisibility(false);
       setDisclaimerVisibility(false);
+      updateComparisonImage();
       const initialValues = {
         country: countryInput.value,
         customerType: getCustomerType() || "",
@@ -1453,6 +1470,7 @@
           simulateRow.hidden = false;
         }
         setInputError("");
+        updateComparisonImage();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
