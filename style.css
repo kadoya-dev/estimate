@@ -1022,6 +1022,17 @@ body {
   .dimension-group {
     flex-wrap: wrap;
   }
+
+  .plan-tooltip::after {
+    left: 0;
+    transform: none;
+    max-width: min(320px, calc(100vw - 72px));
+  }
+
+  .plan-tooltip::before {
+    left: 14px;
+    transform: none;
+  }
 }
 
 .tooltip-indicator {
