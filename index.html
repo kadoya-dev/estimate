@@ -88,6 +88,104 @@
               </label>
             </div>
 
+            <span class="field-label">カテゴリー</span>
+            <div class="category-field">
+              <p class="field-note field-note--inline">
+                （複数選択可）
+              </p>
+              <div class="category-grid" id="categoryGroup">
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="食品・飲料関連" />
+                  <span>食品・飲料関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="美容・化粧品関連" />
+                  <span>美容・化粧品関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="日用品・生活用品" />
+                  <span>日用品・生活用品</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="雑貨・ギフト・文具" />
+                  <span>雑貨・ギフト・文具</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="アパレル・ファッション" />
+                  <span>アパレル・ファッション</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="ベビー・キッズ・おもちゃ" />
+                  <span>ベビー・キッズ・おもちゃ</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="家電・電子機器" />
+                  <span>家電・電子機器</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="健康・医療関連" />
+                  <span>健康・医療関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="ペット関連" />
+                  <span>ペット関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input
+                    type="checkbox"
+                    name="category"
+                    value="趣味・アウトドア・スポーツ"
+                  />
+                  <span>趣味・アウトドア・スポーツ</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="工業・業務・B2B製品" />
+                  <span>工業・業務・B2B製品</span>
+                </label>
+                <label class="checkbox-row category-other-row">
+                  <input type="checkbox" id="categoryOtherCheck" name="category" value="その他" />
+                  <span>その他</span>
+                  <input
+                    id="categoryOtherText"
+                    class="field-input field-input--category-other"
+                    type="text"
+                    maxlength="80"
+                    placeholder="内容を入力"
+                    disabled
+                  />
+                </label>
+              </div>
+              <p class="field-note field-note--alert" id="categoryWarning" hidden>
+                事前に発送可能かご確認ください
+              </p>
+            </div>
+
+            <label class="field-label" for="usagePurpose">利用用途</label>
+            <div class="usage-field">
+              <div class="select-wrap">
+                <select id="usagePurpose" class="field-select field-select--left">
+                  <option value="">選択してください</option>
+                  <option value="個人利用">個人利用</option>
+                  <option value="プレゼント">プレゼント</option>
+                  <option value="私物運搬">私物運搬</option>
+                  <option value="引っ越し">引っ越し</option>
+                  <option value="返品">返品</option>
+                  <option value="商用利用">商用利用</option>
+                  <option value="販売目的">販売目的</option>
+                  <option value="商材/備品運搬">商材/備品運搬</option>
+                  <option value="その他">その他</option>
+                </select>
+              </div>
+              <input
+                id="usagePurposeOther"
+                class="field-input usage-other-input"
+                type="text"
+                maxlength="80"
+                placeholder="その他の用途を入力"
+                disabled
+              />
+            </div>
+
             <span class="field-label" id="planLabel" hidden>プラン</span>
             <div class="plan-group" id="planGroup" hidden>
               <div class="radio-group">
@@ -1558,6 +1656,11 @@
             ? "法人利用"
             : "個人利用"
           : "未選択";
+        const selectedCategories = getSelectedCategories();
+        const selectedUsagePurpose =
+          usagePurposeInput.value === "その他" && usagePurposeOtherInput.value.trim()
+            ? `その他（${usagePurposeOtherInput.value.trim()}）`
+            : usagePurposeInput.value || "未選択";
         const boxSummary = Array.from(
           boxList.querySelectorAll(".box-card")
         ).map((box, index) => {
@@ -1580,6 +1683,8 @@
         const inputRows = `
           <tr><th>送り先国</th><td>${selectedCountryLabel || "未選択"}</td></tr>
           <tr><th>送り主</th><td>${selectedCustomerType}</td></tr>
+          <tr><th>カテゴリー</th><td>${selectedCategories.join("、") || "未選択"}</td></tr>
+          <tr><th>利用用途</th><td>${selectedUsagePurpose}</td></tr>
           <tr><th>プラン</th><td>${selectedPlanLabel || "未選択"}</td></tr>
           <tr><th>箱情報</th><td>${boxSummary.join("<br />") || "未選択"}</td></tr>
           <tr><th>インボイス発行</th><td>${invoiceInput.checked ? "利用する" : "利用しない"}</td></tr>
@@ -1885,6 +1990,13 @@
         const payload = {
           destinationCountry: countryInput.value,
           customerType: getCustomerType(),
+          categories: getSelectedCategories(),
+          usagePurpose:
+            usagePurposeInput.value === "その他"
+              ? usagePurposeOtherInput.value.trim()
+                ? `その他（${usagePurposeOtherInput.value.trim()}）`
+                : "その他"
+              : usagePurposeInput.value,
           plan: getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip",
           category: getSelectedCategories(),
           usagePurpose:
