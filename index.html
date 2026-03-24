@@ -573,6 +573,9 @@
         customerType: "entry.1401542135",
         serviceName: "entry.1029867203",
         countryName: "entry.1267146174",
+        category: "entry.1366341936",
+        categoryOtherResponse: "entry.1366341936.other_option_response",
+        usagePurpose: "entry.1726087180",
         packing: "entry.1339505299",
         invoice: "entry.741660248",
         insuredValue: "entry.295734913",
@@ -797,6 +800,23 @@
             : input.value
         );
 
+      const getCategoryPrefillValues = () => {
+        const selectedInputs = Array.from(
+          categoryGroup?.querySelectorAll('input[name="category"]:checked') || []
+        );
+        const values = [];
+        let otherText = "";
+        selectedInputs.forEach((input) => {
+          if (input.value === "その他") {
+            values.push("__other_option__");
+            otherText = categoryOtherText?.value.trim() || "";
+            return;
+          }
+          values.push(input.value);
+        });
+        return { values, otherText };
+      };
+
       const getSelectedPlan = () =>
         document.querySelector('input[name="plan"]:checked')?.value || "";
 
@@ -851,6 +871,30 @@
           countryInput.selectedOptions[0]?.textContent?.trim() || "";
         if (selectedCountryLabel) {
           params.set(FORM_QUERY_PARAMS.countryName, selectedCountryLabel);
+        }
+
+        const categoryPrefill = getCategoryPrefillValues();
+        if (categoryPrefill.values.length > 0) {
+          params.set(FORM_QUERY_PARAMS.category, categoryPrefill.values.join("、"));
+        }
+        if (categoryPrefill.otherText) {
+          params.set(FORM_QUERY_PARAMS.categoryOtherResponse, categoryPrefill.otherText);
+        }
+
+        const usagePurpose = usagePurposeInput?.value || "";
+        if (usagePurpose) {
+          if (usagePurpose === "その他") {
+            params.set(FORM_QUERY_PARAMS.usagePurpose, "__other_option__");
+            const usagePurposeOtherText = usagePurposeOtherInput?.value.trim() || "";
+            if (usagePurposeOtherText) {
+              params.set(
+                `${FORM_QUERY_PARAMS.usagePurpose}.other_option_response`,
+                usagePurposeOtherText
+              );
+            }
+          } else {
+            params.set(FORM_QUERY_PARAMS.usagePurpose, usagePurpose);
+          }
         }
 
         const boxPrefillValues = getBoxPrefillValues();
