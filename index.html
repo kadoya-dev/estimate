@@ -1977,7 +1977,7 @@
                 : "その他"
               : usagePurposeInput.value,
           plan: getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip",
-          category: getSelectedCategories(),
+          category: getSelectedCategories().join("/"),
           usagePurpose:
             usagePurposeInput.value === "その他"
               ? usagePurposeOtherInput.value.trim()
