@@ -1839,6 +1839,20 @@
             isInvalid: () => !getSelectedPlan(),
           });
         }
+        if (categoryOtherCheck?.checked) {
+          requiredInputs.push({
+            field: categoryOtherText,
+            label: "カテゴリー（その他）",
+            isInvalid: (value) => !value?.trim(),
+          });
+        }
+        if (usagePurposeInput?.value === "その他") {
+          requiredInputs.push({
+            field: usagePurposeOtherInput,
+            label: "利用用途（その他）",
+            isInvalid: (value) => !value?.trim(),
+          });
+        }
         const boxCards = Array.from(boxList.querySelectorAll(".box-card"));
         boxCards.forEach((box, index) => {
           const productCount = Number(
