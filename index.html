@@ -191,6 +191,19 @@
           </a>
         </div>
         <p class="error-message" id="inputError" hidden></p>
+        <section
+          class="comparison-image-section"
+          id="startSimulationImageSection"
+          aria-label="見積り算出イメージ"
+          hidden
+        >
+          <img
+            src=""
+            alt="見積り算出イメージ"
+            class="comparison-image"
+            id="startSimulationImage"
+          />
+        </section>
       </div>
 
       <div id="resultScreen" class="screen-section" hidden>
@@ -430,6 +443,10 @@
       const companyError = document.getElementById("companyError");
       const comparisonImageSection = document.getElementById("comparisonImageSection");
       const comparisonImage = document.getElementById("comparisonImage");
+      const startSimulationImageSection = document.getElementById(
+        "startSimulationImageSection"
+      );
+      const startSimulationImage = document.getElementById("startSimulationImage");
       const logOutput = document.getElementById("logOutput");
       const inputError = document.getElementById("inputError");
       const ctaRow = document.querySelector(".cta-row");
@@ -825,12 +842,19 @@
       };
 
       const showStartSimulationImage = () => {
-        if (!comparisonImageSection || !comparisonImage) {
+        if (!startSimulationImageSection || !startSimulationImage) {
           return;
         }
-        comparisonImage.src = START_SIMULATION_IMAGE.src;
-        comparisonImage.alt = START_SIMULATION_IMAGE.alt;
-        comparisonImageSection.hidden = false;
+        startSimulationImage.src = START_SIMULATION_IMAGE.src;
+        startSimulationImage.alt = START_SIMULATION_IMAGE.alt;
+        startSimulationImageSection.hidden = false;
+      };
+
+      const hideStartSimulationImage = () => {
+        if (!startSimulationImageSection) {
+          return;
+        }
+        startSimulationImageSection.hidden = true;
       };
 
       const updateRemoveButtons = () => {
@@ -1268,6 +1292,7 @@
       setTotalVisibility(false);
       setDisclaimerVisibility(false);
       updateComparisonImage();
+      hideStartSimulationImage();
       const initialValues = {
         country: countryInput.value,
         customerType: getCustomerType() || "",
@@ -1307,6 +1332,7 @@
         setCtaVisibility(false);
         setTotalVisibility(false);
         setDisclaimerVisibility(false);
+        hideStartSimulationImage();
         hasSimulationResult = false;
       };
 
@@ -1518,6 +1544,7 @@
         }
         setInputError("");
         updateComparisonImage();
+        hideStartSimulationImage();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
 
