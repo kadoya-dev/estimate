@@ -538,8 +538,20 @@
         },
       ];
       const EXTRA_BOX_INFO_QUERY_PARAM = "entry.350946257";
-      const DEFAULT_COMPARISON_IMAGE_SRC = "比較.png";
-      const DEFAULT_COMPARISON_IMAGE_ALT = "送料比較イメージ";
+      const COMPARISON_IMAGE_MAP = {
+        personal: {
+          src: "ワールドship.png",
+          alt: "送料比較（ワールドship）",
+        },
+        LOGIFIT: {
+          src: "LOGIFIT.png",
+          alt: "送料比較（LOGIFIT）",
+        },
+        worldShipForBiz: {
+          src: "ワールドshipforbiz.png",
+          alt: "送料比較（ワールドship for Biz）",
+        },
+      };
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -777,12 +789,34 @@
         }
       };
 
-      const showComparisonImage = () => {
+      const getComparisonImageConfig = () => {
+        const customerType = getCustomerType();
+        if (customerType === "personal") {
+          return COMPARISON_IMAGE_MAP.personal;
+        }
+        if (customerType === "corporate") {
+          const selectedPlan = getSelectedPlan();
+          if (selectedPlan === "LOGIFIT") {
+            return COMPARISON_IMAGE_MAP.LOGIFIT;
+          }
+          if (selectedPlan === "worldShipForBiz") {
+            return COMPARISON_IMAGE_MAP.worldShipForBiz;
+          }
+        }
+        return null;
+      };
+
+      const updateComparisonImage = () => {
         if (!comparisonImageSection || !comparisonImage) {
           return;
         }
-        comparisonImage.src = DEFAULT_COMPARISON_IMAGE_SRC;
-        comparisonImage.alt = DEFAULT_COMPARISON_IMAGE_ALT;
+        const imageConfig = getComparisonImageConfig();
+        if (!imageConfig) {
+          comparisonImageSection.hidden = true;
+          return;
+        }
+        comparisonImage.src = imageConfig.src;
+        comparisonImage.alt = imageConfig.alt;
         comparisonImageSection.hidden = false;
       };
 
@@ -1482,7 +1516,7 @@
       });
 
       simulateButton.addEventListener("click", async () => {
-        showComparisonImage();
+        updateComparisonImage();
         if (logOutput) {
           logOutput.textContent = "";
         }
