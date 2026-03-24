@@ -607,6 +607,10 @@
       </div>
     </template>
     <script>
+      const getLastElementById = (id) => {
+        const elements = document.querySelectorAll(`#${CSS.escape(id)}`);
+        return elements[elements.length - 1] || null;
+      };
       const countryInput = document.getElementById("country");
       const totalOutput = document.getElementById("totalPrice");
       const totalUnit = document.getElementById("totalUnit");
@@ -618,12 +622,12 @@
       const inputScreen = document.getElementById("inputScreen");
       const resultScreen = document.getElementById("resultScreen");
       const customerTypeGroup = document.getElementById("customerTypeGroup");
-      const categoryGroup = document.getElementById("categoryGroup");
-      const categoryOtherCheck = document.getElementById("categoryOtherCheck");
-      const categoryOtherText = document.getElementById("categoryOtherText");
-      const categoryWarning = document.getElementById("categoryWarning");
-      const usagePurposeInput = document.getElementById("usagePurpose");
-      const usagePurposeOtherInput = document.getElementById("usagePurposeOther");
+      const categoryGroup = getLastElementById("categoryGroup");
+      const categoryOtherCheck = getLastElementById("categoryOtherCheck");
+      const categoryOtherText = getLastElementById("categoryOtherText");
+      const categoryWarning = getLastElementById("categoryWarning");
+      const usagePurposeInput = getLastElementById("usagePurpose");
+      const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
       const planGroup = document.getElementById("planGroup");
       const invoiceInput = document.getElementById("invoiceIssue");
@@ -858,6 +862,16 @@
         const shouldShow =
           selectedLabel.includes("中国北部") || selectedLabel.includes("中国南部");
         chinaNotice.hidden = !shouldShow;
+      };
+
+      const removeDuplicateAdditionalInputSections = () => {
+        const sections = Array.from(
+          document.querySelectorAll(".input-grid--additional")
+        );
+        if (sections.length <= 1) {
+          return;
+        }
+        sections.slice(0, -1).forEach((section) => section.remove());
       };
 
       const isOtherCountrySelected = () =>
@@ -1516,6 +1530,7 @@
         updatePlanVisibility();
         handleInputChange();
       });
+      removeDuplicateAdditionalInputSections();
       categoryGroup.addEventListener("change", () => {
         updateCategoryOtherState();
         updateCategoryWarning();
