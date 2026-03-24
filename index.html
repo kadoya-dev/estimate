@@ -817,6 +817,35 @@
         return { values, otherText };
       };
 
+      const appendCategoryAndUsagePrefill = (params) => {
+        const categoryPrefill = getCategoryPrefillValues();
+        if (categoryPrefill.values.length > 0) {
+          categoryPrefill.values.forEach((value) => {
+            params.append(FORM_QUERY_PARAMS.category, value);
+          });
+        }
+        if (categoryPrefill.otherText) {
+          params.set(FORM_QUERY_PARAMS.categoryOtherResponse, categoryPrefill.otherText);
+        }
+
+        const usagePurpose = usagePurposeInput?.value || "";
+        if (!usagePurpose) {
+          return;
+        }
+        if (usagePurpose === "その他") {
+          params.set(FORM_QUERY_PARAMS.usagePurpose, "__other_option__");
+          const usagePurposeOtherText = usagePurposeOtherInput?.value.trim() || "";
+          if (usagePurposeOtherText) {
+            params.set(
+              `${FORM_QUERY_PARAMS.usagePurpose}.other_option_response`,
+              usagePurposeOtherText
+            );
+          }
+          return;
+        }
+        params.set(FORM_QUERY_PARAMS.usagePurpose, usagePurpose);
+      };
+
       const getSelectedPlan = () =>
         document.querySelector('input[name="plan"]:checked')?.value || "";
 
@@ -873,29 +902,7 @@
           params.set(FORM_QUERY_PARAMS.countryName, selectedCountryLabel);
         }
 
-        const categoryPrefill = getCategoryPrefillValues();
-        if (categoryPrefill.values.length > 0) {
-          params.set(FORM_QUERY_PARAMS.category, categoryPrefill.values.join("、"));
-        }
-        if (categoryPrefill.otherText) {
-          params.set(FORM_QUERY_PARAMS.categoryOtherResponse, categoryPrefill.otherText);
-        }
-
-        const usagePurpose = usagePurposeInput?.value || "";
-        if (usagePurpose) {
-          if (usagePurpose === "その他") {
-            params.set(FORM_QUERY_PARAMS.usagePurpose, "__other_option__");
-            const usagePurposeOtherText = usagePurposeOtherInput?.value.trim() || "";
-            if (usagePurposeOtherText) {
-              params.set(
-                `${FORM_QUERY_PARAMS.usagePurpose}.other_option_response`,
-                usagePurposeOtherText
-              );
-            }
-          } else {
-            params.set(FORM_QUERY_PARAMS.usagePurpose, usagePurpose);
-          }
-        }
+        appendCategoryAndUsagePrefill(params);
 
         const boxPrefillValues = getBoxPrefillValues();
         boxPrefillValues.forEach((box, index) => {
@@ -960,6 +967,8 @@
         const selectedCountryLabel =
           countryInput.selectedOptions[0]?.textContent?.trim() || "韓国";
         params.set(ESTIMATE_INQUIRY_QUERY_PARAMS.countryName, selectedCountryLabel);
+
+        appendCategoryAndUsagePrefill(params);
 
         return `${ESTIMATE_INQUIRY_LINK_BASE}?${params.toString()}`;
       };
