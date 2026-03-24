@@ -776,8 +776,6 @@
         }
       };
 
-      let hasSimulationStarted = false;
-
       const getComparisonImageConfig = () => {
         const customerType = getCustomerType();
         if (customerType === "personal") {
@@ -797,10 +795,6 @@
 
       const updateComparisonImage = () => {
         if (!comparisonImageSection || !comparisonImage) {
-          return;
-        }
-        if (!hasSimulationStarted) {
-          comparisonImageSection.hidden = true;
           return;
         }
         const imageConfig = getComparisonImageConfig();
@@ -1509,7 +1503,6 @@
       });
 
       simulateButton.addEventListener("click", async () => {
-        hasSimulationStarted = true;
         updateComparisonImage();
         if (logOutput) {
           logOutput.textContent = "";
