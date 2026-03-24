@@ -552,6 +552,10 @@
           alt: "送料比較（ワールドship for Biz）",
         },
       };
+      const START_SIMULATION_IMAGE = {
+        src: "比較.png",
+        alt: "送料比較（見積り算出）",
+      };
 
       const PRICE_PER_KG = 2000;
       const VOLUME_DIVISOR = 5000;
@@ -817,6 +821,15 @@
         }
         comparisonImage.src = imageConfig.src;
         comparisonImage.alt = imageConfig.alt;
+        comparisonImageSection.hidden = false;
+      };
+
+      const showStartSimulationImage = () => {
+        if (!comparisonImageSection || !comparisonImage) {
+          return;
+        }
+        comparisonImage.src = START_SIMULATION_IMAGE.src;
+        comparisonImage.alt = START_SIMULATION_IMAGE.alt;
         comparisonImageSection.hidden = false;
       };
 
@@ -1516,7 +1529,7 @@
       });
 
       simulateButton.addEventListener("click", async () => {
-        updateComparisonImage();
+        showStartSimulationImage();
         if (logOutput) {
           logOutput.textContent = "";
         }
