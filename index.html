@@ -124,6 +124,103 @@
               id="comparisonImage"
             />
           </section>
+          <div class="input-grid input-grid--additional">
+            <span class="field-label">カテゴリー</span>
+            <div class="category-field">
+              <p class="field-note field-note--inline">（複数選択可）</p>
+              <div class="category-grid" id="categoryGroup">
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="食品・飲料関連" />
+                  <span>食品・飲料関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="美容・化粧品関連" />
+                  <span>美容・化粧品関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="日用品・生活用品" />
+                  <span>日用品・生活用品</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="雑貨・ギフト・文具" />
+                  <span>雑貨・ギフト・文具</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="アパレル・ファッション" />
+                  <span>アパレル・ファッション</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="ベビー・キッズ・おもちゃ" />
+                  <span>ベビー・キッズ・おもちゃ</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="家電・電子機器" />
+                  <span>家電・電子機器</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="健康・医療関連" />
+                  <span>健康・医療関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="ペット関連" />
+                  <span>ペット関連</span>
+                </label>
+                <label class="checkbox-row">
+                  <input
+                    type="checkbox"
+                    name="category"
+                    value="趣味・アウトドア・スポーツ"
+                  />
+                  <span>趣味・アウトドア・スポーツ</span>
+                </label>
+                <label class="checkbox-row">
+                  <input type="checkbox" name="category" value="工業・業務・B2B製品" />
+                  <span>工業・業務・B2B製品</span>
+                </label>
+                <label class="checkbox-row category-other-row">
+                  <input type="checkbox" id="categoryOtherCheck" name="category" value="その他" />
+                  <span>その他</span>
+                  <input
+                    id="categoryOtherText"
+                    class="field-input field-input--category-other"
+                    type="text"
+                    maxlength="80"
+                    placeholder="内容を入力"
+                    disabled
+                  />
+                </label>
+              </div>
+              <p class="field-note field-note--alert" id="categoryWarning" hidden>
+                事前に発送可能かご確認ください
+              </p>
+            </div>
+
+            <label class="field-label" for="usagePurpose">利用用途</label>
+            <div class="usage-field">
+              <div class="select-wrap">
+                <select id="usagePurpose" class="field-select field-select--left">
+                  <option value="">選択してください</option>
+                  <option value="個人利用">個人利用</option>
+                  <option value="プレゼント">プレゼント</option>
+                  <option value="私物運搬">私物運搬</option>
+                  <option value="引っ越し">引っ越し</option>
+                  <option value="返品">返品</option>
+                  <option value="商用利用">商用利用</option>
+                  <option value="販売目的">販売目的</option>
+                  <option value="商材/備品運搬">商材/備品運搬</option>
+                  <option value="その他">その他</option>
+                </select>
+              </div>
+              <input
+                id="usagePurposeOther"
+                class="field-input usage-other-input"
+                type="text"
+                maxlength="80"
+                placeholder="その他の用途を入力"
+                disabled
+              />
+            </div>
+          </div>
         </section>
 
         <section class="box-section">
@@ -412,6 +509,10 @@
       </div>
     </template>
     <script>
+      const getLastElementById = (id) => {
+        const elements = document.querySelectorAll(`#${CSS.escape(id)}`);
+        return elements[elements.length - 1] || null;
+      };
       const countryInput = document.getElementById("country");
       const totalOutput = document.getElementById("totalPrice");
       const totalUnit = document.getElementById("totalUnit");
@@ -423,6 +524,12 @@
       const inputScreen = document.getElementById("inputScreen");
       const resultScreen = document.getElementById("resultScreen");
       const customerTypeGroup = document.getElementById("customerTypeGroup");
+      const categoryGroup = getLastElementById("categoryGroup");
+      const categoryOtherCheck = getLastElementById("categoryOtherCheck");
+      const categoryOtherText = getLastElementById("categoryOtherText");
+      const categoryWarning = getLastElementById("categoryWarning");
+      const usagePurposeInput = getLastElementById("usagePurpose");
+      const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
       const planGroup = document.getElementById("planGroup");
       const invoiceInput = document.getElementById("invoiceIssue");
@@ -598,6 +705,7 @@
       const MAX_LENGTH_PLUS_GIRTH_CM = 400;
       const MAX_BOX_COUNT = 100;
       const MAX_BOX_COUNT_MESSAGE = "箱情報は最大100箱まで追加できます";
+      const CATEGORY_WARNING_TARGETS = ["食品・飲料関連", "美容・化粧品関連", "健康・医療関連"];
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
@@ -658,6 +766,16 @@
         chinaNotice.hidden = !shouldShow;
       };
 
+      const removeDuplicateAdditionalInputSections = () => {
+        const sections = Array.from(
+          document.querySelectorAll(".input-grid--additional")
+        );
+        if (sections.length <= 1) {
+          return;
+        }
+        sections.slice(0, -1).forEach((section) => section.remove());
+      };
+
       const isOtherCountrySelected = () =>
         countryInput.selectedOptions[0]?.textContent === "その他";
 
@@ -670,6 +788,15 @@
 
       const getCustomerType = () =>
         document.querySelector('input[name="customerType"]:checked')?.value;
+
+      const getSelectedCategories = () =>
+        Array.from(
+          categoryGroup?.querySelectorAll('input[name="category"]:checked') || []
+        ).map((input) =>
+          input.value === "その他" && categoryOtherText?.value.trim()
+            ? `その他（${categoryOtherText.value.trim()}）`
+            : input.value
+        );
 
       const getSelectedPlan = () =>
         document.querySelector('input[name="plan"]:checked')?.value || "";
@@ -807,6 +934,40 @@
                 input.checked = false;
               });
           }
+        }
+      };
+
+      const updateCategoryOtherState = () => {
+        const enabled = categoryOtherCheck?.checked;
+        if (!categoryOtherText) {
+          return;
+        }
+        categoryOtherText.disabled = !enabled;
+        if (!enabled) {
+          categoryOtherText.value = "";
+        }
+      };
+
+      const updateCategoryWarning = () => {
+        if (!categoryWarning) {
+          return;
+        }
+        const selectedCategoryValues = Array.from(
+          categoryGroup?.querySelectorAll('input[name="category"]:checked') || []
+        ).map((input) => input.value);
+        categoryWarning.hidden = !selectedCategoryValues.some((value) =>
+          CATEGORY_WARNING_TARGETS.includes(value)
+        );
+      };
+
+      const updateUsageOtherState = () => {
+        const enabled = usagePurposeInput?.value === "その他";
+        if (!usagePurposeOtherInput) {
+          return;
+        }
+        usagePurposeOtherInput.disabled = !enabled;
+        if (!enabled) {
+          usagePurposeOtherInput.value = "";
         }
       };
 
@@ -1271,6 +1432,18 @@
         updatePlanVisibility();
         handleInputChange();
       });
+      removeDuplicateAdditionalInputSections();
+      categoryGroup.addEventListener("change", () => {
+        updateCategoryOtherState();
+        updateCategoryWarning();
+        handleInputChange();
+      });
+      categoryOtherText.addEventListener("input", handleInputChange);
+      usagePurposeInput.addEventListener("change", () => {
+        updateUsageOtherState();
+        handleInputChange();
+      });
+      usagePurposeOtherInput.addEventListener("input", handleInputChange);
       planGroup.addEventListener("change", handleInputChange);
       boxList.addEventListener("change", handleInputChange);
       boxList.addEventListener("input", handleInputChange);
@@ -1280,6 +1453,9 @@
       });
 
       updatePlanVisibility();
+      updateCategoryOtherState();
+      updateCategoryWarning();
+      updateUsageOtherState();
       updateCargoInsuranceState();
       updateProductCountErrors();
       updateChinaNotice();
@@ -1296,6 +1472,9 @@
       const initialValues = {
         country: countryInput.value,
         customerType: getCustomerType() || "",
+        categoryValues: getSelectedCategories(),
+        usagePurpose: usagePurposeInput.value,
+        usagePurposeOther: usagePurposeOtherInput.value,
         plan: getSelectedPlan(),
         invoiceIssue: invoiceInput.checked,
         returnInsurance: returnInsuranceInput.checked,
@@ -1318,6 +1497,18 @@
         document.querySelectorAll('input[name="plan"]').forEach((input) => {
           input.checked = input.value === initialValues.plan;
         });
+        Array.from(
+          categoryGroup.querySelectorAll('input[name="category"]')
+        ).forEach((input) => {
+          input.checked = initialValues.categoryValues.some((value) =>
+            value.startsWith(input.value)
+          );
+        });
+        categoryOtherText.value = initialValues.categoryValues
+          .find((value) => value.startsWith("その他（"))
+          ?.replace(/^その他（|）$/g, "") || "";
+        usagePurposeInput.value = initialValues.usagePurpose;
+        usagePurposeOtherInput.value = initialValues.usagePurposeOther;
         invoiceInput.checked = initialValues.invoiceIssue;
         returnInsuranceInput.checked = initialValues.returnInsurance;
         cargoInsuranceInput.checked = initialValues.cargoInsurance;
@@ -1325,6 +1516,9 @@
         resetBoxValues();
         updateProductCountErrors();
         updatePlanVisibility();
+        updateCategoryOtherState();
+        updateCategoryWarning();
+        updateUsageOtherState();
         updateCargoInsuranceState();
         updateOtherCountryState();
         calculate();
@@ -1707,6 +1901,14 @@
           destinationCountry: countryInput.value,
           customerType: getCustomerType(),
           plan: getCustomerType() === "corporate" ? getSelectedPlan() : "worldShip",
+          category: getSelectedCategories(),
+          usagePurpose:
+            usagePurposeInput.value === "その他"
+              ? usagePurposeOtherInput.value.trim()
+                ? `その他（${usagePurposeOtherInput.value.trim()}）`
+                : "その他"
+              : usagePurposeInput.value,
+          boxCount: boxDetails.length,
           invoiceIssue: invoiceInput.checked,
           returnInsurance: returnInsuranceInput.checked,
           cargoInsurance: cargoInsuranceInput.checked,
