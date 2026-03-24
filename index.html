@@ -833,13 +833,9 @@
           return;
         }
         if (usagePurpose === "その他") {
-          params.set(FORM_QUERY_PARAMS.usagePurpose, "__other_option__");
           const usagePurposeOtherText = usagePurposeOtherInput?.value.trim() || "";
           if (usagePurposeOtherText) {
-            params.set(
-              `${FORM_QUERY_PARAMS.usagePurpose}.other_option_response`,
-              usagePurposeOtherText
-            );
+            params.set(FORM_QUERY_PARAMS.usagePurpose, usagePurposeOtherText);
           }
           return;
         }
