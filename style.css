@@ -1238,8 +1238,12 @@ body {
 }
 
 .box-limit-error {
-  margin: 0 0 0 4px;
-  min-height: 1.2em;
+  margin: 0;
+}
+
+.box-limit-error-row {
+  grid-column: 2;
+  margin-left: 0;
 }
 
 .box-limit-error-row {
@@ -1248,5 +1252,5 @@ body {
 }
 
 .box-limit-error.is-hidden {
-  visibility: hidden;
+  display: none;
 }
