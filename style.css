@@ -285,6 +285,11 @@ body {
   margin-left: 8px;
 }
 
+#categoryOtherInputWrap {
+  display: inline-flex;
+  align-items: center;
+}
+
 .usage-field {
   display: flex;
   align-items: center;
@@ -1078,6 +1083,16 @@ body {
   .plan-tooltip::before {
     left: 14px;
     transform: none;
+  }
+
+  .field-label {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: #fcff52;
+    font-weight: 700;
   }
 }
 
