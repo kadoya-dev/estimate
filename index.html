@@ -1054,6 +1054,135 @@
           if (personalPlanInput) {
             personalPlanInput.checked = true;
           }
+          if (isVisible && input.checked) {
+            hasCheckedVisiblePlan = true;
+          }
+        });
+
+        if (customerType === "personal" && !hasCheckedVisiblePlan) {
+          const personalPlanInput = document.querySelector(
+            'input[name="plan"][value="worldShip"]'
+          );
+          if (personalPlanInput) {
+            personalPlanInput.checked = true;
+          }
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
         }
       };
 
@@ -1158,10 +1287,12 @@
         const imageConfig = getComparisonImageConfig();
         if (!imageConfig) {
           comparisonImageSection.hidden = true;
+          comparisonImage.classList.remove("comparison-image--selected");
           return;
         }
         comparisonImage.src = imageConfig.src;
         comparisonImage.alt = imageConfig.alt;
+        comparisonImage.classList.add("comparison-image--selected");
         comparisonImageSection.hidden = false;
       };
 
@@ -2185,12 +2316,16 @@
           inputScreen.hidden = false;
         }
         resultScreen.hidden = false;
+        if (planImageSection) {
+          planImageSection.hidden = true;
+        }
         setCtaVisibility(false);
         setTotalVisibility(true);
         setDisclaimerVisibility(true);
 
         try {
           setSimulationPending();
+          totalRow?.scrollIntoView({ behavior: "smooth", block: "start" });
           logMessage(`送信先URL: ${GAS_ENDPOINT}`);
           logMessage(`ブラウザ: ${navigator.userAgent}`);
           logMessage(`ページURL: ${window.location.href}`);
