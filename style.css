@@ -323,6 +323,19 @@ body {
   gap: 8px;
 }
 
+.plan-image-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.plan-image {
+  width: min(100%, 680px);
+  height: auto;
+  border-radius: 10px;
+  display: block;
+}
+
 .plan-tooltip {
   position: relative;
   display: inline-block;

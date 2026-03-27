@@ -104,6 +104,35 @@
                 </label>
               </div>
             </div>
+            <span class="field-label" id="planImageLabel" hidden>プラン説明</span>
+            <section
+              class="plan-image-section"
+              id="planImageSection"
+              aria-label="プラン説明画像"
+              hidden
+            >
+              <img
+                src="ワールドship.png"
+                alt="ワールドship プラン説明画像"
+                class="plan-image"
+                id="planImageWorldShip"
+                hidden
+              />
+              <img
+                src="LOGIFIT.png"
+                alt="LOGIFIT プラン説明画像"
+                class="plan-image"
+                id="planImageLogifit"
+                hidden
+              />
+              <img
+                src="ワールドshipforbiz.png"
+                alt="ワールドship for Biz プラン説明画像"
+                class="plan-image"
+                id="planImageWorldShipForBiz"
+                hidden
+              />
+            </section>
           </div>
           <div class="input-grid input-grid--additional">
             <span class="field-label field-label--top">カテゴリー</span>
@@ -521,6 +550,13 @@
       const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
       const planGroup = document.getElementById("planGroup");
+      const planImageLabel = document.getElementById("planImageLabel");
+      const planImageSection = document.getElementById("planImageSection");
+      const planImageWorldShip = document.getElementById("planImageWorldShip");
+      const planImageLogifit = document.getElementById("planImageLogifit");
+      const planImageWorldShipForBiz = document.getElementById(
+        "planImageWorldShipForBiz"
+      );
       const planOptions = Array.from(
         planGroup?.querySelectorAll(".plan-option") || []
       );
@@ -1001,6 +1037,29 @@
           if (personalPlanInput) {
             personalPlanInput.checked = true;
           }
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+
+        if (planImageLabel) {
+          planImageLabel.hidden = !hasVisibleImage;
+        }
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
         }
       };
 
@@ -1504,6 +1563,7 @@
       });
       customerTypeGroup.addEventListener("change", () => {
         updatePlanVisibility();
+        updatePlanImages();
         handleInputChange();
       });
       removeDuplicateAdditionalInputSections();
@@ -1527,6 +1587,7 @@
       });
 
       updatePlanVisibility();
+      updatePlanImages();
       updateCategoryOtherState();
       updateCategoryWarning();
       updateUsageOtherState();
@@ -1590,6 +1651,7 @@
         resetBoxValues();
         updateProductCountErrors();
         updatePlanVisibility();
+        updatePlanImages();
         updateCategoryOtherState();
         updateCategoryWarning();
         updateUsageOtherState();
