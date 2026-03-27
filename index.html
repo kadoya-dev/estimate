@@ -1041,45 +1041,6 @@
           if (personalPlanInput) {
             personalPlanInput.checked = true;
           }
-          input.disabled = !isVisible;
-          if (!isVisible && input.checked) {
-            input.checked = false;
-          }
-          if (isVisible && input.checked) {
-            hasCheckedVisiblePlan = true;
-          }
-        });
-
-        if (customerType === "personal" && !hasCheckedVisiblePlan) {
-          const personalPlanInput = document.querySelector(
-            'input[name="plan"][value="worldShip"]'
-          );
-          if (personalPlanInput) {
-            personalPlanInput.checked = true;
-          }
-        }
-      };
-
-      const updatePlanImages = () => {
-        const customerType = getCustomerType();
-        const showPersonal = customerType === "personal";
-        const showCorporate = customerType === "corporate";
-        const hasVisibleImage = showPersonal || showCorporate;
-
-        if (planImageLabel) {
-          planImageLabel.hidden = !hasVisibleImage;
-        }
-        if (planImageSection) {
-          planImageSection.hidden = !hasVisibleImage;
-        }
-        if (planImageWorldShip) {
-          planImageWorldShip.hidden = !showPersonal;
-        }
-        if (planImageLogifit) {
-          planImageLogifit.hidden = !showCorporate;
-        }
-        if (planImageWorldShipForBiz) {
-          planImageWorldShipForBiz.hidden = !showCorporate;
         }
       };
 
@@ -1984,11 +1945,13 @@
           {
             field: countryInput,
             label: "送り先国",
+            message: "送り先国を選択してください。",
             isInvalid: () => !isValidCountry,
           },
           {
             field: customerTypeGroup,
             label: "送り主",
+            message: "送り主を選択してください。",
             isInvalid: () => !getCustomerType(),
           },
         ];
