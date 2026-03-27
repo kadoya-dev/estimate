@@ -710,15 +710,15 @@
       const EXTRA_BOX_INFO_QUERY_PARAM = "entry.350946257";
       const COMPARISON_IMAGE_MAP = {
         personal: {
-          src: "ワールドship.png",
+          src: "比較.png",
           alt: "送料比較（ワールドship）",
         },
         LOGIFIT: {
-          src: "LOGIFIT.png",
+          src: "比較.png",
           alt: "送料比較（LOGIFIT）",
         },
         worldShipForBiz: {
-          src: "ワールドshipforbiz.png",
+          src: "比較.png",
           alt: "送料比較（ワールドship for Biz）",
         },
       };
@@ -2181,6 +2181,7 @@
 
         try {
           setSimulationPending();
+          totalRow?.scrollIntoView({ behavior: "smooth", block: "start" });
           logMessage(`送信先URL: ${GAS_ENDPOINT}`);
           logMessage(`ブラウザ: ${navigator.userAgent}`);
           logMessage(`ページURL: ${window.location.href}`);
