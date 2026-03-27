@@ -1041,6 +1041,22 @@
           if (personalPlanInput) {
             personalPlanInput.checked = true;
           }
+          input.disabled = !isVisible;
+          if (!isVisible && input.checked) {
+            input.checked = false;
+          }
+          if (isVisible && input.checked) {
+            hasCheckedVisiblePlan = true;
+          }
+        });
+
+        if (customerType === "personal" && !hasCheckedVisiblePlan) {
+          const personalPlanInput = document.querySelector(
+            'input[name="plan"][value="worldShip"]'
+          );
+          if (personalPlanInput) {
+            personalPlanInput.checked = true;
+          }
         }
       };
 
@@ -1064,6 +1080,59 @@
         }
         if (planImageWorldShipForBiz) {
           planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+        const hasCorporatePlanSelection =
+          selectedPlan === "LOGIFIT" || selectedPlan === "worldShipForBiz";
+
+        if (planImageLabel) {
+          planImageLabel.hidden = !hasVisibleImage;
+        }
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+          planImageWorldShip.classList.remove("plan-image--dimmed");
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+          planImageLogifit.classList.toggle(
+            "plan-image--dimmed",
+            showCorporate && hasCorporatePlanSelection && !isSelected
+          );
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--dimmed",
+            showCorporate && hasCorporatePlanSelection && !isSelected
+          );
         }
       };
 
@@ -1582,7 +1651,10 @@
         handleInputChange();
       });
       usagePurposeOtherInput.addEventListener("input", handleInputChange);
-      planGroup.addEventListener("change", handleInputChange);
+      planGroup.addEventListener("change", () => {
+        updatePlanImages();
+        handleInputChange();
+      });
       boxList.addEventListener("change", handleInputChange);
       boxList.addEventListener("input", handleInputChange);
       boxList.addEventListener("focusout", (event) => {

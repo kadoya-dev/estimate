@@ -345,7 +345,20 @@ body {
   width: min(100%, 680px);
   height: auto;
   border-radius: 10px;
+  border: 6px solid transparent;
   display: block;
+  transition: opacity 0.2s ease, filter 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.plan-image--selected {
+  border-color: #fcff52;
+  box-shadow: 0 0 0 2px #d8d84a;
+}
+
+.plan-image--dimmed {
+  opacity: 0.45;
+  filter: grayscale(40%);
 }
 
 .plan-tooltip {
