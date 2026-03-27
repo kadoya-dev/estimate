@@ -179,14 +179,16 @@
                 <label class="checkbox-row category-other-row">
                   <input type="checkbox" id="categoryOtherCheck" name="category" value="その他" />
                   <span>その他</span>
-                  <input
-                    id="categoryOtherText"
-                    class="field-input field-input--category-other"
-                    type="text"
-                    maxlength="80"
-                    placeholder="内容を入力"
-                    disabled
-                  />
+                  <span id="categoryOtherInputWrap" hidden>
+                    <input
+                      id="categoryOtherText"
+                      class="field-input field-input--category-other"
+                      type="text"
+                      maxlength="80"
+                      placeholder="内容を入力"
+                      disabled
+                    />
+                  </span>
                 </label>
               </div>
               <p class="field-note field-note--alert" id="categoryWarning" hidden>
@@ -216,6 +218,7 @@
                 type="text"
                 maxlength="80"
                 placeholder="その他の用途を入力"
+                hidden
                 disabled
               />
             </div>
@@ -259,7 +262,7 @@
                   <input type="checkbox" id="cargoInsurance" />
                   <span>利用する</span>
                 </label>
-                <div class="insurance-input">
+                <div class="insurance-input" id="insuredValueWrap" hidden>
                   <label for="insuredValue">商品価格合計</label>
                   <input
                     id="insuredValue"
@@ -267,6 +270,7 @@
                     type="number"
                     min="0"
                     step="1"
+                    inputmode="decimal"
                     placeholder=""
                     disabled
                   />
@@ -480,6 +484,8 @@
               class="field-input field-input--narrow box-product-count"
               type="number"
               min="0"
+              step="1"
+              inputmode="decimal"
               value="0"
             />
             <p class="field-note field-note--alert box-product-error is-hidden">
@@ -526,6 +532,7 @@
       const categoryGroup = getLastElementById("categoryGroup");
       const categoryOtherCheck = getLastElementById("categoryOtherCheck");
       const categoryOtherText = getLastElementById("categoryOtherText");
+      const categoryOtherInputWrap = getLastElementById("categoryOtherInputWrap");
       const categoryWarning = getLastElementById("categoryWarning");
       const usagePurposeInput = getLastElementById("usagePurpose");
       const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
@@ -535,6 +542,7 @@
       const returnInsuranceInput = document.getElementById("returnInsurance");
       const cargoInsuranceInput = document.getElementById("cargoInsurance");
       const insuredValueInput = document.getElementById("insuredValue");
+      const insuredValueWrap = document.getElementById("insuredValueWrap");
       const boxList = document.getElementById("boxList");
       const boxTemplate = document.getElementById("boxTemplate");
       const addBoxButton = document.getElementById("addBoxButton");
@@ -990,6 +998,9 @@
         if (!categoryOtherText) {
           return;
         }
+        if (categoryOtherInputWrap) {
+          categoryOtherInputWrap.hidden = !enabled;
+        }
         categoryOtherText.disabled = !enabled;
         if (!enabled) {
           categoryOtherText.value = "";
@@ -1013,6 +1024,7 @@
         if (!usagePurposeOtherInput) {
           return;
         }
+        usagePurposeOtherInput.hidden = !enabled;
         usagePurposeOtherInput.disabled = !enabled;
         if (!enabled) {
           usagePurposeOtherInput.value = "";
@@ -1156,6 +1168,9 @@
 
       const updateCargoInsuranceState = () => {
         const enabled = cargoInsuranceInput.checked;
+        if (insuredValueWrap) {
+          insuredValueWrap.hidden = !enabled;
+        }
         insuredValueInput.disabled = !enabled;
         insuredValueInput.required = enabled;
         if (!enabled) {
