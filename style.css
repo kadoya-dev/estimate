@@ -42,11 +42,12 @@ body {
 
 .app-logo {
   position: fixed;
-  top: 24px;
-  left: 24px;
+  top: 0;
+  left: 0;
   display: inline-flex;
   align-items: center;
-  z-index: 10;
+  padding: 12px 16px;
+  z-index: 1000;
 }
 
 .app-logo img {
