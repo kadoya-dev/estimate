@@ -347,18 +347,19 @@ body {
   border-radius: 10px;
   border: 6px solid transparent;
   display: block;
-  transition: opacity 0.2s ease, filter 0.2s ease, border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .plan-image--selected {
-  border-color: #fcff52;
-  box-shadow: 0 0 0 2px #d8d84a;
+  border-color: #54b35a;
+  box-shadow: 0 0 0 2px rgba(84, 179, 90, 0.35);
+  transform: scale(1.03);
+  transform-origin: center;
 }
 
 .plan-image--dimmed {
   opacity: 0.45;
-  filter: grayscale(40%);
 }
 
 .plan-tooltip {
@@ -1074,6 +1075,15 @@ body {
   height: auto;
   display: block;
   border-radius: 12px;
+  border: 6px solid transparent;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.comparison-image--selected {
+  border-color: #54b35a;
+  box-shadow: 0 0 0 2px rgba(84, 179, 90, 0.35);
+  transform: scale(1.03);
+  transform-origin: center;
 }
 
 @media (max-width: 820px) {

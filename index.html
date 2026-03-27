@@ -104,7 +104,6 @@
                 </label>
               </div>
             </div>
-            <span class="field-label field-label--top" id="planImageLabel" hidden>プラン説明</span>
             <section
               class="plan-image-section"
               id="planImageSection"
@@ -552,7 +551,6 @@
       const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
       const planGroup = document.getElementById("planGroup");
-      const planImageLabel = document.getElementById("planImageLabel");
       const planImageSection = document.getElementById("planImageSection");
       const planImageWorldShip = document.getElementById("planImageWorldShip");
       const planImageLogifit = document.getElementById("planImageLogifit");
@@ -1053,9 +1051,6 @@
         const hasCorporatePlanSelection =
           selectedPlan === "LOGIFIT" || selectedPlan === "worldShipForBiz";
 
-        if (planImageLabel) {
-          planImageLabel.hidden = !hasVisibleImage;
-        }
         if (planImageSection) {
           planImageSection.hidden = !hasVisibleImage;
         }
@@ -1159,10 +1154,12 @@
         const imageConfig = getComparisonImageConfig();
         if (!imageConfig) {
           comparisonImageSection.hidden = true;
+          comparisonImage.classList.remove("comparison-image--selected");
           return;
         }
         comparisonImage.src = imageConfig.src;
         comparisonImage.alt = imageConfig.alt;
+        comparisonImage.classList.add("comparison-image--selected");
         comparisonImageSection.hidden = false;
       };
 
