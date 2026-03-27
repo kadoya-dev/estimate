@@ -1171,6 +1171,15 @@ body {
     grid-column: 1 / -1;
   }
 
+  #planLabel {
+    grid-column: 1;
+  }
+
+  #planGroup {
+    grid-column: 2;
+    align-self: start;
+  }
+
   .box-grid {
     grid-template-columns: 110px minmax(0, 1fr);
     gap: 14px 10px;
@@ -1239,11 +1248,6 @@ body {
 
 .box-limit-error {
   margin: 0;
-}
-
-.box-limit-error-row {
-  grid-column: 2;
-  margin-left: 0;
 }
 
 .box-limit-error-row {
