@@ -87,44 +87,55 @@
                 <span>法人利用</span>
               </label>
             </div>
-            <span class="field-label" id="planLabel" hidden>プラン</span>
-            <div class="plan-group" id="planGroup" hidden>
+            <span class="field-label" id="planLabel">プラン<span class="required-mark">*</span></span>
+            <div class="plan-group" id="planGroup">
               <div class="radio-group">
-                <label class="radio-row">
-                  <input type="radio" name="plan" value="LOGIFIT" />
-                  <span class="plan-tooltip" data-tooltip="検品・梱包・書類作成まですべて弊社で対応
-発送にかかる手間を最大限なくした、フルサポートサービスです✨">LOGIFIT<span class="tooltip-indicator" aria-hidden="true"></span></span>
+                <label class="radio-row plan-option" data-plan-scope="personal">
+                  <input type="radio" name="plan" value="worldShip" />
+                  <span>ワールドship</span>
                 </label>
-                <label class="radio-row">
+                <label class="radio-row plan-option" data-plan-scope="corporate">
+                  <input type="radio" name="plan" value="LOGIFIT" />
+                  <span>LOGIFIT</span>
+                </label>
+                <label class="radio-row plan-option" data-plan-scope="corporate">
                   <input type="radio" name="plan" value="worldShipForBiz" />
-                  <span class="plan-tooltip" data-tooltip="弊社に送っていただいた荷物をそのまま転送します ">ワールドship for Biz<span class="tooltip-indicator" aria-hidden="true"></span></span>
+                  <span>ワールドship for Biz</span>
                 </label>
               </div>
-              <p class="field-note">
-                <a
-                  href="https://worldshift-inc.jp/allynair/"
-                  target="_blank"
-                  rel="noreferrer"
-                  >※プランについてはこちらをご確認ください</a
-                >
-              </p>
             </div>
+            <span class="field-label" id="planImageLabel" hidden>プラン説明</span>
+            <section
+              class="plan-image-section"
+              id="planImageSection"
+              aria-label="プラン説明画像"
+              hidden
+            >
+              <img
+                src="ワールドship.png"
+                alt="ワールドship プラン説明画像"
+                class="plan-image"
+                id="planImageWorldShip"
+                hidden
+              />
+              <img
+                src="LOGIFIT.png"
+                alt="LOGIFIT プラン説明画像"
+                class="plan-image"
+                id="planImageLogifit"
+                hidden
+              />
+              <img
+                src="ワールドshipforbiz.png"
+                alt="ワールドship for Biz プラン説明画像"
+                class="plan-image"
+                id="planImageWorldShipForBiz"
+                hidden
+              />
+            </section>
           </div>
-          <section
-            class="comparison-image-section"
-            id="comparisonImageSection"
-            aria-label="送料比較イメージ"
-            hidden
-          >
-            <img
-              src=""
-              alt="送料比較イメージ"
-              class="comparison-image"
-              id="comparisonImage"
-            />
-          </section>
           <div class="input-grid input-grid--additional">
-            <span class="field-label">カテゴリー</span>
+            <span class="field-label field-label--top">カテゴリー</span>
             <div class="category-field">
               <p class="field-note field-note--inline">（複数選択可）</p>
               <div class="category-grid" id="categoryGroup">
@@ -179,14 +190,16 @@
                 <label class="checkbox-row category-other-row">
                   <input type="checkbox" id="categoryOtherCheck" name="category" value="その他" />
                   <span>その他</span>
-                  <input
-                    id="categoryOtherText"
-                    class="field-input field-input--category-other"
-                    type="text"
-                    maxlength="80"
-                    placeholder="内容を入力"
-                    disabled
-                  />
+                  <span id="categoryOtherInputWrap" hidden>
+                    <input
+                      id="categoryOtherText"
+                      class="field-input field-input--category-other"
+                      type="text"
+                      maxlength="80"
+                      placeholder="内容を入力"
+                      disabled
+                    />
+                  </span>
                 </label>
               </div>
               <p class="field-note field-note--alert" id="categoryWarning" hidden>
@@ -216,6 +229,7 @@
                 type="text"
                 maxlength="80"
                 placeholder="その他の用途を入力"
+                hidden
                 disabled
               />
             </div>
@@ -259,7 +273,7 @@
                   <input type="checkbox" id="cargoInsurance" />
                   <span>利用する</span>
                 </label>
-                <div class="insurance-input">
+                <div class="insurance-input" id="insuredValueWrap" hidden>
                   <label for="insuredValue">商品価格合計</label>
                   <input
                     id="insuredValue"
@@ -267,6 +281,7 @@
                     type="number"
                     min="0"
                     step="1"
+                    inputmode="decimal"
                     placeholder=""
                     disabled
                   />
@@ -287,19 +302,6 @@
           </a>
         </div>
         <p class="error-message" id="inputError" hidden></p>
-        <section
-          class="comparison-image-section"
-          id="startSimulationImageSection"
-          aria-label="見積り算出イメージ"
-          hidden
-        >
-          <img
-            src=""
-            alt="見積り算出イメージ"
-            class="comparison-image"
-            id="startSimulationImage"
-          />
-        </section>
       </div>
 
       <div id="resultScreen" class="screen-section" hidden>
@@ -345,6 +347,34 @@
           </div>
         </section>
 
+        <section
+          class="comparison-image-section"
+          id="comparisonImageSection"
+          aria-label="送料比較イメージ"
+          hidden
+        >
+          <img
+            src=""
+            alt="送料比較イメージ"
+            class="comparison-image"
+            id="comparisonImage"
+          />
+        </section>
+
+        <section
+          class="comparison-image-section"
+          id="startSimulationImageSection"
+          aria-label="見積り算出イメージ"
+          hidden
+        >
+          <img
+            src=""
+            alt="見積り算出イメージ"
+            class="comparison-image"
+            id="startSimulationImage"
+          />
+        </section>
+
         <section class="disclaimer">
           <h2 class="disclaimer-title">注意事項</h2>
           <ul class="disclaimer-list">
@@ -367,20 +397,6 @@
           </ul>
         </section>
       </div>
-
-      <section
-        class="comparison-image-section"
-        id="comparisonImageSection"
-        aria-label="送料比較イメージ"
-        hidden
-      >
-        <img
-          src=""
-          alt="送料比較イメージ"
-          class="comparison-image"
-          id="comparisonImage"
-        />
-      </section>
 
       <div class="modal-backdrop" id="estimateModal" hidden>
         <div class="modal-card" role="dialog" aria-modal="true">
@@ -480,6 +496,8 @@
               class="field-input field-input--narrow box-product-count"
               type="number"
               min="0"
+              step="1"
+              inputmode="decimal"
               value="0"
             />
             <p class="field-note field-note--alert box-product-error is-hidden">
@@ -526,15 +544,27 @@
       const categoryGroup = getLastElementById("categoryGroup");
       const categoryOtherCheck = getLastElementById("categoryOtherCheck");
       const categoryOtherText = getLastElementById("categoryOtherText");
+      const categoryOtherInputWrap = getLastElementById("categoryOtherInputWrap");
       const categoryWarning = getLastElementById("categoryWarning");
       const usagePurposeInput = getLastElementById("usagePurpose");
       const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
       const planGroup = document.getElementById("planGroup");
+      const planImageLabel = document.getElementById("planImageLabel");
+      const planImageSection = document.getElementById("planImageSection");
+      const planImageWorldShip = document.getElementById("planImageWorldShip");
+      const planImageLogifit = document.getElementById("planImageLogifit");
+      const planImageWorldShipForBiz = document.getElementById(
+        "planImageWorldShipForBiz"
+      );
+      const planOptions = Array.from(
+        planGroup?.querySelectorAll(".plan-option") || []
+      );
       const invoiceInput = document.getElementById("invoiceIssue");
       const returnInsuranceInput = document.getElementById("returnInsurance");
       const cargoInsuranceInput = document.getElementById("cargoInsurance");
       const insuredValueInput = document.getElementById("insuredValue");
+      const insuredValueWrap = document.getElementById("insuredValueWrap");
       const boxList = document.getElementById("boxList");
       const boxTemplate = document.getElementById("boxTemplate");
       const addBoxButton = document.getElementById("addBoxButton");
@@ -970,18 +1000,66 @@
       };
 
       const updatePlanVisibility = () => {
-        const isCorporate = getCustomerType() === "corporate";
-        planLabel.hidden = !isCorporate;
-        planGroup.hidden = !isCorporate;
-        if (!isCorporate) {
-          const selectedPlan = getSelectedPlan();
-          if (selectedPlan) {
-            document
-              .querySelectorAll('input[name="plan"]')
-              .forEach((input) => {
-                input.checked = false;
-              });
+        const customerType = getCustomerType();
+        const visiblePlanScopes =
+          customerType === "personal"
+            ? ["personal"]
+            : customerType === "corporate"
+              ? ["corporate"]
+              : ["personal", "corporate"];
+        const visibleScopeSet = new Set(visiblePlanScopes);
+        let hasCheckedVisiblePlan = false;
+
+        planLabel.hidden = false;
+        planGroup.hidden = false;
+
+        planOptions.forEach((option) => {
+          const scope = option.dataset.planScope || "";
+          const input = option.querySelector('input[name="plan"]');
+          const isVisible = visibleScopeSet.has(scope);
+          option.hidden = !isVisible;
+          if (!input) {
+            return;
           }
+          input.disabled = !isVisible;
+          if (!isVisible && input.checked) {
+            input.checked = false;
+          }
+          if (isVisible && input.checked) {
+            hasCheckedVisiblePlan = true;
+          }
+        });
+
+        if (customerType === "personal" && !hasCheckedVisiblePlan) {
+          const personalPlanInput = document.querySelector(
+            'input[name="plan"][value="worldShip"]'
+          );
+          if (personalPlanInput) {
+            personalPlanInput.checked = true;
+          }
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+
+        if (planImageLabel) {
+          planImageLabel.hidden = !hasVisibleImage;
+        }
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
         }
       };
 
@@ -989,6 +1067,9 @@
         const enabled = categoryOtherCheck?.checked;
         if (!categoryOtherText) {
           return;
+        }
+        if (categoryOtherInputWrap) {
+          categoryOtherInputWrap.hidden = !enabled;
         }
         categoryOtherText.disabled = !enabled;
         if (!enabled) {
@@ -1013,6 +1094,7 @@
         if (!usagePurposeOtherInput) {
           return;
         }
+        usagePurposeOtherInput.hidden = !enabled;
         usagePurposeOtherInput.disabled = !enabled;
         if (!enabled) {
           usagePurposeOtherInput.value = "";
@@ -1156,6 +1238,9 @@
 
       const updateCargoInsuranceState = () => {
         const enabled = cargoInsuranceInput.checked;
+        if (insuredValueWrap) {
+          insuredValueWrap.hidden = !enabled;
+        }
         insuredValueInput.disabled = !enabled;
         insuredValueInput.required = enabled;
         if (!enabled) {
@@ -1478,6 +1563,7 @@
       });
       customerTypeGroup.addEventListener("change", () => {
         updatePlanVisibility();
+        updatePlanImages();
         handleInputChange();
       });
       removeDuplicateAdditionalInputSections();
@@ -1501,6 +1587,7 @@
       });
 
       updatePlanVisibility();
+      updatePlanImages();
       updateCategoryOtherState();
       updateCategoryWarning();
       updateUsageOtherState();
@@ -1564,6 +1651,7 @@
         resetBoxValues();
         updateProductCountErrors();
         updatePlanVisibility();
+        updatePlanImages();
         updateCategoryOtherState();
         updateCategoryWarning();
         updateUsageOtherState();
@@ -1832,6 +1920,7 @@
           requiredInputs.push({
             field: planGroup,
             label: "プラン",
+            message: "プランを選択してください。",
             isInvalid: () => !getSelectedPlan(),
           });
         }
@@ -1923,7 +2012,9 @@
           isInvalid(field?.value)
         );
         if (missingField) {
-          setInputError(`${missingField.label}を入力してください。`);
+          setInputError(
+            missingField.message || `${missingField.label}を入力してください。`
+          );
           if (simulateRow) {
             simulateRow.hidden = false;
           }
