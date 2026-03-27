@@ -87,7 +87,7 @@
                 <span>法人利用</span>
               </label>
             </div>
-            <span class="field-label" id="planLabel">プラン</span>
+            <span class="field-label" id="planLabel">プラン<span class="required-mark">*</span></span>
             <div class="plan-group" id="planGroup">
               <div class="radio-group">
                 <label class="radio-row plan-option" data-plan-scope="personal">
@@ -1920,6 +1920,7 @@
           requiredInputs.push({
             field: planGroup,
             label: "プラン",
+            message: "プランを選択してください。",
             isInvalid: () => !getSelectedPlan(),
           });
         }
@@ -2011,7 +2012,9 @@
           isInvalid(field?.value)
         );
         if (missingField) {
-          setInputError(`${missingField.label}を入力してください。`);
+          setInputError(
+            missingField.message || `${missingField.label}を入力してください。`
+          );
           if (simulateRow) {
             simulateRow.hidden = false;
           }
