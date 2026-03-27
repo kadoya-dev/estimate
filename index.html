@@ -786,20 +786,45 @@
         logErrorDetails("unhandledrejection", event.reason);
       });
 
+      const initDebugSteps = [];
+      const markInitStep = (label) => {
+        const message = `[init] ${label}`;
+        initDebugSteps.push(message);
+        window.__estimateInitSteps = initDebugSteps;
+        console.info(message);
+      };
+      const runInitStep = (label, fn) => {
+        markInitStep(`${label}:start`);
+        try {
+          const result = fn();
+          markInitStep(`${label}:ok`);
+          return result;
+        } catch (error) {
+          const errorMessage =
+            error && typeof error === "object" && "message" in error
+              ? error.message
+              : String(error);
+          markInitStep(`${label}:fail:${errorMessage}`);
+          throw error;
+        }
+      };
+
       const countryOptions = Array.isArray(COUNTRY_NAMES)
         ? COUNTRY_NAMES
         : [];
-      const emptyCountryOption = document.createElement("option");
-      emptyCountryOption.value = "";
-      emptyCountryOption.textContent = "選択してください";
-      emptyCountryOption.selected = true;
-      countryInput.appendChild(emptyCountryOption);
+      runInitStep("country-options", () => {
+        const emptyCountryOption = document.createElement("option");
+        emptyCountryOption.value = "";
+        emptyCountryOption.textContent = "選択してください";
+        emptyCountryOption.selected = true;
+        countryInput.appendChild(emptyCountryOption);
 
-      countryOptions.forEach((country) => {
-        const option = document.createElement("option");
-        option.value = country.value;
-        option.textContent = country.label;
-        countryInput.appendChild(option);
+        countryOptions.forEach((country) => {
+          const option = document.createElement("option");
+          option.value = country.value;
+          option.textContent = country.label;
+          countryInput.appendChild(option);
+        });
       });
 
       const updateChinaNotice = () => {
@@ -1054,183 +1079,6 @@
           if (personalPlanInput) {
             personalPlanInput.checked = true;
           }
-        });
-
-        if (customerType === "personal" && !hasCheckedVisiblePlan) {
-          const personalPlanInput = document.querySelector(
-            'input[name="plan"][value="worldShip"]'
-          );
-          if (personalPlanInput) {
-            personalPlanInput.checked = true;
-          }
-          if (isVisible && input.checked) {
-            hasCheckedVisiblePlan = true;
-          }
-        });
-
-        if (customerType === "personal" && !hasCheckedVisiblePlan) {
-          const personalPlanInput = document.querySelector(
-            'input[name="plan"][value="worldShip"]'
-          );
-          if (personalPlanInput) {
-            personalPlanInput.checked = true;
-          }
-        }
-      };
-
-      const updatePlanImages = () => {
-        const customerType = getCustomerType();
-        const showPersonal = customerType === "personal";
-        const showCorporate = customerType === "corporate";
-        const hasVisibleImage = showPersonal || showCorporate;
-        const selectedPlan = getSelectedPlan();
-
-        if (planImageSection) {
-          planImageSection.hidden = !hasVisibleImage;
-        }
-        if (planImageWorldShip) {
-          planImageWorldShip.hidden = !showPersonal;
-        }
-        if (planImageLogifit) {
-          planImageLogifit.hidden = !showCorporate;
-        }
-        if (planImageWorldShipForBiz) {
-          planImageWorldShipForBiz.hidden = !showCorporate;
-        }
-
-        if (planImageWorldShip) {
-          planImageWorldShip.classList.toggle(
-            "plan-image--selected",
-            showPersonal
-          );
-        }
-        if (planImageLogifit) {
-          const isSelected = selectedPlan === "LOGIFIT";
-          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
-        }
-        if (planImageWorldShipForBiz) {
-          const isSelected = selectedPlan === "worldShipForBiz";
-          planImageWorldShipForBiz.classList.toggle(
-            "plan-image--selected",
-            isSelected
-          );
-        }
-      };
-
-      const updatePlanImages = () => {
-        const customerType = getCustomerType();
-        const showPersonal = customerType === "personal";
-        const showCorporate = customerType === "corporate";
-        const hasVisibleImage = showPersonal || showCorporate;
-        const selectedPlan = getSelectedPlan();
-
-        if (planImageSection) {
-          planImageSection.hidden = !hasVisibleImage;
-        }
-        if (planImageWorldShip) {
-          planImageWorldShip.hidden = !showPersonal;
-        }
-        if (planImageLogifit) {
-          planImageLogifit.hidden = !showCorporate;
-        }
-        if (planImageWorldShipForBiz) {
-          planImageWorldShipForBiz.hidden = !showCorporate;
-        }
-
-        if (planImageWorldShip) {
-          planImageWorldShip.classList.toggle(
-            "plan-image--selected",
-            showPersonal
-          );
-        }
-        if (planImageLogifit) {
-          const isSelected = selectedPlan === "LOGIFIT";
-          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
-        }
-        if (planImageWorldShipForBiz) {
-          const isSelected = selectedPlan === "worldShipForBiz";
-          planImageWorldShipForBiz.classList.toggle(
-            "plan-image--selected",
-            isSelected
-          );
-        }
-      };
-
-      const updatePlanImages = () => {
-        const customerType = getCustomerType();
-        const showPersonal = customerType === "personal";
-        const showCorporate = customerType === "corporate";
-        const hasVisibleImage = showPersonal || showCorporate;
-        const selectedPlan = getSelectedPlan();
-
-        if (planImageSection) {
-          planImageSection.hidden = !hasVisibleImage;
-        }
-        if (planImageWorldShip) {
-          planImageWorldShip.hidden = !showPersonal;
-        }
-        if (planImageLogifit) {
-          planImageLogifit.hidden = !showCorporate;
-        }
-        if (planImageWorldShipForBiz) {
-          planImageWorldShipForBiz.hidden = !showCorporate;
-        }
-
-        if (planImageWorldShip) {
-          planImageWorldShip.classList.toggle(
-            "plan-image--selected",
-            showPersonal
-          );
-        }
-        if (planImageLogifit) {
-          const isSelected = selectedPlan === "LOGIFIT";
-          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
-        }
-        if (planImageWorldShipForBiz) {
-          const isSelected = selectedPlan === "worldShipForBiz";
-          planImageWorldShipForBiz.classList.toggle(
-            "plan-image--selected",
-            isSelected
-          );
-        }
-      };
-
-      const updatePlanImages = () => {
-        const customerType = getCustomerType();
-        const showPersonal = customerType === "personal";
-        const showCorporate = customerType === "corporate";
-        const hasVisibleImage = showPersonal || showCorporate;
-        const selectedPlan = getSelectedPlan();
-
-        if (planImageSection) {
-          planImageSection.hidden = !hasVisibleImage;
-        }
-        if (planImageWorldShip) {
-          planImageWorldShip.hidden = !showPersonal;
-        }
-        if (planImageLogifit) {
-          planImageLogifit.hidden = !showCorporate;
-        }
-        if (planImageWorldShipForBiz) {
-          planImageWorldShipForBiz.hidden = !showCorporate;
-        }
-
-        if (planImageWorldShip) {
-          planImageWorldShip.classList.toggle(
-            "plan-image--selected",
-            showPersonal
-          );
-        }
-        if (planImageLogifit) {
-          const isSelected = selectedPlan === "LOGIFIT";
-          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
-        }
-        if (planImageWorldShipForBiz) {
-          const isSelected = selectedPlan === "worldShipForBiz";
-          planImageWorldShipForBiz.classList.toggle(
-            "plan-image--selected",
-            isSelected
-          );
         }
       };
 
@@ -1446,7 +1294,9 @@
         updateBoxLimitErrors();
       };
 
-      addBoxButton.addEventListener("click", addBox);
+      runInitStep("bind-add-box", () => {
+        addBoxButton.addEventListener("click", addBox);
+      });
 
       const updateCargoInsuranceState = () => {
         const enabled = cargoInsuranceInput.checked;
@@ -1761,67 +1611,71 @@
         return { billable: billableTotal, total, hasError: false };
       };
 
-      [invoiceInput, returnInsuranceInput, insuredValueInput].forEach(
-        (input) => {
-          input.addEventListener("change", handleInputChange);
-          input.addEventListener("input", handleInputChange);
-        }
-      );
-      countryInput.addEventListener("change", () => {
-        updateChinaNotice();
-        updateOtherCountryState();
-        handleInputChange();
-      });
-      countryInput.addEventListener("input", () => {
-        updateChinaNotice();
-        updateOtherCountryState();
-      });
-      customerTypeGroup.addEventListener("change", () => {
-        updatePlanVisibility();
-        updatePlanImages();
-        handleInputChange();
-      });
-      removeDuplicateAdditionalInputSections();
-      categoryGroup.addEventListener("change", () => {
-        updateCategoryOtherState();
-        updateCategoryWarning();
-        handleInputChange();
-      });
-      categoryOtherText.addEventListener("input", handleInputChange);
-      usagePurposeInput.addEventListener("change", () => {
-        updateUsageOtherState();
-        handleInputChange();
-      });
-      usagePurposeOtherInput.addEventListener("input", handleInputChange);
-      planGroup.addEventListener("change", () => {
-        updatePlanImages();
-        handleInputChange();
-      });
-      boxList.addEventListener("change", handleInputChange);
-      boxList.addEventListener("input", handleInputChange);
-      boxList.addEventListener("focusout", (event) => {
-        enforceBoxInputDigitLimits(event.target);
-        handleInputChange();
+      runInitStep("bind-input-events", () => {
+        [invoiceInput, returnInsuranceInput, insuredValueInput].forEach(
+          (input) => {
+            input.addEventListener("change", handleInputChange);
+            input.addEventListener("input", handleInputChange);
+          }
+        );
+        countryInput.addEventListener("change", () => {
+          updateChinaNotice();
+          updateOtherCountryState();
+          handleInputChange();
+        });
+        countryInput.addEventListener("input", () => {
+          updateChinaNotice();
+          updateOtherCountryState();
+        });
+        customerTypeGroup.addEventListener("change", () => {
+          updatePlanVisibility();
+          updatePlanImages();
+          handleInputChange();
+        });
+        removeDuplicateAdditionalInputSections();
+        categoryGroup.addEventListener("change", () => {
+          updateCategoryOtherState();
+          updateCategoryWarning();
+          handleInputChange();
+        });
+        categoryOtherText.addEventListener("input", handleInputChange);
+        usagePurposeInput.addEventListener("change", () => {
+          updateUsageOtherState();
+          handleInputChange();
+        });
+        usagePurposeOtherInput.addEventListener("input", handleInputChange);
+        planGroup.addEventListener("change", () => {
+          updatePlanImages();
+          handleInputChange();
+        });
+        boxList.addEventListener("change", handleInputChange);
+        boxList.addEventListener("input", handleInputChange);
+        boxList.addEventListener("focusout", (event) => {
+          enforceBoxInputDigitLimits(event.target);
+          handleInputChange();
+        });
       });
 
-      updatePlanVisibility();
-      updatePlanImages();
-      updateCategoryOtherState();
-      updateCategoryWarning();
-      updateUsageOtherState();
-      updateCargoInsuranceState();
-      updateProductCountErrors();
-      updateChinaNotice();
-      updateOtherCountryState();
-      addBox();
-      updateProductCountErrors();
-      calculate();
-      setInitialSimulationDisplay();
-      setCtaVisibility(false);
-      setTotalVisibility(false);
-      setDisclaimerVisibility(false);
-      updateComparisonImage();
-      hideStartSimulationImage();
+      runInitStep("initial-ui-sync", () => {
+        updatePlanVisibility();
+        updatePlanImages();
+        updateCategoryOtherState();
+        updateCategoryWarning();
+        updateUsageOtherState();
+        updateCargoInsuranceState();
+        updateProductCountErrors();
+        updateChinaNotice();
+        updateOtherCountryState();
+        addBox();
+        updateProductCountErrors();
+        calculate();
+        setInitialSimulationDisplay();
+        setCtaVisibility(false);
+        setTotalVisibility(false);
+        setDisclaimerVisibility(false);
+        updateComparisonImage();
+        hideStartSimulationImage();
+      });
 
       window.addEventListener("pageshow", () => {
         updatePlanVisibility();
