@@ -41,7 +41,7 @@ body {
 }
 
 .app-logo {
-  position: fixed;
+  position: absolute;
   top: 24px;
   left: 24px;
   display: inline-flex;
@@ -1162,11 +1162,51 @@ body {
   }
 
   .input-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 14px 10px;
+  }
+
+  .mobile-stack-full {
+    grid-column: 1 / -1;
+  }
+
+  .box-grid {
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 14px 10px;
+  }
+
+  .option-grid {
+    grid-template-columns: 110px minmax(0, 1fr);
+    gap: 14px 10px;
   }
 
   .dimension-group {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .dimension-row {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .dimension-group .field-input--dimension {
+    width: 54px;
+    padding: 8px 4px;
+  }
+
+  .dimension-multiply {
+    font-size: 1rem;
+    margin: 0 -1px;
+  }
+
+  .dimension-row .unit {
+    font-size: 0.9rem;
+  }
+
+  .box-limit-error-row {
+    grid-column: 1 / -1;
+    margin-top: -8px;
   }
 
   .plan-tooltip::after {
@@ -1197,10 +1237,14 @@ body {
 }
 
 .box-limit-error {
-  margin: 0 0 0 4px;
-  min-height: 1.2em;
+  margin: 0;
+}
+
+.box-limit-error-row {
+  grid-column: 2;
+  margin-left: 0;
 }
 
 .box-limit-error.is-hidden {
-  visibility: hidden;
+  display: none;
 }
