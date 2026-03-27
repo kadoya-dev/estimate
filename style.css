@@ -153,6 +153,10 @@ body {
   color: #0b3d14;
 }
 
+.field-label--top {
+  align-self: start;
+}
+
 .required-note {
   color: #d93025;
   font-weight: 600;

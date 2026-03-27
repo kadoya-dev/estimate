@@ -87,15 +87,19 @@
                 <span>法人利用</span>
               </label>
             </div>
-            <span class="field-label" id="planLabel" hidden>プラン</span>
-            <div class="plan-group" id="planGroup" hidden>
+            <span class="field-label" id="planLabel">プラン</span>
+            <div class="plan-group" id="planGroup">
               <div class="radio-group">
-                <label class="radio-row">
+                <label class="radio-row plan-option" data-plan-scope="personal">
+                  <input type="radio" name="plan" value="worldShip" />
+                  <span class="plan-tooltip" data-tooltip="個人利用向けの基本プランです">ワールドship<span class="tooltip-indicator" aria-hidden="true"></span></span>
+                </label>
+                <label class="radio-row plan-option" data-plan-scope="corporate">
                   <input type="radio" name="plan" value="LOGIFIT" />
                   <span class="plan-tooltip" data-tooltip="検品・梱包・書類作成まですべて弊社で対応
 発送にかかる手間を最大限なくした、フルサポートサービスです✨">LOGIFIT<span class="tooltip-indicator" aria-hidden="true"></span></span>
                 </label>
-                <label class="radio-row">
+                <label class="radio-row plan-option" data-plan-scope="corporate">
                   <input type="radio" name="plan" value="worldShipForBiz" />
                   <span class="plan-tooltip" data-tooltip="弊社に送っていただいた荷物をそのまま転送します ">ワールドship for Biz<span class="tooltip-indicator" aria-hidden="true"></span></span>
                 </label>
@@ -124,7 +128,7 @@
             />
           </section>
           <div class="input-grid input-grid--additional">
-            <span class="field-label">カテゴリー</span>
+            <span class="field-label field-label--top">カテゴリー</span>
             <div class="category-field">
               <p class="field-note field-note--inline">（複数選択可）</p>
               <div class="category-grid" id="categoryGroup">
@@ -291,19 +295,6 @@
           </a>
         </div>
         <p class="error-message" id="inputError" hidden></p>
-        <section
-          class="comparison-image-section"
-          id="startSimulationImageSection"
-          aria-label="見積り算出イメージ"
-          hidden
-        >
-          <img
-            src=""
-            alt="見積り算出イメージ"
-            class="comparison-image"
-            id="startSimulationImage"
-          />
-        </section>
       </div>
 
       <div id="resultScreen" class="screen-section" hidden>
@@ -347,6 +338,20 @@
               <p class="pdf-save-hint">⇧見積結果の保存はこちらから⇧</p>
             </div>
           </div>
+        </section>
+
+        <section
+          class="comparison-image-section"
+          id="startSimulationImageSection"
+          aria-label="見積り算出イメージ"
+          hidden
+        >
+          <img
+            src=""
+            alt="見積り算出イメージ"
+            class="comparison-image"
+            id="startSimulationImage"
+          />
         </section>
 
         <section class="disclaimer">
@@ -538,6 +543,9 @@
       const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
       const planGroup = document.getElementById("planGroup");
+      const planOptions = Array.from(
+        planGroup?.querySelectorAll(".plan-option") || []
+      );
       const invoiceInput = document.getElementById("invoiceIssue");
       const returnInsuranceInput = document.getElementById("returnInsurance");
       const cargoInsuranceInput = document.getElementById("cargoInsurance");
@@ -978,17 +986,42 @@
       };
 
       const updatePlanVisibility = () => {
-        const isCorporate = getCustomerType() === "corporate";
-        planLabel.hidden = !isCorporate;
-        planGroup.hidden = !isCorporate;
-        if (!isCorporate) {
-          const selectedPlan = getSelectedPlan();
-          if (selectedPlan) {
-            document
-              .querySelectorAll('input[name="plan"]')
-              .forEach((input) => {
-                input.checked = false;
-              });
+        const customerType = getCustomerType();
+        const visiblePlanScopes =
+          customerType === "personal"
+            ? ["personal"]
+            : customerType === "corporate"
+              ? ["corporate"]
+              : ["personal", "corporate"];
+        const visibleScopeSet = new Set(visiblePlanScopes);
+        let hasCheckedVisiblePlan = false;
+
+        planLabel.hidden = false;
+        planGroup.hidden = false;
+
+        planOptions.forEach((option) => {
+          const scope = option.dataset.planScope || "";
+          const input = option.querySelector('input[name="plan"]');
+          const isVisible = visibleScopeSet.has(scope);
+          option.hidden = !isVisible;
+          if (!input) {
+            return;
+          }
+          input.disabled = !isVisible;
+          if (!isVisible && input.checked) {
+            input.checked = false;
+          }
+          if (isVisible && input.checked) {
+            hasCheckedVisiblePlan = true;
+          }
+        });
+
+        if (customerType === "personal" && !hasCheckedVisiblePlan) {
+          const personalPlanInput = document.querySelector(
+            'input[name="plan"][value="worldShip"]'
+          );
+          if (personalPlanInput) {
+            personalPlanInput.checked = true;
           }
         }
       };
