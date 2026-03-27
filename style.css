@@ -342,7 +342,7 @@ body {
 }
 
 .plan-image {
-  width: min(100%, 680px);
+  width: 100%;
   height: auto;
   border-radius: 10px;
   border: 6px solid transparent;
@@ -1116,7 +1116,8 @@ body {
 }
 
 .comparison-image {
-  width: min(100%, 720px);
+  width: 100%;
+  max-width: 860px;
   height: auto;
   display: block;
   border-radius: 12px;
