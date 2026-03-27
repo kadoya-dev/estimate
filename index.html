@@ -87,46 +87,58 @@
                 <span>法人利用</span>
               </label>
             </div>
-            <span class="field-label" id="planLabel" hidden>プラン</span>
+            <span class="field-label field-label--top" id="planLabel" hidden>プラン<span class="required-mark">*</span></span>
             <div class="plan-group" id="planGroup" hidden>
               <div class="radio-group">
-                <label class="radio-row">
-                  <input type="radio" name="plan" value="LOGIFIT" />
-                  <span class="plan-tooltip" data-tooltip="検品・梱包・書類作成まですべて弊社で対応
-発送にかかる手間を最大限なくした、フルサポートサービスです✨">LOGIFIT<span class="tooltip-indicator" aria-hidden="true"></span></span>
+                <label class="radio-row plan-option" data-plan-scope="personal">
+                  <input type="radio" name="plan" value="worldShip" />
+                  <span>ワールドship</span>
                 </label>
-                <label class="radio-row">
+                <label class="radio-row plan-option" data-plan-scope="corporate">
+                  <input type="radio" name="plan" value="LOGIFIT" />
+                  <span>LOGIFIT</span>
+                </label>
+                <label class="radio-row plan-option" data-plan-scope="corporate">
                   <input type="radio" name="plan" value="worldShipForBiz" />
-                  <span class="plan-tooltip" data-tooltip="弊社に送っていただいた荷物をそのまま転送します ">ワールドship for Biz<span class="tooltip-indicator" aria-hidden="true"></span></span>
+                  <span>ワールドship for Biz</span>
                 </label>
               </div>
-              <p class="field-note">
-                <a
-                  href="https://worldshift-inc.jp/allynair/"
-                  target="_blank"
-                  rel="noreferrer"
-                  >※プランについてはこちらをご確認ください</a
-                >
-              </p>
             </div>
+            <section
+              class="plan-image-section"
+              id="planImageSection"
+              aria-label="プラン説明画像"
+              hidden
+            >
+              <img
+                src="ワールドship.png"
+                alt="ワールドship プラン説明画像"
+                class="plan-image"
+                id="planImageWorldShip"
+                hidden
+              />
+              <img
+                src="LOGIFIT.png"
+                alt="LOGIFIT プラン説明画像"
+                class="plan-image"
+                id="planImageLogifit"
+                hidden
+              />
+              <img
+                src="ワールドshipforbiz.png"
+                alt="ワールドship for Biz プラン説明画像"
+                class="plan-image"
+                id="planImageWorldShipForBiz"
+                hidden
+              />
+            </section>
           </div>
-          <section
-            class="comparison-image-section"
-            id="comparisonImageSection"
-            aria-label="送料比較イメージ"
-            hidden
-          >
-            <img
-              src=""
-              alt="送料比較イメージ"
-              class="comparison-image"
-              id="comparisonImage"
-            />
-          </section>
           <div class="input-grid input-grid--additional">
-            <span class="field-label">カテゴリー</span>
+            <div class="field-label-stack">
+              <span class="field-label field-label--top">カテゴリー</span>
+              <p class="field-note field-note--inline field-note--under-label">（複数選択可）</p>
+            </div>
             <div class="category-field">
-              <p class="field-note field-note--inline">（複数選択可）</p>
               <div class="category-grid" id="categoryGroup">
                 <label class="checkbox-row">
                   <input type="checkbox" name="category" value="食品・飲料関連" />
@@ -179,14 +191,16 @@
                 <label class="checkbox-row category-other-row">
                   <input type="checkbox" id="categoryOtherCheck" name="category" value="その他" />
                   <span>その他</span>
-                  <input
-                    id="categoryOtherText"
-                    class="field-input field-input--category-other"
-                    type="text"
-                    maxlength="80"
-                    placeholder="内容を入力"
-                    disabled
-                  />
+                  <span id="categoryOtherInputWrap" hidden>
+                    <input
+                      id="categoryOtherText"
+                      class="field-input field-input--category-other"
+                      type="text"
+                      maxlength="80"
+                      placeholder="内容を入力"
+                      disabled
+                    />
+                  </span>
                 </label>
               </div>
               <p class="field-note field-note--alert" id="categoryWarning" hidden>
@@ -216,6 +230,7 @@
                 type="text"
                 maxlength="80"
                 placeholder="その他の用途を入力"
+                hidden
                 disabled
               />
             </div>
@@ -259,7 +274,7 @@
                   <input type="checkbox" id="cargoInsurance" />
                   <span>利用する</span>
                 </label>
-                <div class="insurance-input">
+                <div class="insurance-input" id="insuredValueWrap" hidden>
                   <label for="insuredValue">商品価格合計</label>
                   <input
                     id="insuredValue"
@@ -267,6 +282,7 @@
                     type="number"
                     min="0"
                     step="1"
+                    inputmode="decimal"
                     placeholder=""
                     disabled
                   />
@@ -287,19 +303,6 @@
           </a>
         </div>
         <p class="error-message" id="inputError" hidden></p>
-        <section
-          class="comparison-image-section"
-          id="startSimulationImageSection"
-          aria-label="見積り算出イメージ"
-          hidden
-        >
-          <img
-            src=""
-            alt="見積り算出イメージ"
-            class="comparison-image"
-            id="startSimulationImage"
-          />
-        </section>
       </div>
 
       <div id="resultScreen" class="screen-section" hidden>
@@ -345,6 +348,34 @@
           </div>
         </section>
 
+        <section
+          class="comparison-image-section"
+          id="comparisonImageSection"
+          aria-label="送料比較イメージ"
+          hidden
+        >
+          <img
+            src=""
+            alt="送料比較イメージ"
+            class="comparison-image"
+            id="comparisonImage"
+          />
+        </section>
+
+        <section
+          class="comparison-image-section"
+          id="startSimulationImageSection"
+          aria-label="見積り算出イメージ"
+          hidden
+        >
+          <img
+            src=""
+            alt="見積り算出イメージ"
+            class="comparison-image"
+            id="startSimulationImage"
+          />
+        </section>
+
         <section class="disclaimer">
           <h2 class="disclaimer-title">注意事項</h2>
           <ul class="disclaimer-list">
@@ -368,20 +399,6 @@
         </section>
       </div>
 
-      <section
-        class="comparison-image-section"
-        id="comparisonImageSection"
-        aria-label="送料比較イメージ"
-        hidden
-      >
-        <img
-          src=""
-          alt="送料比較イメージ"
-          class="comparison-image"
-          id="comparisonImage"
-        />
-      </section>
-
       <div class="modal-backdrop" id="estimateModal" hidden>
         <div class="modal-card" role="dialog" aria-modal="true">
           <button class="modal-close" type="button" id="closeModal">
@@ -402,6 +419,14 @@
               PDF作成
             </button>
           </div>
+        </div>
+      </div>
+      <div class="image-modal-backdrop" id="imageModal" hidden>
+        <div class="image-modal-card" role="dialog" aria-modal="true" aria-label="画像の拡大表示">
+          <button class="image-modal-close" type="button" id="closeImageModal">
+            ×
+          </button>
+          <img id="imageModalPreview" class="image-modal-preview" src="" alt="" />
         </div>
       </div>
     </main>
@@ -476,12 +501,17 @@
 
           <label class="field-label">商品数</label>
           <div class="box-product-field">
-            <input
-              class="field-input field-input--narrow box-product-count"
-              type="number"
-              min="0"
-              value="0"
-            />
+            <div class="product-count-row">
+              <input
+                class="field-input field-input--narrow box-product-count"
+                type="number"
+                min="0"
+                step="1"
+                inputmode="decimal"
+                value="0"
+              />
+              <span class="unit">点</span>
+            </div>
             <p class="field-note field-note--alert box-product-error is-hidden">
               ※商品数を入力ください
             </p>
@@ -526,15 +556,26 @@
       const categoryGroup = getLastElementById("categoryGroup");
       const categoryOtherCheck = getLastElementById("categoryOtherCheck");
       const categoryOtherText = getLastElementById("categoryOtherText");
+      const categoryOtherInputWrap = getLastElementById("categoryOtherInputWrap");
       const categoryWarning = getLastElementById("categoryWarning");
       const usagePurposeInput = getLastElementById("usagePurpose");
       const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
       const planGroup = document.getElementById("planGroup");
+      const planImageSection = document.getElementById("planImageSection");
+      const planImageWorldShip = document.getElementById("planImageWorldShip");
+      const planImageLogifit = document.getElementById("planImageLogifit");
+      const planImageWorldShipForBiz = document.getElementById(
+        "planImageWorldShipForBiz"
+      );
+      const planOptions = Array.from(
+        planGroup?.querySelectorAll(".plan-option") || []
+      );
       const invoiceInput = document.getElementById("invoiceIssue");
       const returnInsuranceInput = document.getElementById("returnInsurance");
       const cargoInsuranceInput = document.getElementById("cargoInsurance");
       const insuredValueInput = document.getElementById("insuredValue");
+      const insuredValueWrap = document.getElementById("insuredValueWrap");
       const boxList = document.getElementById("boxList");
       const boxTemplate = document.getElementById("boxTemplate");
       const addBoxButton = document.getElementById("addBoxButton");
@@ -547,6 +588,9 @@
       const estimateInquiryLink = document.getElementById("estimateInquiryLink");
       const companyNameInput = document.getElementById("companyName");
       const companyError = document.getElementById("companyError");
+      const imageModal = document.getElementById("imageModal");
+      const closeImageModal = document.getElementById("closeImageModal");
+      const imageModalPreview = document.getElementById("imageModalPreview");
       const comparisonImageSection = document.getElementById("comparisonImageSection");
       const comparisonImage = document.getElementById("comparisonImage");
       const startSimulationImageSection = document.getElementById(
@@ -666,15 +710,15 @@
       const EXTRA_BOX_INFO_QUERY_PARAM = "entry.350946257";
       const COMPARISON_IMAGE_MAP = {
         personal: {
-          src: "ワールドship.png",
+          src: "比較.png",
           alt: "送料比較（ワールドship）",
         },
         LOGIFIT: {
-          src: "LOGIFIT.png",
+          src: "比較.png",
           alt: "送料比較（LOGIFIT）",
         },
         worldShipForBiz: {
-          src: "ワールドshipforbiz.png",
+          src: "比較.png",
           alt: "送料比較（ワールドship for Biz）",
         },
       };
@@ -970,18 +1014,84 @@
       };
 
       const updatePlanVisibility = () => {
-        const isCorporate = getCustomerType() === "corporate";
-        planLabel.hidden = !isCorporate;
-        planGroup.hidden = !isCorporate;
-        if (!isCorporate) {
-          const selectedPlan = getSelectedPlan();
-          if (selectedPlan) {
-            document
-              .querySelectorAll('input[name="plan"]')
-              .forEach((input) => {
-                input.checked = false;
-              });
+        const customerType = getCustomerType();
+        const hasCustomerType =
+          customerType === "personal" || customerType === "corporate";
+        const visiblePlanScopes =
+          customerType === "personal"
+            ? ["personal"]
+            : customerType === "corporate"
+              ? ["corporate"]
+              : [];
+        const visibleScopeSet = new Set(visiblePlanScopes);
+        let hasCheckedVisiblePlan = false;
+
+        planLabel.hidden = !hasCustomerType;
+        planGroup.hidden = !hasCustomerType;
+
+        planOptions.forEach((option) => {
+          const scope = option.dataset.planScope || "";
+          const input = option.querySelector('input[name="plan"]');
+          const isVisible = visibleScopeSet.has(scope);
+          option.hidden = !isVisible;
+          if (!input) {
+            return;
           }
+          input.disabled = !isVisible;
+          if (!isVisible && input.checked) {
+            input.checked = false;
+          }
+          if (isVisible && input.checked) {
+            hasCheckedVisiblePlan = true;
+          }
+        });
+
+        if (customerType === "personal" && !hasCheckedVisiblePlan) {
+          const personalPlanInput = document.querySelector(
+            'input[name="plan"][value="worldShip"]'
+          );
+          if (personalPlanInput) {
+            personalPlanInput.checked = true;
+          }
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
         }
       };
 
@@ -989,6 +1099,9 @@
         const enabled = categoryOtherCheck?.checked;
         if (!categoryOtherText) {
           return;
+        }
+        if (categoryOtherInputWrap) {
+          categoryOtherInputWrap.hidden = !enabled;
         }
         categoryOtherText.disabled = !enabled;
         if (!enabled) {
@@ -1013,6 +1126,7 @@
         if (!usagePurposeOtherInput) {
           return;
         }
+        usagePurposeOtherInput.hidden = !enabled;
         usagePurposeOtherInput.disabled = !enabled;
         if (!enabled) {
           usagePurposeOtherInput.value = "";
@@ -1043,10 +1157,12 @@
         const imageConfig = getComparisonImageConfig();
         if (!imageConfig) {
           comparisonImageSection.hidden = true;
+          comparisonImage.classList.remove("comparison-image--selected");
           return;
         }
         comparisonImage.src = imageConfig.src;
         comparisonImage.alt = imageConfig.alt;
+        comparisonImage.classList.add("comparison-image--selected");
         comparisonImageSection.hidden = false;
       };
 
@@ -1156,6 +1272,9 @@
 
       const updateCargoInsuranceState = () => {
         const enabled = cargoInsuranceInput.checked;
+        if (insuredValueWrap) {
+          insuredValueWrap.hidden = !enabled;
+        }
         insuredValueInput.disabled = !enabled;
         insuredValueInput.required = enabled;
         if (!enabled) {
@@ -1478,6 +1597,7 @@
       });
       customerTypeGroup.addEventListener("change", () => {
         updatePlanVisibility();
+        updatePlanImages();
         handleInputChange();
       });
       removeDuplicateAdditionalInputSections();
@@ -1492,7 +1612,10 @@
         handleInputChange();
       });
       usagePurposeOtherInput.addEventListener("input", handleInputChange);
-      planGroup.addEventListener("change", handleInputChange);
+      planGroup.addEventListener("change", () => {
+        updatePlanImages();
+        handleInputChange();
+      });
       boxList.addEventListener("change", handleInputChange);
       boxList.addEventListener("input", handleInputChange);
       boxList.addEventListener("focusout", (event) => {
@@ -1501,6 +1624,7 @@
       });
 
       updatePlanVisibility();
+      updatePlanImages();
       updateCategoryOtherState();
       updateCategoryWarning();
       updateUsageOtherState();
@@ -1564,6 +1688,7 @@
         resetBoxValues();
         updateProductCountErrors();
         updatePlanVisibility();
+        updatePlanImages();
         updateCategoryOtherState();
         updateCategoryWarning();
         updateUsageOtherState();
@@ -1586,6 +1711,24 @@
 
       const closeEstimateModal = () => {
         estimateModal.hidden = true;
+      };
+
+      const openImageModal = (src, alt = "") => {
+        if (!imageModal || !imageModalPreview || !src) {
+          return;
+        }
+        imageModalPreview.src = src;
+        imageModalPreview.alt = alt;
+        imageModal.hidden = false;
+      };
+
+      const closeImageModalDialog = () => {
+        if (!imageModal || !imageModalPreview) {
+          return;
+        }
+        imageModal.hidden = true;
+        imageModalPreview.src = "";
+        imageModalPreview.alt = "";
       };
 
       const isCompanyNameRequired = () =>
@@ -1788,6 +1931,7 @@
       retryButton.addEventListener("click", () => {
         resultScreen.hidden = true;
         inputScreen.hidden = false;
+        updatePlanImages();
         if (simulateRow) {
           simulateRow.hidden = false;
         }
@@ -1802,6 +1946,33 @@
         companyError.hidden = true;
         generatePdf(companyName);
         closeEstimateModal();
+      });
+
+      if (closeImageModal) {
+        closeImageModal.addEventListener("click", closeImageModalDialog);
+      }
+      if (imageModal) {
+        imageModal.addEventListener("click", (event) => {
+          if (event.target === imageModal) {
+            closeImageModalDialog();
+          }
+        });
+      }
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLImageElement)) {
+          return;
+        }
+        if (
+          !target.classList.contains("plan-image") &&
+          !target.classList.contains("comparison-image")
+        ) {
+          return;
+        }
+        if (target.hidden || !target.src) {
+          return;
+        }
+        openImageModal(target.src, target.alt);
       });
 
       simulateButton.addEventListener("click", async () => {
@@ -1820,11 +1991,13 @@
           {
             field: countryInput,
             label: "送り先国",
+            message: "送り先国を選択してください。",
             isInvalid: () => !isValidCountry,
           },
           {
             field: customerTypeGroup,
             label: "送り主",
+            message: "送り主を選択してください。",
             isInvalid: () => !getCustomerType(),
           },
         ];
@@ -1832,6 +2005,7 @@
           requiredInputs.push({
             field: planGroup,
             label: "プラン",
+            message: "プランを選択してください。",
             isInvalid: () => !getSelectedPlan(),
           });
         }
@@ -1923,7 +2097,9 @@
           isInvalid(field?.value)
         );
         if (missingField) {
-          setInputError(`${missingField.label}を入力してください。`);
+          setInputError(
+            missingField.message || `${missingField.label}を入力してください。`
+          );
           if (simulateRow) {
             simulateRow.hidden = false;
           }
@@ -2001,6 +2177,7 @@
 
         try {
           setSimulationPending();
+          totalRow?.scrollIntoView({ behavior: "smooth", block: "start" });
           logMessage(`送信先URL: ${GAS_ENDPOINT}`);
           logMessage(`ブラウザ: ${navigator.userAgent}`);
           logMessage(`ページURL: ${window.location.href}`);
