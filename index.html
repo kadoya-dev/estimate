@@ -1095,6 +1095,45 @@
         }
       };
 
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
+        }
+      };
+
       const updateCategoryOtherState = () => {
         const enabled = categoryOtherCheck?.checked;
         if (!categoryOtherText) {
@@ -1444,6 +1483,9 @@
         }
         if (simulateRow) {
           simulateRow.hidden = false;
+        }
+        if (inputScreen) {
+          inputScreen.hidden = false;
         }
         updateComparisonImage();
       };
@@ -2170,7 +2212,9 @@
           boxDetails,
         };
 
-        inputScreen.hidden = true;
+        if (inputScreen) {
+          inputScreen.hidden = false;
+        }
         resultScreen.hidden = false;
         if (planImageSection) {
           planImageSection.hidden = true;
