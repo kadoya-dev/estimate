@@ -157,6 +157,18 @@ body {
   align-self: start;
 }
 
+.field-label-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  align-self: start;
+}
+
+.field-note--under-label {
+  margin: 0;
+}
+
 .required-note {
   color: #d93025;
   font-weight: 600;

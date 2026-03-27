@@ -87,8 +87,8 @@
                 <span>法人利用</span>
               </label>
             </div>
-            <span class="field-label" id="planLabel">プラン<span class="required-mark">*</span></span>
-            <div class="plan-group" id="planGroup">
+            <span class="field-label field-label--top" id="planLabel" hidden>プラン<span class="required-mark">*</span></span>
+            <div class="plan-group" id="planGroup" hidden>
               <div class="radio-group">
                 <label class="radio-row plan-option" data-plan-scope="personal">
                   <input type="radio" name="plan" value="worldShip" />
@@ -104,7 +104,7 @@
                 </label>
               </div>
             </div>
-            <span class="field-label" id="planImageLabel" hidden>プラン説明</span>
+            <span class="field-label field-label--top" id="planImageLabel" hidden>プラン説明</span>
             <section
               class="plan-image-section"
               id="planImageSection"
@@ -135,9 +135,11 @@
             </section>
           </div>
           <div class="input-grid input-grid--additional">
-            <span class="field-label field-label--top">カテゴリー</span>
+            <div class="field-label-stack">
+              <span class="field-label field-label--top">カテゴリー</span>
+              <p class="field-note field-note--inline field-note--under-label">（複数選択可）</p>
+            </div>
             <div class="category-field">
-              <p class="field-note field-note--inline">（複数選択可）</p>
               <div class="category-grid" id="categoryGroup">
                 <label class="checkbox-row">
                   <input type="checkbox" name="category" value="食品・飲料関連" />
@@ -1001,17 +1003,19 @@
 
       const updatePlanVisibility = () => {
         const customerType = getCustomerType();
+        const hasCustomerType =
+          customerType === "personal" || customerType === "corporate";
         const visiblePlanScopes =
           customerType === "personal"
             ? ["personal"]
             : customerType === "corporate"
               ? ["corporate"]
-              : ["personal", "corporate"];
+              : [];
         const visibleScopeSet = new Set(visiblePlanScopes);
         let hasCheckedVisiblePlan = false;
 
-        planLabel.hidden = false;
-        planGroup.hidden = false;
+        planLabel.hidden = !hasCustomerType;
+        planGroup.hidden = !hasCustomerType;
 
         planOptions.forEach((option) => {
           const scope = option.dataset.planScope || "";
