@@ -432,6 +432,7 @@
     </main>
 
     <script src="countries.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <template id="boxTemplate">
       <div class="box-card">
         <div class="box-card-header">
@@ -1847,114 +1848,144 @@
         const receiptLine = latestCustomerNumber
           ? `<div class="receipt-no">顧客番号：${latestCustomerNumber}</div>`
           : "";
-        const previewWindow = window.open("", "_blank");
-        if (!previewWindow) {
-          return;
-        }
-        previewWindow.document.write(`
-          <!DOCTYPE html>
-          <html lang="ja">
-            <head>
-              <meta charset="utf-8" />
-              <title>${fileTitle}</title>
-              <style>
-                body {
+        const pdfContentHtml = `
+          <style>
+                .pdf-root {
                   font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
                   padding: 32px;
                   color: #151515;
+                  background: #ffffff;
                 }
-                .header-row {
+                .pdf-root .header-row {
                   display: flex;
                   justify-content: space-between;
                   align-items: flex-start;
                   margin-bottom: 16px;
                 }
-                .receipt-no {
+                .pdf-root .receipt-no {
                   font-size: 0.95rem;
                   font-weight: 600;
                   margin-bottom: 6px;
                 }
-                h1 {
+                .pdf-root h1 {
                   font-size: 24px;
                   margin: 0;
                   text-align: center;
                   flex: 1;
                 }
-                .company-name {
+                .pdf-root .company-name {
                   margin: 8px 0 0;
                   font-size: 1rem;
                   font-weight: 600;
                 }
-                .estimate-date {
+                .pdf-root .estimate-date {
                   font-size: 0.95rem;
                 }
-                p {
+                .pdf-root p {
                   margin: 0 0 16px;
                   line-height: 1.6;
                   font-size: 0.9rem;
                 }
-                .total-amount {
+                .pdf-root .total-amount {
                   font-size: 1.4rem;
                   font-weight: 700;
                   margin: 16px 0 20px;
                 }
-                table {
+                .pdf-root table {
                   width: auto;
                   border-collapse: collapse;
                   font-size: 0.6rem;
                 }
-                th, td {
+                .pdf-root th, .pdf-root td {
                   border: 1px solid #ccc;
                   padding: 6px;
                   text-align: left;
                 }
-                th {
+                .pdf-root th {
                   width: 220px;
                   background: #f5f5f5;
                 }
-                td {
+                .pdf-root td {
                   width: 220px;
                 }
-                .notes {
+                .pdf-root .notes {
                   margin-top: 24px;
                   font-size: 0.85rem;
                   line-height: 1.6;
                   list-style: none;
                   padding-left: 0;
                 }
-                .notes li {
+                .pdf-root .notes li {
                   margin-bottom: 8px;
                 }
-              </style>
-            </head>
-            <body>
-              ${receiptLine}
-              <div class="header-row">
-                <h1>見積書</h1>
-                <div class="estimate-date">見積り日: ${estimateDate}</div>
-              </div>
-              ${companyLine}
-              <p>この度は弊社サービス Allynair(アリネア)のお見積りをいただき、誠に有難うございます。</p>
-              <p>下記の通り概算費用を算出致しましたので、ご検討のほど宜しくお願い申し上げます。</p>
-              <div class="total-amount">合計見積り額（サーチャージ料込み）: ${totalPrice} 円</div>
-              <table>
-                ${inputRows}
-              </table>
-              <ul class="notes">
-                <li>※ 送料は実重量と容積重量を比較したうえで、数値が大きい方を基準に算出しております。</li>
-                <li>※サーチャージには下記の項目が含まれています。<br />① 燃料サーチャージ（必ず発生し、適用期間により変動します）<br />② その他追加サーチャージ（国際運送会社および適用期間により追加される費用です）</li>
-                <li>※本見積書の有効期限は、見積発行月の末日までとします。<br />なお、本申し込みが翌月となる場合は、価格の再算出（再見積）が必要となりますので、予めご了承ください。</li>
-                <li>※荷物の内容や国によっては送ることができない場合がございますので、詳しくはお問合せください。</li>
-                <li>※関税が発生した場合は、受取人側にてご請求が発生しますので、あらかじめご了承ください。</li>
-                <li>※弊社に送付いただいた荷物を、弊社にて再度【実重量】【容積重量】を図らせていただき、それを基に送料等を算出いたします。<br />そのため見積もり時と価格の変動が起きる場合がありますのでご了承ください。</li>
-                <li>※LOGIFITプランをご利用の場合は、弊社にて用意した段ボールに荷物を梱包し直したうえで、再度【実重量】および【容積重量】を計測し、送料を算出いたします。<br />そのため送料に変動が発生する場合がありますのでご了承ください。</li>
-              </ul>
-            </body>
-          </html>
-        `);
-        previewWindow.document.close();
-        previewWindow.focus();
-        previewWindow.print();
+          </style>
+          <div class="pdf-root">
+            ${receiptLine}
+            <div class="header-row">
+              <h1>見積書</h1>
+              <div class="estimate-date">見積り日: ${estimateDate}</div>
+            </div>
+            ${companyLine}
+            <p>この度は弊社サービス Allynair(アリネア)のお見積りをいただき、誠に有難うございます。</p>
+            <p>下記の通り概算費用を算出致しましたので、ご検討のほど宜しくお願い申し上げます。</p>
+            <div class="total-amount">合計見積り額（サーチャージ料込み）: ${totalPrice} 円</div>
+            <table>
+              ${inputRows}
+            </table>
+            <ul class="notes">
+              <li>※ 送料は実重量と容積重量を比較したうえで、数値が大きい方を基準に算出しております。</li>
+              <li>※サーチャージには下記の項目が含まれています。<br />① 燃料サーチャージ（必ず発生し、適用期間により変動します）<br />② その他追加サーチャージ（国際運送会社および適用期間により追加される費用です）</li>
+              <li>※本見積書の有効期限は、見積発行月の末日までとします。<br />なお、本申し込みが翌月となる場合は、価格の再算出（再見積）が必要となりますので、予めご了承ください。</li>
+              <li>※荷物の内容や国によっては送ることができない場合がございますので、詳しくはお問合せください。</li>
+              <li>※関税が発生した場合は、受取人側にてご請求が発生しますので、あらかじめご了承ください。</li>
+              <li>※弊社に送付いただいた荷物を、弊社にて再度【実重量】【容積重量】を図らせていただき、それを基に送料等を算出いたします。<br />そのため見積もり時と価格の変動が起きる場合がありますのでご了承ください。</li>
+              <li>※LOGIFITプランをご利用の場合は、弊社にて用意した段ボールに荷物を梱包し直したうえで、再度【実重量】および【容積重量】を計測し、送料を算出いたします。<br />そのため送料に変動が発生する場合がありますのでご了承ください。</li>
+            </ul>
+          </div>
+        `;
+
+        if (typeof html2pdf !== "function") {
+          alert("PDFライブラリの読み込みに失敗しました。時間をおいて再度お試しください。");
+          return;
+        }
+
+        const pdfContainer = document.createElement("div");
+        pdfContainer.style.position = "fixed";
+        pdfContainer.style.top = "0";
+        pdfContainer.style.left = "0";
+        pdfContainer.style.width = "794px";
+        pdfContainer.style.background = "#ffffff";
+        pdfContainer.style.opacity = "0";
+        pdfContainer.style.pointerEvents = "none";
+        pdfContainer.style.zIndex = "-1";
+        pdfContainer.innerHTML = pdfContentHtml;
+        document.body.appendChild(pdfContainer);
+
+        const pdfRoot = pdfContainer.querySelector(".pdf-root");
+        if (!pdfRoot) {
+          pdfContainer.remove();
+          alert("PDF生成用のレイアウト作成に失敗しました。");
+          return;
+        }
+
+        requestAnimationFrame(() => {
+          html2pdf()
+            .set({
+              margin: 10,
+              filename: `${fileTitle}.pdf`,
+              image: { type: "jpeg", quality: 0.98 },
+              html2canvas: { scale: 2, useCORS: true },
+              jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+            })
+            .from(pdfRoot)
+            .save()
+            .catch(() => {
+              alert("PDF作成に失敗しました。時間をおいて再度お試しください。");
+            })
+            .finally(() => {
+              pdfContainer.remove();
+            });
+        });
       };
 
       estimateButton.addEventListener("click", () => {
