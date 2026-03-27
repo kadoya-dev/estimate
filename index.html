@@ -791,7 +791,7 @@
         : [];
       const emptyCountryOption = document.createElement("option");
       emptyCountryOption.value = "";
-      emptyCountryOption.textContent = "";
+      emptyCountryOption.textContent = "選択してください";
       emptyCountryOption.selected = true;
       countryInput.appendChild(emptyCountryOption);
 
@@ -1054,6 +1054,57 @@
           if (personalPlanInput) {
             personalPlanInput.checked = true;
           }
+          if (isVisible && input.checked) {
+            hasCheckedVisiblePlan = true;
+          }
+        });
+
+        if (customerType === "personal" && !hasCheckedVisiblePlan) {
+          const personalPlanInput = document.querySelector(
+            'input[name="plan"][value="worldShip"]'
+          );
+          if (personalPlanInput) {
+            personalPlanInput.checked = true;
+          }
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
         }
       };
 
@@ -1723,6 +1774,15 @@
       setDisclaimerVisibility(false);
       updateComparisonImage();
       hideStartSimulationImage();
+
+      window.addEventListener("pageshow", () => {
+        updatePlanVisibility();
+        updatePlanImages();
+      });
+      setTimeout(() => {
+        updatePlanVisibility();
+        updatePlanImages();
+      }, 0);
       const initialValues = {
         country: countryInput.value,
         customerType: getCustomerType() || "",
