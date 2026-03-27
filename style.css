@@ -347,6 +347,7 @@ body {
   border-radius: 10px;
   border: 6px solid transparent;
   display: block;
+  cursor: zoom-in;
   transition: opacity 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
     transform 0.2s ease;
 }
@@ -356,10 +357,6 @@ body {
   box-shadow: 0 0 0 2px rgba(84, 179, 90, 0.35);
   transform: scale(1.03);
   transform-origin: center;
-}
-
-.plan-image--dimmed {
-  opacity: 0.45;
 }
 
 .plan-tooltip {
@@ -605,6 +602,12 @@ body {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.product-count-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .box-product-error {
@@ -1025,6 +1028,48 @@ body {
   gap: 12px;
 }
 
+.image-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 40;
+}
+
+.image-modal-card {
+  position: relative;
+  width: min(960px, 100%);
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 12px;
+}
+
+.image-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.image-modal-preview {
+  display: block;
+  width: 100%;
+  max-height: calc(90vh - 24px);
+  object-fit: contain;
+  border-radius: 10px;
+}
+
 .cta-button:hover {
   transform: translateY(-2px);
   box-shadow: 0 16px 30px rgba(26, 98, 255, 0.3);
@@ -1076,6 +1121,7 @@ body {
   display: block;
   border-radius: 12px;
   border: 6px solid transparent;
+  cursor: zoom-in;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 

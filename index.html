@@ -421,6 +421,14 @@
           </div>
         </div>
       </div>
+      <div class="image-modal-backdrop" id="imageModal" hidden>
+        <div class="image-modal-card" role="dialog" aria-modal="true" aria-label="画像の拡大表示">
+          <button class="image-modal-close" type="button" id="closeImageModal">
+            ×
+          </button>
+          <img id="imageModalPreview" class="image-modal-preview" src="" alt="" />
+        </div>
+      </div>
     </main>
 
     <script src="countries.js"></script>
@@ -493,14 +501,17 @@
 
           <label class="field-label">商品数</label>
           <div class="box-product-field">
-            <input
-              class="field-input field-input--narrow box-product-count"
-              type="number"
-              min="0"
-              step="1"
-              inputmode="decimal"
-              value="0"
-            />
+            <div class="product-count-row">
+              <input
+                class="field-input field-input--narrow box-product-count"
+                type="number"
+                min="0"
+                step="1"
+                inputmode="decimal"
+                value="0"
+              />
+              <span class="unit">点</span>
+            </div>
             <p class="field-note field-note--alert box-product-error is-hidden">
               ※商品数を入力ください
             </p>
@@ -577,6 +588,9 @@
       const estimateInquiryLink = document.getElementById("estimateInquiryLink");
       const companyNameInput = document.getElementById("companyName");
       const companyError = document.getElementById("companyError");
+      const imageModal = document.getElementById("imageModal");
+      const closeImageModal = document.getElementById("closeImageModal");
+      const imageModalPreview = document.getElementById("imageModalPreview");
       const comparisonImageSection = document.getElementById("comparisonImageSection");
       const comparisonImage = document.getElementById("comparisonImage");
       const startSimulationImageSection = document.getElementById(
@@ -1039,6 +1053,45 @@
           if (personalPlanInput) {
             personalPlanInput.checked = true;
           }
+        }
+      };
+
+      const updatePlanImages = () => {
+        const customerType = getCustomerType();
+        const showPersonal = customerType === "personal";
+        const showCorporate = customerType === "corporate";
+        const hasVisibleImage = showPersonal || showCorporate;
+        const selectedPlan = getSelectedPlan();
+
+        if (planImageSection) {
+          planImageSection.hidden = !hasVisibleImage;
+        }
+        if (planImageWorldShip) {
+          planImageWorldShip.hidden = !showPersonal;
+        }
+        if (planImageLogifit) {
+          planImageLogifit.hidden = !showCorporate;
+        }
+        if (planImageWorldShipForBiz) {
+          planImageWorldShipForBiz.hidden = !showCorporate;
+        }
+
+        if (planImageWorldShip) {
+          planImageWorldShip.classList.toggle(
+            "plan-image--selected",
+            showPersonal
+          );
+        }
+        if (planImageLogifit) {
+          const isSelected = selectedPlan === "LOGIFIT";
+          planImageLogifit.classList.toggle("plan-image--selected", isSelected);
+        }
+        if (planImageWorldShipForBiz) {
+          const isSelected = selectedPlan === "worldShipForBiz";
+          planImageWorldShipForBiz.classList.toggle(
+            "plan-image--selected",
+            isSelected
+          );
         }
       };
 
@@ -1710,6 +1763,24 @@
         estimateModal.hidden = true;
       };
 
+      const openImageModal = (src, alt = "") => {
+        if (!imageModal || !imageModalPreview || !src) {
+          return;
+        }
+        imageModalPreview.src = src;
+        imageModalPreview.alt = alt;
+        imageModal.hidden = false;
+      };
+
+      const closeImageModalDialog = () => {
+        if (!imageModal || !imageModalPreview) {
+          return;
+        }
+        imageModal.hidden = true;
+        imageModalPreview.src = "";
+        imageModalPreview.alt = "";
+      };
+
       const isCompanyNameRequired = () =>
         COMPANY_NAME_REQUIRED_PLANS.includes(getSelectedPlan());
 
@@ -1926,6 +1997,33 @@
         closeEstimateModal();
       });
 
+      if (closeImageModal) {
+        closeImageModal.addEventListener("click", closeImageModalDialog);
+      }
+      if (imageModal) {
+        imageModal.addEventListener("click", (event) => {
+          if (event.target === imageModal) {
+            closeImageModalDialog();
+          }
+        });
+      }
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLImageElement)) {
+          return;
+        }
+        if (
+          !target.classList.contains("plan-image") &&
+          !target.classList.contains("comparison-image")
+        ) {
+          return;
+        }
+        if (target.hidden || !target.src) {
+          return;
+        }
+        openImageModal(target.src, target.alt);
+      });
+
       simulateButton.addEventListener("click", async () => {
         showStartSimulationImage();
         if (logOutput) {
@@ -2121,6 +2219,7 @@
           boxDetails,
         };
 
+        inputScreen.hidden = true;
         resultScreen.hidden = false;
         setCtaVisibility(false);
         setTotalVisibility(true);
