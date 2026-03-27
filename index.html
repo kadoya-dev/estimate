@@ -1157,10 +1157,12 @@
         const imageConfig = getComparisonImageConfig();
         if (!imageConfig) {
           comparisonImageSection.hidden = true;
+          comparisonImage.classList.remove("comparison-image--selected");
           return;
         }
         comparisonImage.src = imageConfig.src;
         comparisonImage.alt = imageConfig.alt;
+        comparisonImage.classList.add("comparison-image--selected");
         comparisonImageSection.hidden = false;
       };
 
@@ -2168,7 +2170,11 @@
           boxDetails,
         };
 
+        inputScreen.hidden = true;
         resultScreen.hidden = false;
+        if (planImageSection) {
+          planImageSection.hidden = true;
+        }
         setCtaVisibility(false);
         setTotalVisibility(true);
         setDisclaimerVisibility(true);
