@@ -42,11 +42,12 @@ body {
 
 .app-logo {
   position: fixed;
-  top: 24px;
-  left: 24px;
+  top: 0;
+  left: 0;
   display: inline-flex;
   align-items: center;
-  z-index: 10;
+  padding: 12px 16px;
+  z-index: 1000;
 }
 
 .app-logo img {
@@ -1166,7 +1167,27 @@ body {
   }
 
   .dimension-group {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .dimension-row {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .dimension-group .field-input--dimension {
+    width: 54px;
+    padding: 8px 4px;
+  }
+
+  .dimension-multiply {
+    font-size: 1rem;
+    margin: 0 -1px;
+  }
+
+  .dimension-row .unit {
+    font-size: 0.9rem;
   }
 
   .plan-tooltip::after {
