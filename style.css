@@ -1205,6 +1205,11 @@ body {
     font-size: 0.9rem;
   }
 
+  .box-limit-error-row {
+    grid-column: 1 / -1;
+    margin-top: -8px;
+  }
+
   .plan-tooltip::after {
     left: 0;
     transform: none;
@@ -1235,6 +1240,11 @@ body {
 .box-limit-error {
   margin: 0 0 0 4px;
   min-height: 1.2em;
+}
+
+.box-limit-error-row {
+  grid-column: 2;
+  margin-left: 0;
 }
 
 .box-limit-error.is-hidden {
