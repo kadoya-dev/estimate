@@ -41,7 +41,7 @@ body {
 }
 
 .app-logo {
-  position: fixed;
+  position: absolute;
   top: 24px;
   left: 24px;
   display: inline-flex;
@@ -1166,7 +1166,27 @@ body {
   }
 
   .dimension-group {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+
+  .dimension-row {
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .dimension-group .field-input--dimension {
+    width: 54px;
+    padding: 8px 4px;
+  }
+
+  .dimension-multiply {
+    font-size: 1rem;
+    margin: 0 -1px;
+  }
+
+  .dimension-row .unit {
+    font-size: 0.9rem;
   }
 
   .plan-tooltip::after {
