@@ -2022,6 +2022,26 @@
               const centerX = Math.floor(canvas.width / 2);
               const centerY = Math.floor(canvas.height / 2);
               const pixel = context?.getImageData(centerX, centerY, 1, 1)?.data;
+              let nonWhiteSamples = 0;
+              if (context) {
+                const sampleCols = 8;
+                const sampleRows = 10;
+                for (let row = 0; row < sampleRows; row += 1) {
+                  for (let col = 0; col < sampleCols; col += 1) {
+                    const x = Math.floor((canvas.width - 1) * (col / (sampleCols - 1)));
+                    const y = Math.floor((canvas.height - 1) * (row / (sampleRows - 1)));
+                    const data = context.getImageData(x, y, 1, 1).data;
+                    const isWhite =
+                      data[0] === 255 &&
+                      data[1] === 255 &&
+                      data[2] === 255 &&
+                      data[3] === 255;
+                    if (!isWhite) {
+                      nonWhiteSamples += 1;
+                    }
+                  }
+                }
+              }
               const centerPixel = pixel
                 ? `${pixel[0]}-${pixel[1]}-${pixel[2]}-${pixel[3]}`
                 : "取得失敗";
@@ -2029,6 +2049,7 @@
                 canvasWidth: canvas.width,
                 canvasHeight: canvas.height,
                 centerPixel,
+                nonWhiteSamples,
               });
             })
             .save()
