@@ -763,6 +763,23 @@
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
         Math.min(max, Math.max(min, value));
+      const removeLegacyDebugPanel = () => {
+        document.querySelectorAll(".log-panel, #logOutput").forEach((element) => {
+          element.remove();
+        });
+        document.querySelectorAll("h1, h2, h3, p, div").forEach((element) => {
+          if (element.textContent?.trim() !== "通信・PDFデバッグログ") {
+            return;
+          }
+          const section = element.closest("section");
+          if (section) {
+            section.remove();
+            return;
+          }
+          element.remove();
+        });
+      };
+      removeLegacyDebugPanel();
       const logMessage = (message) => {
         const timestamp = new Date().toLocaleTimeString("ja-JP");
         console.info(`${timestamp} ${message}`);
