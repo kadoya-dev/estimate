@@ -316,15 +316,18 @@
 
         <section class="cta-row" hidden>
           <div class="cta-row-group">
-            <a
-              class="cta-button cta-button--primary"
-              href="https://docs.google.com/forms/d/e/1FAIpQLSd0F2BwC-SIciWrrHSJ9OIwLEU0uJ-9-HHsuqvmxyJbzGJIzQ/viewform"
-              target="_blank"
-              rel="noreferrer"
-              id="applyLink"
-            >
-              申し込みはこちら
-            </a>
+            <div class="cta-hint-wrap">
+              <a
+                class="cta-button cta-button--primary"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSd0F2BwC-SIciWrrHSJ9OIwLEU0uJ-9-HHsuqvmxyJbzGJIzQ/viewform"
+                target="_blank"
+                rel="noreferrer"
+                id="applyLink"
+              >
+                申し込みはこちら
+              </a>
+              <p class="cta-hint">⇧かんたん入力でまずはお申し込みを！⇧</p>
+            </div>
           </div>
           <div class="cta-row-group">
             <button class="secondary-button" type="button" id="retryButton">
@@ -339,13 +342,15 @@
             >
               見積り結果についてお問合せ
             </a>
-            <div class="pdf-save-hint-wrap">
-              <button class="secondary-button" type="button" id="estimateButton">
-                結果をPDFで出力
-              </button>
-              <p class="pdf-save-hint">⇧見積結果の保存はこちらから⇧</p>
-            </div>
+            <button class="secondary-button" type="button" id="estimateButton">
+              結果をPDFで出力
+            </button>
           </div>
+        </section>
+
+        <section class="log-panel" aria-live="polite">
+          <h2 class="log-title">通信・PDFデバッグログ</h2>
+          <pre class="log-body" id="logOutput">待機中...</pre>
         </section>
 
         <section
@@ -1780,6 +1785,12 @@
         COMPANY_NAME_REQUIRED_PLANS.includes(getSelectedPlan());
 
       const generatePdf = (companyName) => {
+        const logPdfStep = (label, details = {}) => {
+          const detailText = Object.entries(details)
+            .map(([key, value]) => `${key}=${value}`)
+            .join(", ");
+          logMessage(`[PDF] ${label}${detailText ? ` | ${detailText}` : ""}`);
+        };
         const formatDateForFilename = (date) => {
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -1792,6 +1803,10 @@
         const fileTitle = safeCompanyName
           ? `Allynair見積書_${safeCompanyName}様_${fileDate}`
           : `Allynair見積書_${fileDate}`;
+        logPdfStep("generatePdf開始", {
+          companyNameLength: companyName.length,
+          fileTitle,
+        });
         const totalPrice = totalOutput.textContent;
         const estimateDate = new Date().toLocaleDateString("ja-JP");
         const companyLine = companyName
@@ -1945,6 +1960,7 @@
         `;
 
         if (typeof html2pdf !== "function") {
+          logPdfStep("html2pdf未読み込み");
           alert("PDFライブラリの読み込みに失敗しました。時間をおいて再度お試しください。");
           return;
         }
@@ -1952,38 +1968,81 @@
         const pdfContainer = document.createElement("div");
         pdfContainer.style.position = "fixed";
         pdfContainer.style.top = "0";
-        pdfContainer.style.left = "0";
+        pdfContainer.style.left = "-10000px";
         pdfContainer.style.width = "794px";
         pdfContainer.style.background = "#ffffff";
-        pdfContainer.style.opacity = "0";
         pdfContainer.style.pointerEvents = "none";
         pdfContainer.style.zIndex = "-1";
         pdfContainer.innerHTML = pdfContentHtml;
         document.body.appendChild(pdfContainer);
+        logPdfStep("一時コンテナ追加", {
+          containerWidth: pdfContainer.offsetWidth,
+          containerHeight: pdfContainer.offsetHeight,
+        });
 
         const pdfRoot = pdfContainer.querySelector(".pdf-root");
         if (!pdfRoot) {
           pdfContainer.remove();
+          logPdfStep("pdf-root取得失敗");
           alert("PDF生成用のレイアウト作成に失敗しました。");
           return;
         }
+        const pdfImages = Array.from(pdfRoot.querySelectorAll("img"));
+        logPdfStep("pdf-root取得成功", {
+          rootWidth: pdfRoot.offsetWidth,
+          rootHeight: pdfRoot.offsetHeight,
+          scrollHeight: pdfRoot.scrollHeight,
+          imageCount: pdfImages.length,
+        });
+        if (pdfImages.length > 0) {
+          const missingSrcCount = pdfImages.filter((image) => !image.src).length;
+          logPdfStep("pdf内画像状態", {
+            missingSrcCount,
+          });
+        }
 
         requestAnimationFrame(() => {
+          const pdfOptions = {
+            margin: 10,
+            filename: `${fileTitle}.pdf`,
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          };
+          logPdfStep("html2pdf実行開始", {
+            filename: pdfOptions.filename,
+            scale: pdfOptions.html2canvas.scale,
+          });
           html2pdf()
-            .set({
-              margin: 10,
-              filename: `${fileTitle}.pdf`,
-              image: { type: "jpeg", quality: 0.98 },
-              html2canvas: { scale: 2, useCORS: true },
-              jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-            })
+            .set(pdfOptions)
             .from(pdfRoot)
+            .toCanvas()
+            .get("canvas", (canvas) => {
+              const context = canvas.getContext("2d");
+              const centerX = Math.floor(canvas.width / 2);
+              const centerY = Math.floor(canvas.height / 2);
+              const pixel = context?.getImageData(centerX, centerY, 1, 1)?.data;
+              const centerPixel = pixel
+                ? `${pixel[0]}-${pixel[1]}-${pixel[2]}-${pixel[3]}`
+                : "取得失敗";
+              logPdfStep("canvas生成成功", {
+                canvasWidth: canvas.width,
+                canvasHeight: canvas.height,
+                centerPixel,
+              });
+            })
             .save()
-            .catch(() => {
+            .then(() => {
+              logPdfStep("save成功");
+            })
+            .catch((error) => {
+              logPdfStep("save失敗");
+              logErrorDetails("PDF作成エラー", error);
               alert("PDF作成に失敗しました。時間をおいて再度お試しください。");
             })
             .finally(() => {
               pdfContainer.remove();
+              logPdfStep("一時コンテナ削除");
             });
         });
       };
