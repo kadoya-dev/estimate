@@ -316,15 +316,18 @@
 
         <section class="cta-row" hidden>
           <div class="cta-row-group">
-            <a
-              class="cta-button cta-button--primary"
-              href="https://docs.google.com/forms/d/e/1FAIpQLSd0F2BwC-SIciWrrHSJ9OIwLEU0uJ-9-HHsuqvmxyJbzGJIzQ/viewform"
-              target="_blank"
-              rel="noreferrer"
-              id="applyLink"
-            >
-              申し込みはこちら
-            </a>
+            <div class="cta-hint-wrap">
+              <a
+                class="cta-button cta-button--primary"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSd0F2BwC-SIciWrrHSJ9OIwLEU0uJ-9-HHsuqvmxyJbzGJIzQ/viewform"
+                target="_blank"
+                rel="noreferrer"
+                id="applyLink"
+              >
+                申し込みはこちら
+              </a>
+              <p class="cta-hint">⇧かんたん入力でまずはお申し込みを！⇧</p>
+            </div>
           </div>
           <div class="cta-row-group">
             <button class="secondary-button" type="button" id="retryButton">
@@ -339,12 +342,9 @@
             >
               見積り結果についてお問合せ
             </a>
-            <div class="pdf-save-hint-wrap">
-              <button class="secondary-button" type="button" id="estimateButton">
-                結果をPDFで出力
-              </button>
-              <p class="pdf-save-hint">⇧見積結果の保存はこちらから⇧</p>
-            </div>
+            <button class="secondary-button" type="button" id="estimateButton">
+              結果をPDFで出力
+            </button>
           </div>
         </section>
 
@@ -432,7 +432,8 @@
     </main>
 
     <script src="countries.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <template id="boxTemplate">
       <div class="box-card">
         <div class="box-card-header">
@@ -599,7 +600,6 @@
         "startSimulationImageSection"
       );
       const startSimulationImage = document.getElementById("startSimulationImage");
-      const logOutput = document.getElementById("logOutput");
       const inputError = document.getElementById("inputError");
       const ctaRow = document.querySelector(".cta-row");
       const totalRow = document.querySelector(".total-row");
@@ -758,14 +758,26 @@
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
         Math.min(max, Math.max(min, value));
+      const removeLegacyDebugPanel = () => {
+        document.querySelectorAll(".log-panel, #logOutput").forEach((element) => {
+          element.remove();
+        });
+        document.querySelectorAll("h1, h2, h3, p, div").forEach((element) => {
+          if (element.textContent?.trim() !== "通信・PDFデバッグログ") {
+            return;
+          }
+          const section = element.closest("section");
+          if (section) {
+            section.remove();
+            return;
+          }
+          element.remove();
+        });
+      };
+      removeLegacyDebugPanel();
       const logMessage = (message) => {
-        if (!logOutput) {
-          return;
-        }
         const timestamp = new Date().toLocaleTimeString("ja-JP");
-        const current =
-          logOutput.textContent === "待機中..." ? "" : logOutput.textContent;
-        logOutput.textContent = `${current}${current ? "\n" : ""}${timestamp} ${message}`;
+        console.info(`${timestamp} ${message}`);
       };
       const logErrorDetails = (label, error) => {
         if (!error) {
@@ -1780,6 +1792,12 @@
         COMPANY_NAME_REQUIRED_PLANS.includes(getSelectedPlan());
 
       const generatePdf = (companyName) => {
+        const logPdfStep = (label, details = {}) => {
+          const detailText = Object.entries(details)
+            .map(([key, value]) => `${key}=${value}`)
+            .join(", ");
+          logMessage(`[PDF] ${label}${detailText ? ` | ${detailText}` : ""}`);
+        };
         const formatDateForFilename = (date) => {
           const year = date.getFullYear();
           const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -1792,6 +1810,10 @@
         const fileTitle = safeCompanyName
           ? `Allynair見積書_${safeCompanyName}様_${fileDate}`
           : `Allynair見積書_${fileDate}`;
+        logPdfStep("generatePdf開始", {
+          companyNameLength: companyName.length,
+          fileTitle,
+        });
         const totalPrice = totalOutput.textContent;
         const estimateDate = new Date().toLocaleDateString("ja-JP");
         const companyLine = companyName
@@ -1863,38 +1885,38 @@
                   margin-bottom: 16px;
                 }
                 .pdf-root .receipt-no {
-                  font-size: 0.95rem;
+                  font-size: 1.14rem;
                   font-weight: 600;
                   margin-bottom: 6px;
                 }
                 .pdf-root h1 {
-                  font-size: 24px;
+                  font-size: 29px;
                   margin: 0;
                   text-align: center;
                   flex: 1;
                 }
                 .pdf-root .company-name {
                   margin: 8px 0 0;
-                  font-size: 1rem;
+                  font-size: 1.2rem;
                   font-weight: 600;
                 }
                 .pdf-root .estimate-date {
-                  font-size: 0.95rem;
+                  font-size: 1.14rem;
                 }
                 .pdf-root p {
                   margin: 0 0 16px;
                   line-height: 1.6;
-                  font-size: 0.9rem;
+                  font-size: 1.08rem;
                 }
                 .pdf-root .total-amount {
-                  font-size: 1.4rem;
+                  font-size: 1.68rem;
                   font-weight: 700;
                   margin: 16px 0 20px;
                 }
                 .pdf-root table {
                   width: auto;
                   border-collapse: collapse;
-                  font-size: 0.6rem;
+                  font-size: 0.72rem;
                 }
                 .pdf-root th, .pdf-root td {
                   border: 1px solid #ccc;
@@ -1910,7 +1932,7 @@
                 }
                 .pdf-root .notes {
                   margin-top: 24px;
-                  font-size: 0.85rem;
+                  font-size: 1.02rem;
                   line-height: 1.6;
                   list-style: none;
                   padding-left: 0;
@@ -1944,7 +1966,8 @@
           </div>
         `;
 
-        if (typeof html2pdf !== "function") {
+        if (typeof html2canvas !== "function" || !window.jspdf?.jsPDF) {
+          logPdfStep("PDFライブラリ未読み込み");
           alert("PDFライブラリの読み込みに失敗しました。時間をおいて再度お試しください。");
           return;
         }
@@ -1955,35 +1978,113 @@
         pdfContainer.style.left = "0";
         pdfContainer.style.width = "794px";
         pdfContainer.style.background = "#ffffff";
-        pdfContainer.style.opacity = "0";
         pdfContainer.style.pointerEvents = "none";
-        pdfContainer.style.zIndex = "-1";
+        pdfContainer.style.zIndex = "2147483647";
         pdfContainer.innerHTML = pdfContentHtml;
         document.body.appendChild(pdfContainer);
+        logPdfStep("一時コンテナ追加", {
+          containerWidth: pdfContainer.offsetWidth,
+          containerHeight: pdfContainer.offsetHeight,
+        });
 
         const pdfRoot = pdfContainer.querySelector(".pdf-root");
         if (!pdfRoot) {
           pdfContainer.remove();
+          logPdfStep("pdf-root取得失敗");
           alert("PDF生成用のレイアウト作成に失敗しました。");
           return;
         }
+        const pdfImages = Array.from(pdfRoot.querySelectorAll("img"));
+        logPdfStep("pdf-root取得成功", {
+          rootWidth: pdfRoot.offsetWidth,
+          rootHeight: pdfRoot.offsetHeight,
+          scrollHeight: pdfRoot.scrollHeight,
+          imageCount: pdfImages.length,
+        });
+        if (pdfImages.length > 0) {
+          const missingSrcCount = pdfImages.filter((image) => !image.src).length;
+          logPdfStep("pdf内画像状態", {
+            missingSrcCount,
+          });
+        }
 
         requestAnimationFrame(() => {
-          html2pdf()
-            .set({
-              margin: 10,
-              filename: `${fileTitle}.pdf`,
-              image: { type: "jpeg", quality: 0.98 },
-              html2canvas: { scale: 2, useCORS: true },
-              jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          const pdfOptions = {
+            filename: `${fileTitle}.pdf`,
+            marginMm: 10,
+            canvas: { scale: 2, useCORS: true, backgroundColor: "#ffffff" },
+            jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+          };
+          logPdfStep("PDF生成開始", {
+            filename: pdfOptions.filename,
+            scale: pdfOptions.canvas.scale,
+          });
+          html2canvas(pdfRoot, pdfOptions.canvas)
+            .then((canvas) => {
+              const context = canvas.getContext("2d");
+              const centerX = Math.floor(canvas.width / 2);
+              const centerY = Math.floor(canvas.height / 2);
+              const pixel = context?.getImageData(centerX, centerY, 1, 1)?.data;
+              let nonWhiteSamples = 0;
+              if (context) {
+                const sampleCols = 8;
+                const sampleRows = 10;
+                for (let row = 0; row < sampleRows; row += 1) {
+                  for (let col = 0; col < sampleCols; col += 1) {
+                    const x = Math.floor((canvas.width - 1) * (col / (sampleCols - 1)));
+                    const y = Math.floor((canvas.height - 1) * (row / (sampleRows - 1)));
+                    const data = context.getImageData(x, y, 1, 1).data;
+                    const isWhite =
+                      data[0] === 255 &&
+                      data[1] === 255 &&
+                      data[2] === 255 &&
+                      data[3] === 255;
+                    if (!isWhite) {
+                      nonWhiteSamples += 1;
+                    }
+                  }
+                }
+              }
+              const centerPixel = pixel
+                ? `${pixel[0]}-${pixel[1]}-${pixel[2]}-${pixel[3]}`
+                : "取得失敗";
+              logPdfStep("canvas生成成功", {
+                canvasWidth: canvas.width,
+                canvasHeight: canvas.height,
+                centerPixel,
+                nonWhiteSamples,
+              });
+              const { jsPDF } = window.jspdf;
+              const pdf = new jsPDF(pdfOptions.jsPDF);
+              const pageWidth = pdf.internal.pageSize.getWidth();
+              const pageHeight = pdf.internal.pageSize.getHeight();
+              const printableWidth = pageWidth - pdfOptions.marginMm * 2;
+              const printableHeight = pageHeight - pdfOptions.marginMm * 2;
+              const renderedHeight = (canvas.height * printableWidth) / canvas.width;
+              const imageData = canvas.toDataURL("image/jpeg", 0.98);
+              pdf.addImage(
+                imageData,
+                "JPEG",
+                pdfOptions.marginMm,
+                pdfOptions.marginMm,
+                printableWidth,
+                Math.min(renderedHeight, printableHeight)
+              );
+              pdf.save(pdfOptions.filename);
+              logPdfStep("save成功", {
+                printableWidth,
+                printableHeight,
+                renderedHeight,
+              });
             })
-            .from(pdfRoot)
-            .save()
-            .catch(() => {
+            .catch((error) => {
+              logPdfStep("save失敗");
+              logErrorDetails("PDF作成エラー", error);
               alert("PDF作成に失敗しました。時間をおいて再度お試しください。");
             })
             .finally(() => {
               pdfContainer.remove();
+              logPdfStep("一時コンテナ削除");
             });
         });
       };
@@ -2052,9 +2153,6 @@
 
       simulateButton.addEventListener("click", async () => {
         hideStartSimulationImage();
-        if (logOutput) {
-          logOutput.textContent = "";
-        }
         setInputError("");
         if (simulateRow) {
           simulateRow.hidden = true;
