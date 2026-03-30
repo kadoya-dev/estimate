@@ -605,7 +605,6 @@
         "startSimulationImageSection"
       );
       const startSimulationImage = document.getElementById("startSimulationImage");
-      const logOutput = document.getElementById("logOutput");
       const inputError = document.getElementById("inputError");
       const ctaRow = document.querySelector(".cta-row");
       const totalRow = document.querySelector(".total-row");
@@ -765,13 +764,8 @@
       const clamp = (value, min, max) =>
         Math.min(max, Math.max(min, value));
       const logMessage = (message) => {
-        if (!logOutput) {
-          return;
-        }
         const timestamp = new Date().toLocaleTimeString("ja-JP");
-        const current =
-          logOutput.textContent === "待機中..." ? "" : logOutput.textContent;
-        logOutput.textContent = `${current}${current ? "\n" : ""}${timestamp} ${message}`;
+        console.info(`${timestamp} ${message}`);
       };
       const logErrorDetails = (label, error) => {
         if (!error) {
@@ -2147,9 +2141,6 @@
 
       simulateButton.addEventListener("click", async () => {
         hideStartSimulationImage();
-        if (logOutput) {
-          logOutput.textContent = "";
-        }
         setInputError("");
         if (simulateRow) {
           simulateRow.hidden = true;
