@@ -135,7 +135,7 @@
           </div>
           <div class="input-grid input-grid--additional">
             <div class="field-label-stack mobile-stack-full">
-              <span class="field-label field-label--top">カテゴリー</span>
+              <span class="field-label field-label--top">カテゴリー<span class="required-mark">*</span></span>
               <p class="field-note field-note--inline field-note--under-label">（複数選択可）</p>
             </div>
             <div class="category-field mobile-stack-full">
@@ -208,7 +208,7 @@
               </p>
             </div>
 
-            <label class="field-label" for="usagePurpose">利用用途</label>
+            <label class="field-label" for="usagePurpose">利用用途<span class="required-mark">*</span></label>
             <div class="usage-field">
               <div class="select-wrap">
                 <select id="usagePurpose" class="field-select field-select--left">
@@ -2187,6 +2187,18 @@
             isInvalid: () => !getSelectedPlan(),
           });
         }
+        requiredInputs.push({
+          field: categoryGroup,
+          label: "カテゴリー",
+          message: "カテゴリーを1つ以上選択してください。",
+          isInvalid: () => getSelectedCategories().length === 0,
+        });
+        requiredInputs.push({
+          field: usagePurposeInput,
+          label: "利用用途",
+          message: "利用用途を選択してください。",
+          isInvalid: () => !(usagePurposeInput?.value || ""),
+        });
         if (categoryOtherCheck?.checked) {
           requiredInputs.push({
             field: categoryOtherText,
