@@ -513,6 +513,7 @@
                 class="field-input field-input--narrow box-product-count"
                 type="number"
                 min="0"
+                max="999"
                 step="1"
                 inputmode="decimal"
                 value="0"
@@ -1580,7 +1581,7 @@
           const productCount = clamp(
             Number(productCountInput?.value || 0),
             0,
-            99
+            999
           );
           if (productCountInput) {
             productCountInput.value = productCount;
