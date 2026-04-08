@@ -286,40 +286,59 @@ body {
   gap: 10px;
 }
 
-.category-react-select {
+.category-summary {
   width: 100%;
-}
-
-.category-fallback-select {
-  min-height: 120px;
-}
-
-.category-select__control {
   min-height: 44px;
   border: 1px solid #b8c4d6;
   border-radius: 10px;
-  box-shadow: none;
+  background: #fff;
+  text-align: left;
+  padding: 10px 14px;
+  color: #102a43;
+  cursor: pointer;
 }
 
-.category-select__control--is-focused {
-  border-color: #0b3d14;
-  box-shadow: 0 0 0 1px #0b3d14;
+.category-summary:focus-visible {
+  outline: 2px solid #0b3d14;
+  outline-offset: 2px;
 }
 
-.category-select__multi-value {
+.category-accordion {
+  border: 1px solid #b8c4d6;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.category-option-row {
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid #e2e8f0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.category-option-row:last-child {
+  border-bottom: 0;
+}
+
+.category-option-row--selected {
   background: #e8f5eb;
 }
 
-.category-select__multi-value__label {
+.category-option-check {
+  width: 1.2em;
   color: #0b3d14;
+  font-weight: 700;
 }
 
-.category-select__option--is-focused {
-  background: #f1f6ff;
-}
-
-.category-select__option--is-selected {
-  background: #0b3d14;
+.category-option-label {
+  color: #102a43;
 }
 
 .field-input--category-other {

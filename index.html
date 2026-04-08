@@ -139,27 +139,22 @@
               <p class="field-note field-note--inline field-note--under-label">（複数選択可）</p>
             </div>
             <div class="category-field mobile-stack-full">
-              <div id="categoryReactSelect" class="category-react-select"></div>
-              <select
-                id="categoryFallbackSelect"
-                class="field-select field-select--left category-fallback-select"
-                multiple
-                size="6"
-                aria-label="カテゴリー（複数選択）"
+              <button
+                type="button"
+                id="categorySummary"
+                class="category-summary"
+                aria-haspopup="listbox"
+                aria-expanded="false"
               >
-                <option value="食品・飲料関連">食品・飲料関連</option>
-                <option value="美容・化粧品関連">美容・化粧品関連</option>
-                <option value="日用品・生活用品">日用品・生活用品</option>
-                <option value="雑貨・ギフト・文具">雑貨・ギフト・文具</option>
-                <option value="アパレル・ファッション">アパレル・ファッション</option>
-                <option value="ベビー・キッズ・おもちゃ">ベビー・キッズ・おもちゃ</option>
-                <option value="家電・電子機器">家電・電子機器</option>
-                <option value="健康・医療関連">健康・医療関連</option>
-                <option value="ペット関連">ペット関連</option>
-                <option value="趣味・アウトドア・スポーツ">趣味・アウトドア・スポーツ</option>
-                <option value="工業・業務・B2B製品">工業・業務・B2B製品</option>
-                <option value="その他">その他</option>
-              </select>
+                カテゴリーを選択してください
+              </button>
+              <div
+                id="categoryAccordion"
+                class="category-accordion"
+                role="listbox"
+                aria-multiselectable="true"
+                hidden
+              ></div>
               <span id="categoryOtherInputWrap" hidden>
                 <input
                   id="categoryOtherText"
@@ -532,8 +527,8 @@
       const inputScreen = document.getElementById("inputScreen");
       const resultScreen = document.getElementById("resultScreen");
       const customerTypeGroup = document.getElementById("customerTypeGroup");
-      const categoryReactSelect = getLastElementById("categoryReactSelect");
-      const categoryFallbackSelect = getLastElementById("categoryFallbackSelect");
+      const categorySummary = getLastElementById("categorySummary");
+      const categoryAccordion = getLastElementById("categoryAccordion");
       const categoryOtherText = getLastElementById("categoryOtherText");
       const categoryOtherInputWrap = getLastElementById("categoryOtherInputWrap");
       const categoryWarning = getLastElementById("categoryWarning");
@@ -745,7 +740,6 @@
         "その他",
       ];
       let selectedCategoryValues = [];
-      let categorySelectRoot = null;
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
@@ -869,69 +863,73 @@
       const isCategoryOtherSelected = () =>
         selectedCategoryValues.includes("その他");
 
-      const syncFallbackCategorySelect = () => {
-        if (!categoryFallbackSelect) {
+      const updateCategorySummaryLabel = () => {
+        if (!categorySummary) {
           return;
         }
-        Array.from(categoryFallbackSelect.options).forEach((option) => {
-          option.selected = selectedCategoryValues.includes(option.value);
-        });
+        if (selectedCategoryValues.length === 0) {
+          categorySummary.textContent = "カテゴリーを選択してください";
+          return;
+        }
+        categorySummary.textContent = selectedCategoryValues.join(" / ");
+      };
+
+      const toggleCategoryAccordion = (open) => {
+        if (!categoryAccordion || !categorySummary) {
+          return;
+        }
+        const nextOpen = typeof open === "boolean" ? open : categoryAccordion.hidden;
+        categoryAccordion.hidden = !nextOpen;
+        categorySummary.setAttribute("aria-expanded", String(nextOpen));
       };
 
       const renderCategorySelect = () => {
-        if (!categoryReactSelect || !window.React || !window.ReactDOM || !window.ReactSelect) {
-          if (categoryFallbackSelect) {
-            categoryFallbackSelect.hidden = false;
-          }
-          syncFallbackCategorySelect();
+        if (!categoryAccordion) {
           return;
         }
-        const ReactSelectComponent =
-          window.ReactSelect.default || window.ReactSelect;
-        const options = CATEGORY_OPTIONS.map((value) => ({ value, label: value }));
-        const categoryElement = window.React.createElement(ReactSelectComponent, {
-          inputId: "categorySelectInput",
-          classNamePrefix: "category-select",
-          isMulti: true,
-          closeMenuOnSelect: false,
-          hideSelectedOptions: false,
-          placeholder: "カテゴリーを選択してください",
-          noOptionsMessage: () => "候補がありません",
-          options,
-          value: options.filter((option) =>
-            selectedCategoryValues.includes(option.value)
-          ),
-          onChange: (nextOptions) => {
-            selectedCategoryValues = (nextOptions || []).map(
-              (option) => option.value
-            );
-            syncFallbackCategorySelect();
+        categoryAccordion.innerHTML = "";
+        CATEGORY_OPTIONS.forEach((value) => {
+          const optionButton = document.createElement("button");
+          optionButton.type = "button";
+          optionButton.className = "category-option-row";
+          optionButton.setAttribute("role", "option");
+          optionButton.setAttribute(
+            "aria-selected",
+            String(selectedCategoryValues.includes(value))
+          );
+
+          const checkMark = document.createElement("span");
+          checkMark.className = "category-option-check";
+          checkMark.textContent = selectedCategoryValues.includes(value) ? "✓" : "";
+          optionButton.appendChild(checkMark);
+
+          const optionLabel = document.createElement("span");
+          optionLabel.className = "category-option-label";
+          optionLabel.textContent = value;
+          optionButton.appendChild(optionLabel);
+
+          optionButton.classList.toggle(
+            "category-option-row--selected",
+            selectedCategoryValues.includes(value)
+          );
+
+          optionButton.addEventListener("click", () => {
+            if (selectedCategoryValues.includes(value)) {
+              selectedCategoryValues = selectedCategoryValues.filter(
+                (selectedValue) => selectedValue !== value
+              );
+            } else {
+              selectedCategoryValues = [...selectedCategoryValues, value];
+            }
+            renderCategorySelect();
+            updateCategorySummaryLabel();
             updateCategoryOtherState();
             updateCategoryWarning();
             handleInputChange();
-          },
+          });
+
+          categoryAccordion.appendChild(optionButton);
         });
-        try {
-          if (typeof window.ReactDOM.createRoot === "function") {
-            if (!categorySelectRoot) {
-              categorySelectRoot = window.ReactDOM.createRoot(categoryReactSelect);
-            }
-            categorySelectRoot.render(categoryElement);
-          } else if (typeof window.ReactDOM.render === "function") {
-            window.ReactDOM.render(categoryElement, categoryReactSelect);
-          } else {
-            throw new Error("ReactDOM renderer is unavailable");
-          }
-          if (categoryFallbackSelect) {
-            categoryFallbackSelect.hidden = true;
-          }
-        } catch (error) {
-          console.error("Failed to render React Select:", error);
-          if (categoryFallbackSelect) {
-            categoryFallbackSelect.hidden = false;
-          }
-          syncFallbackCategorySelect();
-        }
       };
 
       const getSelectedCategories = () =>
@@ -1699,13 +1697,25 @@
         });
         removeDuplicateAdditionalInputSections();
         renderCategorySelect();
-        categoryFallbackSelect?.addEventListener("change", () => {
-          selectedCategoryValues = Array.from(
-            categoryFallbackSelect.selectedOptions
-          ).map((option) => option.value);
-          updateCategoryOtherState();
-          updateCategoryWarning();
-          handleInputChange();
+        updateCategorySummaryLabel();
+        categorySummary?.addEventListener("click", () => {
+          toggleCategoryAccordion();
+        });
+        document.addEventListener("click", (event) => {
+          if (!categoryAccordion || !categorySummary) {
+            return;
+          }
+          const target = event.target;
+          if (!(target instanceof Node)) {
+            return;
+          }
+          if (
+            categoryAccordion.contains(target) ||
+            categorySummary.contains(target)
+          ) {
+            return;
+          }
+          toggleCategoryAccordion(false);
         });
         categoryOtherText.addEventListener("input", handleInputChange);
         usagePurposeInput.addEventListener("change", () => {
@@ -1729,6 +1739,8 @@
         updatePlanVisibility();
         updatePlanImages();
         renderCategorySelect();
+        updateCategorySummaryLabel();
+        toggleCategoryAccordion(false);
         updateCategoryOtherState();
         updateCategoryWarning();
         updateUsageOtherState();
@@ -1787,6 +1799,8 @@
           value.startsWith("その他（") ? "その他" : value
         );
         renderCategorySelect();
+        updateCategorySummaryLabel();
+        toggleCategoryAccordion(false);
         categoryOtherText.value = initialValues.categoryValues
           .find((value) => value.startsWith("その他（"))
           ?.replace(/^その他（|）$/g, "") || "";
@@ -2238,7 +2252,7 @@
           });
         }
         requiredInputs.push({
-          field: categoryReactSelect,
+          field: categorySummary,
           label: "カテゴリー",
           message: "カテゴリーを1つ以上選択してください。",
           isInvalid: () => getSelectedCategories().length === 0,
