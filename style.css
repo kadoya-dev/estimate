@@ -290,6 +290,10 @@ body {
   width: 100%;
 }
 
+.category-fallback-select {
+  min-height: 120px;
+}
+
 .category-select__control {
   min-height: 44px;
   border: 1px solid #b8c4d6;

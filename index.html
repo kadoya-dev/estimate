@@ -140,6 +140,26 @@
             </div>
             <div class="category-field mobile-stack-full">
               <div id="categoryReactSelect" class="category-react-select"></div>
+              <select
+                id="categoryFallbackSelect"
+                class="field-select field-select--left category-fallback-select"
+                multiple
+                size="6"
+                aria-label="カテゴリー（複数選択）"
+              >
+                <option value="食品・飲料関連">食品・飲料関連</option>
+                <option value="美容・化粧品関連">美容・化粧品関連</option>
+                <option value="日用品・生活用品">日用品・生活用品</option>
+                <option value="雑貨・ギフト・文具">雑貨・ギフト・文具</option>
+                <option value="アパレル・ファッション">アパレル・ファッション</option>
+                <option value="ベビー・キッズ・おもちゃ">ベビー・キッズ・おもちゃ</option>
+                <option value="家電・電子機器">家電・電子機器</option>
+                <option value="健康・医療関連">健康・医療関連</option>
+                <option value="ペット関連">ペット関連</option>
+                <option value="趣味・アウトドア・スポーツ">趣味・アウトドア・スポーツ</option>
+                <option value="工業・業務・B2B製品">工業・業務・B2B製品</option>
+                <option value="その他">その他</option>
+              </select>
               <span id="categoryOtherInputWrap" hidden>
                 <input
                   id="categoryOtherText"
@@ -513,6 +533,7 @@
       const resultScreen = document.getElementById("resultScreen");
       const customerTypeGroup = document.getElementById("customerTypeGroup");
       const categoryReactSelect = getLastElementById("categoryReactSelect");
+      const categoryFallbackSelect = getLastElementById("categoryFallbackSelect");
       const categoryOtherText = getLastElementById("categoryOtherText");
       const categoryOtherInputWrap = getLastElementById("categoryOtherInputWrap");
       const categoryWarning = getLastElementById("categoryWarning");
@@ -848,34 +869,69 @@
       const isCategoryOtherSelected = () =>
         selectedCategoryValues.includes("その他");
 
-      const renderCategorySelect = () => {
-        if (!categoryReactSelect || !window.React || !window.ReactDOM || !window.ReactSelect) {
+      const syncFallbackCategorySelect = () => {
+        if (!categoryFallbackSelect) {
           return;
         }
-        const ReactSelectComponent = window.ReactSelect.default || window.ReactSelect;
-        if (!categorySelectRoot) {
-          categorySelectRoot = window.ReactDOM.createRoot(categoryReactSelect);
+        Array.from(categoryFallbackSelect.options).forEach((option) => {
+          option.selected = selectedCategoryValues.includes(option.value);
+        });
+      };
+
+      const renderCategorySelect = () => {
+        if (!categoryReactSelect || !window.React || !window.ReactDOM || !window.ReactSelect) {
+          if (categoryFallbackSelect) {
+            categoryFallbackSelect.hidden = false;
+          }
+          syncFallbackCategorySelect();
+          return;
         }
+        const ReactSelectComponent =
+          window.ReactSelect.default || window.ReactSelect;
         const options = CATEGORY_OPTIONS.map((value) => ({ value, label: value }));
-        categorySelectRoot.render(
-          window.React.createElement(ReactSelectComponent, {
-            inputId: "categorySelectInput",
-            classNamePrefix: "category-select",
-            isMulti: true,
-            closeMenuOnSelect: false,
-            hideSelectedOptions: false,
-            placeholder: "カテゴリーを選択してください",
-            noOptionsMessage: () => "候補がありません",
-            options,
-            value: options.filter((option) => selectedCategoryValues.includes(option.value)),
-            onChange: (nextOptions) => {
-              selectedCategoryValues = (nextOptions || []).map((option) => option.value);
-              updateCategoryOtherState();
-              updateCategoryWarning();
-              handleInputChange();
-            },
-          })
-        );
+        const categoryElement = window.React.createElement(ReactSelectComponent, {
+          inputId: "categorySelectInput",
+          classNamePrefix: "category-select",
+          isMulti: true,
+          closeMenuOnSelect: false,
+          hideSelectedOptions: false,
+          placeholder: "カテゴリーを選択してください",
+          noOptionsMessage: () => "候補がありません",
+          options,
+          value: options.filter((option) =>
+            selectedCategoryValues.includes(option.value)
+          ),
+          onChange: (nextOptions) => {
+            selectedCategoryValues = (nextOptions || []).map(
+              (option) => option.value
+            );
+            syncFallbackCategorySelect();
+            updateCategoryOtherState();
+            updateCategoryWarning();
+            handleInputChange();
+          },
+        });
+        try {
+          if (typeof window.ReactDOM.createRoot === "function") {
+            if (!categorySelectRoot) {
+              categorySelectRoot = window.ReactDOM.createRoot(categoryReactSelect);
+            }
+            categorySelectRoot.render(categoryElement);
+          } else if (typeof window.ReactDOM.render === "function") {
+            window.ReactDOM.render(categoryElement, categoryReactSelect);
+          } else {
+            throw new Error("ReactDOM renderer is unavailable");
+          }
+          if (categoryFallbackSelect) {
+            categoryFallbackSelect.hidden = true;
+          }
+        } catch (error) {
+          console.error("Failed to render React Select:", error);
+          if (categoryFallbackSelect) {
+            categoryFallbackSelect.hidden = false;
+          }
+          syncFallbackCategorySelect();
+        }
       };
 
       const getSelectedCategories = () =>
@@ -1643,6 +1699,14 @@
         });
         removeDuplicateAdditionalInputSections();
         renderCategorySelect();
+        categoryFallbackSelect?.addEventListener("change", () => {
+          selectedCategoryValues = Array.from(
+            categoryFallbackSelect.selectedOptions
+          ).map((option) => option.value);
+          updateCategoryOtherState();
+          updateCategoryWarning();
+          handleInputChange();
+        });
         categoryOtherText.addEventListener("input", handleInputChange);
         usagePurposeInput.addEventListener("change", () => {
           updateUsageOtherState();
