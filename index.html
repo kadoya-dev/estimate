@@ -913,7 +913,8 @@
             selectedCategoryValues.includes(value)
           );
 
-          optionButton.addEventListener("click", () => {
+          optionButton.addEventListener("click", (event) => {
+            event.stopPropagation();
             if (selectedCategoryValues.includes(value)) {
               selectedCategoryValues = selectedCategoryValues.filter(
                 (selectedValue) => selectedValue !== value
@@ -1698,7 +1699,8 @@
         removeDuplicateAdditionalInputSections();
         renderCategorySelect();
         updateCategorySummaryLabel();
-        categorySummary?.addEventListener("click", () => {
+        categorySummary?.addEventListener("click", (event) => {
+          event.stopPropagation();
           toggleCategoryAccordion();
         });
         document.addEventListener("click", (event) => {
