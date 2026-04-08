@@ -139,70 +139,32 @@
               <p class="field-note field-note--inline field-note--under-label">（複数選択可）</p>
             </div>
             <div class="category-field mobile-stack-full">
-              <div class="category-grid" id="categoryGroup">
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="食品・飲料関連" />
-                  <span>食品・飲料関連</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="美容・化粧品関連" />
-                  <span>美容・化粧品関連</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="日用品・生活用品" />
-                  <span>日用品・生活用品</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="雑貨・ギフト・文具" />
-                  <span>雑貨・ギフト・文具</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="アパレル・ファッション" />
-                  <span>アパレル・ファッション</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="ベビー・キッズ・おもちゃ" />
-                  <span>ベビー・キッズ・おもちゃ</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="家電・電子機器" />
-                  <span>家電・電子機器</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="健康・医療関連" />
-                  <span>健康・医療関連</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="ペット関連" />
-                  <span>ペット関連</span>
-                </label>
-                <label class="checkbox-row">
-                  <input
-                    type="checkbox"
-                    name="category"
-                    value="趣味・アウトドア・スポーツ"
-                  />
-                  <span>趣味・アウトドア・スポーツ</span>
-                </label>
-                <label class="checkbox-row">
-                  <input type="checkbox" name="category" value="工業・業務・B2B製品" />
-                  <span>工業・業務・B2B製品</span>
-                </label>
-                <label class="checkbox-row category-other-row">
-                  <input type="checkbox" id="categoryOtherCheck" name="category" value="その他" />
-                  <span>その他</span>
-                  <span id="categoryOtherInputWrap" hidden>
-                    <input
-                      id="categoryOtherText"
-                      class="field-input field-input--category-other"
-                      type="text"
-                      maxlength="80"
-                      placeholder="内容を入力"
-                      disabled
-                    />
-                  </span>
-                </label>
-              </div>
+              <button
+                type="button"
+                id="categorySummary"
+                class="category-summary"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                カテゴリーを選択してください
+              </button>
+              <div
+                id="categoryAccordion"
+                class="category-accordion"
+                role="listbox"
+                aria-multiselectable="true"
+                hidden
+              ></div>
+              <span id="categoryOtherInputWrap" hidden>
+                <input
+                  id="categoryOtherText"
+                  class="field-input field-input--category-other"
+                  type="text"
+                  maxlength="80"
+                  placeholder="その他の内容を入力"
+                  disabled
+                />
+              </span>
               <p class="field-note field-note--alert" id="categoryWarning" hidden>
                 事前に発送可能かご確認ください
               </p>
@@ -562,8 +524,8 @@
       const inputScreen = document.getElementById("inputScreen");
       const resultScreen = document.getElementById("resultScreen");
       const customerTypeGroup = document.getElementById("customerTypeGroup");
-      const categoryGroup = getLastElementById("categoryGroup");
-      const categoryOtherCheck = getLastElementById("categoryOtherCheck");
+      const categorySummary = getLastElementById("categorySummary");
+      const categoryAccordion = getLastElementById("categoryAccordion");
       const categoryOtherText = getLastElementById("categoryOtherText");
       const categoryOtherInputWrap = getLastElementById("categoryOtherInputWrap");
       const categoryWarning = getLastElementById("categoryWarning");
@@ -760,6 +722,21 @@
       const MAX_BOX_COUNT = 100;
       const MAX_BOX_COUNT_MESSAGE = "箱情報は最大100箱まで追加できます";
       const CATEGORY_WARNING_TARGETS = ["食品・飲料関連", "美容・化粧品関連", "健康・医療関連"];
+      const CATEGORY_OPTIONS = [
+        "食品・飲料関連",
+        "美容・化粧品関連",
+        "日用品・生活用品",
+        "雑貨・ギフト・文具",
+        "アパレル・ファッション",
+        "ベビー・キッズ・おもちゃ",
+        "家電・電子機器",
+        "健康・医療関連",
+        "ペット関連",
+        "趣味・アウトドア・スポーツ",
+        "工業・業務・B2B製品",
+        "その他",
+      ];
+      let selectedCategoryValues = [];
 
       const formatNumber = (value) => value.toLocaleString("ja-JP");
       const clamp = (value, min, max) =>
@@ -880,28 +857,96 @@
       const getCustomerType = () =>
         document.querySelector('input[name="customerType"]:checked')?.value;
 
+      const isCategoryOtherSelected = () =>
+        selectedCategoryValues.includes("その他");
+
+      const updateCategorySummaryLabel = () => {
+        if (!categorySummary) {
+          return;
+        }
+        if (selectedCategoryValues.length === 0) {
+          categorySummary.textContent = "カテゴリーを選択してください";
+          return;
+        }
+        categorySummary.textContent = selectedCategoryValues.join(" / ");
+      };
+
+      const toggleCategoryAccordion = (open) => {
+        if (!categoryAccordion || !categorySummary) {
+          return;
+        }
+        const nextOpen = typeof open === "boolean" ? open : categoryAccordion.hidden;
+        categoryAccordion.hidden = !nextOpen;
+        categorySummary.setAttribute("aria-expanded", String(nextOpen));
+      };
+
+      const renderCategorySelect = () => {
+        if (!categoryAccordion) {
+          return;
+        }
+        categoryAccordion.innerHTML = "";
+        CATEGORY_OPTIONS.forEach((value) => {
+          const optionButton = document.createElement("button");
+          optionButton.type = "button";
+          optionButton.className = "category-option-row";
+          optionButton.setAttribute("role", "option");
+          optionButton.setAttribute(
+            "aria-selected",
+            String(selectedCategoryValues.includes(value))
+          );
+
+          const checkMark = document.createElement("span");
+          checkMark.className = "category-option-check";
+          checkMark.textContent = selectedCategoryValues.includes(value) ? "✓" : "";
+          optionButton.appendChild(checkMark);
+
+          const optionLabel = document.createElement("span");
+          optionLabel.className = "category-option-label";
+          optionLabel.textContent = value;
+          optionButton.appendChild(optionLabel);
+
+          optionButton.classList.toggle(
+            "category-option-row--selected",
+            selectedCategoryValues.includes(value)
+          );
+
+          optionButton.addEventListener("click", (event) => {
+            event.stopPropagation();
+            if (selectedCategoryValues.includes(value)) {
+              selectedCategoryValues = selectedCategoryValues.filter(
+                (selectedValue) => selectedValue !== value
+              );
+            } else {
+              selectedCategoryValues = [...selectedCategoryValues, value];
+            }
+            renderCategorySelect();
+            updateCategorySummaryLabel();
+            updateCategoryOtherState();
+            updateCategoryWarning();
+            handleInputChange();
+          });
+
+          categoryAccordion.appendChild(optionButton);
+        });
+      };
+
       const getSelectedCategories = () =>
-        Array.from(
-          categoryGroup?.querySelectorAll('input[name="category"]:checked') || []
-        ).map((input) =>
-          input.value === "その他" && categoryOtherText?.value.trim()
+        selectedCategoryValues.map((value) =>
+          value === "その他" && categoryOtherText?.value.trim()
             ? `その他（${categoryOtherText.value.trim()}）`
-            : input.value
+            : value
         );
 
       const getCategoryPrefillValues = () => {
-        const selectedInputs = Array.from(
-          categoryGroup?.querySelectorAll('input[name="category"]:checked') || []
-        );
         const values = [];
         let otherText = "";
-        selectedInputs.forEach((input) => {
-          if (input.value === "その他") {
+        selectedCategoryValues.forEach((value) => {
+          if (value === "その他") {
             values.push("__other_option__");
             otherText = categoryOtherText?.value.trim() || "";
             return;
           }
-          values.push(input.value);
+          values.push(value);
         });
         return { values, otherText };
       };
@@ -1141,7 +1186,7 @@
       };
 
       const updateCategoryOtherState = () => {
-        const enabled = categoryOtherCheck?.checked;
+        const enabled = isCategoryOtherSelected();
         if (!categoryOtherText) {
           return;
         }
@@ -1158,9 +1203,6 @@
         if (!categoryWarning) {
           return;
         }
-        const selectedCategoryValues = Array.from(
-          categoryGroup?.querySelectorAll('input[name="category"]:checked') || []
-        ).map((input) => input.value);
         categoryWarning.hidden = !selectedCategoryValues.some((value) =>
           CATEGORY_WARNING_TARGETS.includes(value)
         );
@@ -1652,10 +1694,27 @@
           handleInputChange();
         });
         removeDuplicateAdditionalInputSections();
-        categoryGroup.addEventListener("change", () => {
-          updateCategoryOtherState();
-          updateCategoryWarning();
-          handleInputChange();
+        renderCategorySelect();
+        updateCategorySummaryLabel();
+        categorySummary?.addEventListener("click", (event) => {
+          event.stopPropagation();
+          toggleCategoryAccordion();
+        });
+        document.addEventListener("click", (event) => {
+          if (!categoryAccordion || !categorySummary) {
+            return;
+          }
+          const target = event.target;
+          if (!(target instanceof Node)) {
+            return;
+          }
+          if (
+            categoryAccordion.contains(target) ||
+            categorySummary.contains(target)
+          ) {
+            return;
+          }
+          toggleCategoryAccordion(false);
         });
         categoryOtherText.addEventListener("input", handleInputChange);
         usagePurposeInput.addEventListener("change", () => {
@@ -1678,6 +1737,9 @@
       runInitStep("initial-ui-sync", () => {
         updatePlanVisibility();
         updatePlanImages();
+        renderCategorySelect();
+        updateCategorySummaryLabel();
+        toggleCategoryAccordion(false);
         updateCategoryOtherState();
         updateCategoryWarning();
         updateUsageOtherState();
@@ -1732,13 +1794,12 @@
         document.querySelectorAll('input[name="plan"]').forEach((input) => {
           input.checked = input.value === initialValues.plan;
         });
-        Array.from(
-          categoryGroup.querySelectorAll('input[name="category"]')
-        ).forEach((input) => {
-          input.checked = initialValues.categoryValues.some((value) =>
-            value.startsWith(input.value)
-          );
-        });
+        selectedCategoryValues = initialValues.categoryValues.map((value) =>
+          value.startsWith("その他（") ? "その他" : value
+        );
+        renderCategorySelect();
+        updateCategorySummaryLabel();
+        toggleCategoryAccordion(false);
         categoryOtherText.value = initialValues.categoryValues
           .find((value) => value.startsWith("その他（"))
           ?.replace(/^その他（|）$/g, "") || "";
@@ -2189,7 +2250,7 @@
           });
         }
         requiredInputs.push({
-          field: categoryGroup,
+          field: categorySummary,
           label: "カテゴリー",
           message: "カテゴリーを1つ以上選択してください。",
           isInvalid: () => getSelectedCategories().length === 0,
@@ -2200,7 +2261,7 @@
           message: "利用用途を選択してください。",
           isInvalid: () => !(usagePurposeInput?.value || ""),
         });
-        if (categoryOtherCheck?.checked) {
+        if (isCategoryOtherSelected()) {
           requiredInputs.push({
             field: categoryOtherText,
             label: "カテゴリー（その他）",
