@@ -248,6 +248,22 @@ body {
   text-decoration: none;
 }
 
+.inline-alert-button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.inline-alert-button:focus-visible {
+  outline: 2px solid #d93025;
+  outline-offset: 2px;
+}
+
 .dimension-group {
   display: flex;
   flex-direction: row;
@@ -1022,6 +1038,23 @@ body {
   flex-direction: column;
   gap: 16px;
   position: relative;
+}
+
+.modal-card--notice {
+  width: min(520px, 100%);
+}
+
+.notice-modal-title {
+  margin: 0;
+  font-size: 1.15rem;
+  color: #102a43;
+  text-align: center;
+}
+
+.notice-modal-text {
+  margin: 0;
+  color: #243b53;
+  line-height: 1.7;
 }
 
 .modal-close {
