@@ -166,7 +166,11 @@
                 />
               </span>
               <p class="field-note field-note--alert" id="categoryWarning" hidden>
-                事前に発送可能かご確認ください
+                食品飲料/美容化粧品/健康医療関連を選択した方は
+                <button type="button" class="inline-alert-button" id="categoryWarningTrigger">
+                  こちら
+                </button>
+                を確認ください。
               </p>
             </div>
 
@@ -396,6 +400,22 @@
           <img id="imageModalPreview" class="image-modal-preview" src="" alt="" />
         </div>
       </div>
+      <div class="modal-backdrop" id="categoryWarningModal" hidden>
+        <div
+          class="modal-card modal-card--notice"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="categoryWarningModalTitle"
+        >
+          <button class="modal-close" type="button" id="closeCategoryWarningModal">
+            ×
+          </button>
+          <h3 class="notice-modal-title" id="categoryWarningModalTitle">発送可否のご案内</h3>
+          <p class="notice-modal-text">
+            食品・飲料・化粧品・医薬品などは、国によって発送できない場合がございますため、あらかじめお問い合わせくださいますようお願いいたします。
+          </p>
+        </div>
+      </div>
     </main>
 
     <script src="countries.js"></script>
@@ -532,6 +552,7 @@
       const categoryOtherText = getLastElementById("categoryOtherText");
       const categoryOtherInputWrap = getLastElementById("categoryOtherInputWrap");
       const categoryWarning = getLastElementById("categoryWarning");
+      const categoryWarningTrigger = getLastElementById("categoryWarningTrigger");
       const usagePurposeInput = getLastElementById("usagePurpose");
       const usagePurposeOtherInput = getLastElementById("usagePurposeOther");
       const planLabel = document.getElementById("planLabel");
@@ -565,6 +586,10 @@
       const imageModal = document.getElementById("imageModal");
       const closeImageModal = document.getElementById("closeImageModal");
       const imageModalPreview = document.getElementById("imageModalPreview");
+      const categoryWarningModal = document.getElementById("categoryWarningModal");
+      const closeCategoryWarningModal = document.getElementById(
+        "closeCategoryWarningModal"
+      );
       const comparisonImageSection = document.getElementById("comparisonImageSection");
       const comparisonImage = document.getElementById("comparisonImage");
       const startSimulationImageSection = document.getElementById(
@@ -1206,9 +1231,27 @@
         if (!categoryWarning) {
           return;
         }
-        categoryWarning.hidden = !selectedCategoryValues.some((value) =>
+        const shouldShowWarning = selectedCategoryValues.some((value) =>
           CATEGORY_WARNING_TARGETS.includes(value)
         );
+        categoryWarning.hidden = !shouldShowWarning;
+        if (!shouldShowWarning) {
+          closeCategoryWarningModalDialog();
+        }
+      };
+
+      const openCategoryWarningModal = () => {
+        if (!categoryWarningModal) {
+          return;
+        }
+        categoryWarningModal.hidden = false;
+      };
+
+      const closeCategoryWarningModalDialog = () => {
+        if (!categoryWarningModal) {
+          return;
+        }
+        categoryWarningModal.hidden = true;
       };
 
       const updateUsageOtherState = () => {
@@ -2202,6 +2245,24 @@
         imageModal.addEventListener("click", (event) => {
           if (event.target === imageModal) {
             closeImageModalDialog();
+          }
+        });
+      }
+      if (categoryWarningTrigger) {
+        categoryWarningTrigger.addEventListener("click", (event) => {
+          event.stopPropagation();
+          openCategoryWarningModal();
+        });
+      }
+      if (closeCategoryWarningModal) {
+        closeCategoryWarningModal.addEventListener("click", () => {
+          closeCategoryWarningModalDialog();
+        });
+      }
+      if (categoryWarningModal) {
+        categoryWarningModal.addEventListener("click", (event) => {
+          if (event.target === categoryWarningModal) {
+            closeCategoryWarningModalDialog();
           }
         });
       }
