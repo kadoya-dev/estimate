@@ -366,6 +366,10 @@
             <li>・LOGIFITプランをご利用の場合は、弊社にて用意した段ボールに荷物を梱包し直したうえで、再度【実重量】および【容積重量】を計測し、送料を算出いたします。<br />
             　そのため見積もり時と価格の変動が起きる場合がありますのでご了承ください。</li>
             <li>・お見積もり書の有効期限は今週末日（日曜日）となっております。（翌週以降は燃料サーチャージ率の変更に伴い、見積金額が変動する場合がございますので、ご留意ください。）</li>
+            <li>・弊社に商品が到着した以降はキャンセル料（2,000円／箱）が発生いたします。<br />
+            　なお、商品の返送をご希望の場合は、着払いにて対応させていただきます。<br />
+            　キャンセル料のお支払い期限は、弊社からのご案内後7日以内といたします。<br />
+            　期限までにお支払いが確認できない場合は、到着した商品を廃棄とさせていただきますのであらかじめご了承ください。</li>
           </ul>
         </section>
       </div>
@@ -2054,6 +2058,9 @@
                 .pdf-root .notes li {
                   margin-bottom: 8px;
                 }
+                .pdf-root.compact-notes .notes {
+                  font-size: calc(1.02rem - 2px);
+                }
           </style>
           <div class="pdf-root">
             ${receiptLine}
@@ -2076,6 +2083,7 @@
               <li>※関税が発生した場合は、受取人側にてご請求が発生しますので、あらかじめご了承ください。</li>
               <li>※弊社に送付いただいた荷物を、弊社にて再度【実重量】【容積重量】を図らせていただき、それを基に送料等を算出いたします。<br />そのため見積もり時と価格の変動が起きる場合がありますのでご了承ください。</li>
               <li>※LOGIFITプランをご利用の場合は、弊社にて用意した段ボールに荷物を梱包し直したうえで、再度【実重量】および【容積重量】を計測し、送料を算出いたします。<br />そのため送料に変動が発生する場合がありますのでご了承ください。</li>
+              <li>※弊社に商品が到着した以降はキャンセル料（2,000円／箱）が発生いたします。<br />なお、商品の返送をご希望の場合は、着払いにて対応させていただきます。<br />キャンセル料のお支払い期限は、弊社からのご案内後7日以内といたします。<br />期限までにお支払いが確認できない場合は、到着した商品を廃棄とさせていただきますのであらかじめご了承ください。</li>
             </ul>
           </div>
         `;
@@ -2108,6 +2116,21 @@
           alert("PDF生成用のレイアウト作成に失敗しました。");
           return;
         }
+
+        const pageWidthMm = 210;
+        const pageHeightMm = 297;
+        const marginMm = 10;
+        const printableWidthMm = pageWidthMm - marginMm * 2;
+        const printableHeightMm = pageHeightMm - marginMm * 2;
+        const maxRootHeight = (pdfRoot.offsetWidth * printableHeightMm) / printableWidthMm;
+        if (pdfRoot.scrollHeight > maxRootHeight) {
+          pdfRoot.classList.add("compact-notes");
+          logPdfStep("注意事項フォント縮小", {
+            originalHeight: pdfRoot.scrollHeight,
+            maxHeight: maxRootHeight,
+          });
+        }
+
         const pdfImages = Array.from(pdfRoot.querySelectorAll("img"));
         logPdfStep("pdf-root取得成功", {
           rootWidth: pdfRoot.offsetWidth,
